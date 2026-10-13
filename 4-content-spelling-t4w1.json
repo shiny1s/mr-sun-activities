@@ -1,0 +1,626 @@
+{
+ "id": "spelling-t4w1",
+ "title": "T4W1 Spelling",
+ "subtitle": "Homophones",
+ "groups": {
+  "red": {
+   "title": "Red Group",
+   "className": "red-group",
+   "words": [
+    "the",
+    "I",
+    "a",
+    "to",
+    "is",
+    "we",
+    "cat",
+    "dog",
+    "sun",
+    "map",
+    "sit",
+    "run"
+   ],
+   "plurals": [
+    "cat",
+    "dog",
+    "sun",
+    "map",
+    "sit",
+    "run"
+   ],
+   "sortTitle": "Sight words and CVC words",
+   "sortInstruction": "Choose a word, then choose its box. Sort the sight words and the CVC words.",
+   "bucket1": "Sight words",
+   "bucket2": "CVC words",
+   "activities": {
+    "clues": [
+     [
+      "the star that lights our day",
+      "sun"
+     ],
+     [
+      "a picture showing places",
+      "map"
+     ],
+     [
+      "rest on a chair",
+      "sit"
+     ],
+     [
+      "move quickly on your feet",
+      "run"
+     ]
+    ],
+    "missing": [
+     [
+      "The ____ can purr.",
+      "cat"
+     ],
+     [
+      "I can ____ on a chair.",
+      "sit"
+     ],
+     [
+      "The ____ is hot and bright.",
+      "sun"
+     ],
+     [
+      "____ are playing together.",
+      "we"
+     ]
+    ],
+    "meanings": [
+     [
+      "cat",
+      [
+       "a pet that purrs",
+       "move quickly on your feet",
+       "a word used before a particular thing"
+      ],
+      "a pet that purrs"
+     ],
+     [
+      "dog",
+      [
+       "a pet that barks",
+       "move quickly on your feet",
+       "a word used before a particular thing"
+      ],
+      "a pet that barks"
+     ]
+    ],
+    "wrong": [
+     "the",
+     "I",
+     "a",
+     "runx"
+    ],
+    "unscramble": [
+     [
+      "pam",
+      "map"
+     ],
+     [
+      "tis",
+      "sit"
+     ],
+     [
+      "nur",
+      "run"
+     ]
+    ],
+    "build": [
+     [
+      "a word used before a particular thing",
+      [
+       "the",
+       "I",
+       "a"
+      ],
+      "the"
+     ],
+     [
+      "the person speaking",
+      [
+       "I",
+       "the",
+       "a"
+      ],
+      "I"
+     ],
+     [
+      "one thing",
+      [
+       "a",
+       "the",
+       "I"
+      ],
+      "a"
+     ]
+    ],
+    "speedWords": [
+     "the",
+     "I",
+     "a",
+     "to",
+     "is",
+     "we",
+     "cat",
+     "dog",
+     "sun",
+     "map",
+     "sit",
+     "run"
+    ]
+   }
+  },
+  "yellow": {
+   "title": "Yellow Group",
+   "className": "yellow-group",
+   "words": [
+    "there",
+    "their",
+    "they're",
+    "to",
+    "too",
+    "two",
+    "see",
+    "sea",
+    "right",
+    "write",
+    "no",
+    "know"
+   ],
+   "plurals": [
+    "to",
+    "too",
+    "two",
+    "see",
+    "sea",
+    "right",
+    "write",
+    "no",
+    "know"
+   ],
+   "sortTitle": "Their / there / they're and other homophones",
+   "sortInstruction": "Choose a word, then choose its box. Sort their, there and they're together; put the other spelling words in the other box.",
+   "bucket1": "Their / there / they're",
+   "bucket2": "Other homophones",
+   "activities": {
+    "clues": [
+     [
+      "correct",
+      "right"
+     ],
+     [
+      "make words with a pencil",
+      "write"
+     ],
+     [
+      "the opposite of yes",
+      "no"
+     ],
+     [
+      "have information",
+      "know"
+     ]
+    ],
+    "missing": [
+     [
+      "Put the books over ____.",
+      "there"
+     ],
+     [
+      "The children packed ____ bags.",
+      "their"
+     ],
+     [
+      "____ going to the park.",
+      "they're"
+     ],
+     [
+      "I have ____ shoes.",
+      "two"
+     ]
+    ],
+    "meanings": [
+     [
+      "see",
+      [
+       "look with your eyes",
+       "have information",
+       "in that place"
+      ],
+      "look with your eyes"
+     ],
+     [
+      "sea",
+      [
+       "a large area of salt water",
+       "have information",
+       "in that place"
+      ],
+      "a large area of salt water"
+     ]
+    ],
+    "wrong": [
+     "there",
+     "their",
+     "they're",
+     "knowx"
+    ],
+    "unscramble": [
+     [
+      "etirw",
+      "write"
+     ],
+     [
+      "on",
+      "no"
+     ],
+     [
+      "wonk",
+      "know"
+     ]
+    ],
+    "build": [
+     [
+      "in that place",
+      [
+       "there",
+       "their",
+       "they're"
+      ],
+      "there"
+     ],
+     [
+      "belonging to them",
+      [
+       "their",
+       "there",
+       "they're"
+      ],
+      "their"
+     ],
+     [
+      "they are",
+      [
+       "they're",
+       "there",
+       "their"
+      ],
+      "they're"
+     ]
+    ],
+    "speedWords": [
+     "there",
+     "their",
+     "they're",
+     "to",
+     "too",
+     "two",
+     "see",
+     "sea",
+     "right",
+     "write",
+     "no",
+     "know"
+    ]
+   }
+  },
+  "green": {
+   "title": "Green Group",
+   "className": "green-group",
+   "words": [
+    "there",
+    "their",
+    "they're",
+    "hear",
+    "here",
+    "weather",
+    "whether",
+    "which",
+    "witch",
+    "one",
+    "won",
+    "new",
+    "knew"
+   ],
+   "plurals": [
+    "hear",
+    "here",
+    "weather",
+    "whether",
+    "which",
+    "witch",
+    "one",
+    "won",
+    "new",
+    "knew"
+   ],
+   "sortTitle": "Their / there / they're and other homophones",
+   "sortInstruction": "Choose a word, then choose its box. Sort their, there and they're together; put the other spelling words in the other box.",
+   "bucket1": "Their / there / they're",
+   "bucket2": "Other homophones",
+   "activities": {
+    "clues": [
+     [
+      "the number 1",
+      "one"
+     ],
+     [
+      "came first in a contest",
+      "won"
+     ],
+     [
+      "not old",
+      "new"
+     ],
+     [
+      "had information in the past",
+      "knew"
+     ]
+    ],
+    "missing": [
+     [
+      "The children packed ____ bags.",
+      "their"
+     ],
+     [
+      "____ going to the park.",
+      "they're"
+     ],
+     [
+      "I can ____ a bird singing.",
+      "hear"
+     ],
+     [
+      "The ____ will be rainy today.",
+      "weather"
+     ]
+    ],
+    "meanings": [
+     [
+      "whether",
+      [
+       "a word used when there is a choice",
+       "had information in the past",
+       "in that place"
+      ],
+      "a word used when there is a choice"
+     ],
+     [
+      "which",
+      [
+       "asks what one out of a choice",
+       "had information in the past",
+       "in that place"
+      ],
+      "asks what one out of a choice"
+     ]
+    ],
+    "wrong": [
+     "there",
+     "their",
+     "they're",
+     "knewx"
+    ],
+    "unscramble": [
+     [
+      "now",
+      "won"
+     ],
+     [
+      "wen",
+      "new"
+     ],
+     [
+      "wenk",
+      "knew"
+     ]
+    ],
+    "build": [
+     [
+      "in that place",
+      [
+       "there",
+       "their",
+       "they're"
+      ],
+      "there"
+     ],
+     [
+      "belonging to them",
+      [
+       "their",
+       "there",
+       "they're"
+      ],
+      "their"
+     ],
+     [
+      "they are",
+      [
+       "they're",
+       "there",
+       "their"
+      ],
+      "they're"
+     ]
+    ],
+    "speedWords": [
+     "there",
+     "their",
+     "they're",
+     "hear",
+     "here",
+     "weather",
+     "whether",
+     "which",
+     "witch",
+     "one",
+     "won",
+     "new",
+     "knew"
+    ]
+   }
+  },
+  "blue": {
+   "title": "Blue Group",
+   "className": "blue-group",
+   "words": [
+    "their",
+    "there",
+    "they're",
+    "stationary",
+    "stationery",
+    "principal",
+    "principle",
+    "complement",
+    "compliment",
+    "desert",
+    "dessert",
+    "aisle",
+    "isle"
+   ],
+   "plurals": [
+    "stationary",
+    "stationery",
+    "principal",
+    "principle",
+    "complement",
+    "compliment",
+    "desert",
+    "dessert",
+    "aisle",
+    "isle"
+   ],
+   "sortTitle": "Their / there / they're and other homophones",
+   "sortInstruction": "Choose a word, then choose its box. Sort their, there and they're together; put the other spelling words in the other box.",
+   "bucket1": "Their / there / they're",
+   "bucket2": "Other homophones",
+   "activities": {
+    "clues": [
+     [
+      "a very dry place",
+      "desert"
+     ],
+     [
+      "sweet food after a meal",
+      "dessert"
+     ],
+     [
+      "a passage between rows of seats",
+      "aisle"
+     ],
+     [
+      "an island",
+      "isle"
+     ]
+    ],
+    "missing": [
+     [
+      "The children packed ____ bags.",
+      "their"
+     ],
+     [
+      "The school ____ spoke at assembly.",
+      "principal"
+     ],
+     [
+      "I bought pens from the ____ shop.",
+      "stationery"
+     ],
+     [
+      "We ate fruit for ____.",
+      "dessert"
+     ]
+    ],
+    "meanings": [
+     [
+      "principle",
+      [
+       "a rule or belief",
+       "an island",
+       "belonging to them"
+      ],
+      "a rule or belief"
+     ],
+     [
+      "complement",
+      [
+       "something that completes or goes well with something",
+       "an island",
+       "belonging to them"
+      ],
+      "something that completes or goes well with something"
+     ]
+    ],
+    "wrong": [
+     "their",
+     "there",
+     "they're",
+     "islex"
+    ],
+    "unscramble": [
+     [
+      "tressed",
+      "dessert"
+     ],
+     [
+      "elsia",
+      "aisle"
+     ],
+     [
+      "elsi",
+      "isle"
+     ]
+    ],
+    "build": [
+     [
+      "belonging to them",
+      [
+       "their",
+       "there",
+       "they're"
+      ],
+      "their"
+     ],
+     [
+      "in that place",
+      [
+       "there",
+       "their",
+       "they're"
+      ],
+      "there"
+     ],
+     [
+      "they are",
+      [
+       "they're",
+       "their",
+       "there"
+      ],
+      "they're"
+     ]
+    ],
+    "speedWords": [
+     "their",
+     "there",
+     "they're",
+     "stationary",
+     "stationery",
+     "principal",
+     "principle",
+     "complement",
+     "compliment",
+     "desert",
+     "dessert",
+     "aisle",
+     "isle"
+    ]
+   }
+  }
+ }
+}
