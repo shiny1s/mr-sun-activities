@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Wandi Week 9 – Conjunctions (Joining Words)</title>
+<style>
+:root{--blue:#2E75B6;--dark:#1F3864;--green:#3a9d3a;--red:#d8473f;--soft:#f4f7fb;--chip:#eaf2fb;--chipb:#bcd6f2;--gold:#f2b705;}
+*{box-sizing:border-box;}
+body{font-family:"Comic Sans MS","Segoe UI",Arial,sans-serif;margin:0;background:var(--soft);color:#23303d;font-size:18px;line-height:1.6;}
+header{background:var(--dark);color:#fff;padding:12px 18px;position:sticky;top:0;z-index:5;}
+.hrow{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+header h1{margin:0;font-size:20px;}header p{margin:2px 0 0;opacity:.88;font-size:13px;}
+.hctrl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+select#vp{font-family:inherit;font-size:13px;padding:4px 6px;border-radius:8px;border:2px solid var(--chipb);max-width:200px;}
+main{max-width:880px;margin:0 auto;padding:16px 14px 90px;}
+.how{background:#fff;border:2px dashed var(--chipb);border-radius:14px;padding:12px 16px;margin:14px 0;font-size:16px;}
+.card{background:#fff;border-radius:16px;box-shadow:0 3px 10px rgba(0,0,0,.08);padding:16px 18px;margin:16px 0;border-top:7px solid var(--blue);}
+.card h2{margin:.1em 0;color:var(--dark);font-size:19px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.tag{display:inline-block;background:var(--chip);color:var(--blue);border-radius:20px;padding:2px 10px;font-size:13px;font-weight:bold;margin-bottom:4px;}
+.instr{margin:4px 0 10px;font-size:16px;}
+.q,.mcq{margin:10px 0;padding:6px 0;border-bottom:1px solid #eef2f6;}
+.q:last-of-type,.mcq:last-of-type{border-bottom:none;}
+.qnum{font-weight:bold;color:var(--blue);margin-right:4px;}
+select.dd{font-family:inherit;font-size:16px;padding:4px 7px;border:2px solid var(--chipb);border-radius:8px;background:#fff;margin:0 3px;}
+select.dd.ok{border-color:var(--green);background:#eafaea;}
+select.dd.no{border-color:var(--red);background:#fdeceb;}
+.bank,.drop{min-height:44px;display:flex;flex-wrap:wrap;gap:7px;padding:7px;border-radius:12px;}
+.bank{background:#f0f4f9;border:2px dashed var(--chipb);}
+.chip{font-family:inherit;font-size:15px;background:var(--chip);border:2px solid var(--chipb);color:#1d3a5f;border-radius:10px;padding:6px 11px;cursor:pointer;user-select:none;touch-action:manipulation;transition:transform .1s;}
+.chip.sel{background:var(--gold);border-color:#c98f00;color:#3a2c00;transform:scale(1.05);}
+.chip.picked{background:#dff0ff;border-color:var(--blue);}
+.chip.ok{background:#eafaea;border-color:var(--green);}
+.chip.no{background:#fdeceb;border-color:var(--red);}
+.buckets{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;}
+.bucket{flex:1;min-width:140px;background:#fff;border:2px solid var(--chipb);border-radius:12px;padding:7px;}
+.bucket h4{margin:2px 0 5px;text-align:center;color:var(--dark);font-size:15px;}
+.bucket .drop{background:#fafcfe;min-height:52px;}
+.opts{display:flex;gap:9px;flex-wrap:wrap;margin-top:6px;}
+.opt{font-family:inherit;font-size:15px;background:#fff;border:2px solid var(--chipb);border-radius:12px;padding:7px 14px;cursor:pointer;touch-action:manipulation;}
+.opt.picked{background:var(--gold);border-color:#c98f00;}
+.opt.ok{background:#eafaea;border-color:var(--green);}
+.opt.no{background:#fdeceb;border-color:var(--red);}
+.w{cursor:pointer;padding:3px 5px;border-radius:7px;border:2px solid transparent;display:inline-block;}
+.w.picked{background:var(--gold);border-color:#c98f00;}
+.w.ok{background:#eafaea;border-color:var(--green);}
+.w.no{background:#fdeceb;border-color:var(--red);}
+.line{min-height:46px;background:#fffdf3;border:2px solid var(--gold);border-radius:12px;padding:7px;display:flex;flex-wrap:wrap;gap:6px;margin-bottom:7px;}
+.match-rows{display:flex;flex-direction:column;gap:7px;margin-bottom:10px;}
+.match-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.match-lbl{flex:1;min-width:140px;font-size:16px;}
+.match-slot{min-width:100px;min-height:42px;border:2px dashed var(--chipb);border-radius:10px;padding:4px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;background:#fafcfe;}
+.match-slot.ok{border-color:var(--green);background:#eafaea;}
+.match-slot.no{border-color:var(--red);background:#fdeceb;}
+.typeit{font-family:inherit;font-size:16px;padding:4px 8px;border:2px solid var(--chipb);border-radius:8px;width:120px;margin:0 4px;}
+.typeit.ok{border-color:var(--green);background:#eafaea;}
+.typeit.no{border-color:var(--red);background:#fdeceb;}
+.spk{font-size:14px;background:#fff;color:var(--blue);border:2px solid var(--chipb);border-radius:20px;padding:2px 9px;cursor:pointer;}
+.spk:active{background:var(--chip);}
+.btn{font-family:inherit;font-size:16px;font-weight:bold;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:8px 16px;cursor:pointer;margin-top:7px;}
+.btn.ghost{background:#fff;color:var(--blue);border:2px solid var(--chipb);}
+.fb{font-weight:bold;margin:7px 0 0;min-height:20px;}
+.fb.ok{color:var(--green);}
+.fb.no{color:var(--red);}
+#scorebar{position:fixed;bottom:0;left:0;right:0;background:var(--dark);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:9px 16px;font-weight:bold;box-shadow:0 -2px 8px rgba(0,0,0,.2);gap:8px;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+<header>
+  <div class="hrow">
+    <div><h1>🐾 Week 9 – Conjunctions (Joining Words)</h1>
+    <p>Wandi Unit 3 &nbsp;|&nbsp; because · but · also</p></div>
+    <div class="hctrl">
+      <button class="btn ghost" id="soundBtn" style="background:#fff;font-size:14px;padding:5px 10px">🔊 Sound: ON</button>
+    </div>
+  </div>
+</header>
+<main>
+
+<!-- 1 CLOZE Conjunction (joining word) -->
+<div class="card" data-type="cloze">
+  <span class="tag">EN2-CWT-03</span>
+  <h2>1. Choose the conjunction (joining word) <button class="spk" data-say="Choose the conjunction (joining word). Conjunctions (Joining Words) connect two ideas. Be cause - gives a reason. But - shows the other side. Also - adds more.">🔊</button></h2>
+  <div class="q"><span class="qnum">1)</span> We should protect dingoes <select class="dd" data-ans="because"><option value="">…</option><option>because</option><option>but</option><option>or</option></select> they help nature. <button class="spk" data-say="We should protect dingoes blank they help nature. Choose because, but, or.">🔊</button></div>
+  <div class="q"><span class="qnum">2)</span> Some people think dingoes are scary, <select class="dd" data-ans="but"><option value="">…</option><option>but</option><option>because</option><option>also</option></select> they usually stay away. <button class="spk" data-say="Some people think dingoes are scary, blank they usually stay away. Choose but, because, or also.">🔊</button></div>
+  <div class="q"><span class="qnum">3)</span> Dingoes hunt pests. They <select class="dd" data-ans="also"><option value="">…</option><option>also</option><option>but</option><option>never</option></select> keep the bush healthy. <button class="spk" data-say="Dingoes hunt pests. They blank keep the bush healthy. Choose also, but, or never.">🔊</button></div>
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+</div>
+
+<!-- 2 MCQ which conjunction (joining word) -->
+<div class="card" data-type="mcq">
+  <span class="tag">EN2-CWT-03</span>
+  <h2>2. Which conjunction (joining word) fits? <button class="spk" data-say="Which conjunction (joining word) fits? Tap the best word to join the two ideas.">🔊</button></h2>
+  <div class="mcq"><span class="qnum">1)</span> Dingoes are important ____ they are part of nature. <button class="spk" data-say="Dingoes are important, blank, they are part of nature. Because, but, or also?">🔊</button><div class="opts"><button class="opt" data-correct="1">because</button><button class="opt">but</button><button class="opt">also</button></div></div>
+  <div class="mcq"><span class="qnum">2)</span> I like dogs ____ I love dingoes more. <button class="spk" data-say="I like dogs, blank, I love dingoes more. Because, but, or also?">🔊</button><div class="opts"><button class="opt">because</button><button class="opt" data-correct="1">but</button><button class="opt">also</button></div></div>
+  <div class="mcq"><span class="qnum">3)</span> Dingoes hunt rabbits. They ____ hunt foxes. <button class="spk" data-say="Dingoes hunt rabbits. They blank hunt foxes. Because, but, or also?">🔊</button><div class="opts"><button class="opt">because</button><button class="opt">but</button><button class="opt" data-correct="1">also</button></div></div>
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+</div>
+
+<!-- 3 SORT because / but sentences -->
+<div class="card" data-type="sort">
+  <span class="tag">EN2-CWT-03</span>
+  <h2>3. Sort the sentences <button class="spk" data-say="Sort the sentences. Some sentences use the word. because. to give a reason. Others use the word. but. to show the other side. Tap a card then tap the right box.">🔊</button></h2>
+  <p class="instr">Tap a sentence, then tap <b>BECAUSE 🟢</b> or <b>BUT 🟡</b>.</p>
+  <div class="bank" data-bank>
+    <button class="chip" data-cat="because">We protect dingoes because they help the bush.</button>
+    <button class="chip" data-cat="but">Dingoes are wild, but they are not usually dangerous.</button>
+    <button class="chip" data-cat="because">Dingoes matter because they eat pests.</button>
+    <button class="chip" data-cat="but">Some people are scared, but dingoes stay away.</button>
+    <button class="chip" data-cat="because">We must help dingoes because they are vulnerable.</button>
+    <button class="chip" data-cat="but">Dingoes look like dogs, but they are different.</button>
+  </div>
+  <div class="buckets">
+    <div class="bucket"><h4>🟢 BECAUSE</h4><div class="drop" data-cat="because"></div></div>
+    <div class="bucket"><h4>🟡 BUT</h4><div class="drop" data-cat="but"></div></div>
+  </div>
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+</div>
+
+<!-- 4 MATCH conjunction (joining word) to what it does -->
+<div class="card" data-type="match">
+  <span class="tag">EN2-CWT-03 &bull; EN2-VOCAB-01</span>
+  <h2>4. Match the conjunction (joining word) to what it does <button class="spk" data-say="Match the conjunction (joining word) to what it does. Tap a word from the bank, then tap the empty box next to what it means.">🔊</button></h2>
+  <p class="instr">Tap a word from the bank, then tap the box next to what it does.</p>
+  <div class="match-rows">
+    <div class="match-row"><button class="spk" data-say="Gives a reason.">🔊</button><span class="match-lbl">Gives a reason</span><div class="match-slot" data-correct="because"></div></div>
+    <div class="match-row"><button class="spk" data-say="Shows the other side.">🔊</button><span class="match-lbl">Shows the other side</span><div class="match-slot" data-correct="but"></div></div>
+    <div class="match-row"><button class="spk" data-say="Adds more information.">🔊</button><span class="match-lbl">Adds more information</span><div class="match-slot" data-correct="also"></div></div>
+  </div>
+  <div class="bank" data-bank>
+    <button class="chip">because</button><button class="chip">but</button><button class="chip">also</button>
+  </div>
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+</div>
+
+<!-- 5 TAPWORD tap the conjunction (joining word) -->
+<div class="card" data-type="tapword">
+  <span class="tag">EN2-CWT-03</span>
+  <h2>5. Tap the conjunction (joining word) <button class="spk" data-say="Tap the conjunction (joining word) in each sentence. The conjunction (joining word) connects two ideas.">🔊</button></h2>
+  <p class="instr">Tap the <b>conjunction (joining word)</b> in each sentence.</p>
+  <div data-s><span class="w">We</span> <span class="w">protect</span> <span class="w">dingoes</span> <span class="w" data-correct="1">because</span> <span class="w">they</span> <span class="w">help</span> <span class="w">nature.</span> <button class="spk" data-say="We protect dingoes because they help nature.">🔊</button></div>
+  <div data-s><span class="w">They</span> <span class="w">are</span> <span class="w">wild,</span> <span class="w" data-correct="1">but</span> <span class="w">they</span> <span class="w">stay</span> <span class="w">away.</span> <button class="spk" data-say="They are wild, but they stay away.">🔊</button></div>
+  <div data-s><span class="w">Dingoes</span> <span class="w">hunt</span> <span class="w">rabbits.</span> <span class="w">They</span> <span class="w" data-correct="1">also</span> <span class="w">hunt</span> <span class="w">foxes.</span> <button class="spk" data-say="Dingoes hunt rabbits. They also hunt foxes.">🔊</button></div>
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+</div>
+
+<!-- 6 TF correct use of conjunction (joining word) -->
+<div class="card" data-type="mcq">
+  <span class="tag">EN2-CWT-03</span>
+  <h2>6. Is the conjunction (joining word) used correctly? <button class="spk" data-say="Is the conjunction (joining word) used correctly? Tap Yes if it makes sense, No if it does not.">🔊</button></h2>
+  <div class="mcq"><span class="qnum">1)</span> "We love dingoes because they are wild." <button class="spk" data-say="We love dingoes because they are wild. Does because make sense here?">🔊</button><div class="opts"><button class="opt" data-correct="1">✅ Yes – makes sense</button><button class="opt">❌ No – wrong word</button></div></div>
+  <div class="mcq"><span class="qnum">2)</span> "Dingoes are helpful but they eat pests." <button class="spk" data-say="Dingoes are helpful but they eat pests. Does but make sense here?">🔊</button><div class="opts"><button class="opt">✅ Yes – makes sense</button><button class="opt" data-correct="1">❌ No – because fits better</button></div></div>
+  <div class="mcq"><span class="qnum">3)</span> "Dingoes are fast. They also have sharp ears." <button class="spk" data-say="Dingoes are fast. They also have sharp ears. Does also make sense here?">🔊</button><div class="opts"><button class="opt" data-correct="1">✅ Yes – makes sense</button><button class="opt">❌ No – wrong word</button></div></div>
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+</div>
+
+<!-- 7 BUILD a sentence -->
+<div class="card" data-type="build">
+  <span class="tag">EN2-CWT-03</span>
+  <h2>7. Build the sentence <button class="spk" data-say="Build the sentence. Tap the words in order to make a sentence. Tap a word in the line to put it back.">🔊</button></h2>
+  <p class="instr">Tap the words <b>in the right order</b>. Tap a word in the line to take it back.</p>
+  <div class="line" data-answer="Dingoes|help|nature|because|they|hunt|pests|."></div>
+  <div class="bank" data-builder>
+    <button class="chip">they</button><button class="chip">pests</button><button class="chip">hunt</button>
+    <button class="chip">Dingoes</button><button class="chip">because</button>
+    <button class="chip">help</button><button class="chip">nature</button><button class="chip">.</button>
+  </div>
+  <button class="btn" data-check>Check</button>
+  <button class="btn ghost" data-reset>Start again</button>
+  <p class="fb"></p>
+</div>
+
+<!-- 8 MCQ which gives a reason -->
+<div class="card" data-type="mcq">
+  <span class="tag">EN2-CWT-03</span>
+  <h2>8. Which sentence gives a reason? <button class="spk" data-say="Which sentence gives a reason? The word because introduces a reason. Tap the sentence that has a reason.">🔊</button></h2>
+  <div class="mcq"><span class="qnum">1)</span><button class="spk" data-say="Dingoes are fast. We love dingoes because they help the bush. Dingoes are wild.">🔊</button><div class="opts"><button class="opt">Dingoes are fast.</button><button class="opt" data-correct="1">We love dingoes because they help the bush.</button><button class="opt">Dingoes are wild.</button></div></div>
+  <div class="mcq"><span class="qnum">2)</span><button class="spk" data-say="We must protect dingoes because they are vulnerable. Dingoes are brown. Dingoes howl.">🔊</button><div class="opts"><button class="opt" data-correct="1">We must protect dingoes because they are vulnerable.</button><button class="opt">Dingoes are brown.</button><button class="opt">Dingoes howl.</button></div></div>
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+</div>
+
+<!-- 9 MATCH sentence halves -->
+<div class="card" data-type="match">
+  <span class="tag">EN2-CWT-03</span>
+  <h2>9. Match the sentence halves <button class="spk" data-say="Match the sentence halves. Each sentence beginning on the left has a matching ending on the right. Tap a card from the bank then tap the empty box next to its beginning.">🔊</button></h2>
+  <p class="instr">Tap a word card from the bank, then tap the empty box next to the sentence beginning it completes.</p>
+  <div class="match-rows">
+    <div class="match-row"><button class="spk" data-say="We should protect dingoes because…">🔊</button><span class="match-lbl">We should protect dingoes because…</span><div class="match-slot" data-correct="they help the bush."></div></div>
+    <div class="match-row"><button class="spk" data-say="Dingoes are wild, but…">🔊</button><span class="match-lbl">Dingoes are wild, but…</span><div class="match-slot" data-correct="they usually stay away."></div></div>
+    <div class="match-row"><button class="spk" data-say="Dingoes hunt rabbits, and they also…">🔊</button><span class="match-lbl">Dingoes hunt rabbits, and they also…</span><div class="match-slot" data-correct="eat foxes."></div></div>
+    <div class="match-row"><button class="spk" data-say="We must help dingoes because…">🔊</button><span class="match-lbl">We must help dingoes because…</span><div class="match-slot" data-correct="they are in danger."></div></div>
+  </div>
+  <div class="bank" data-bank>
+    <button class="chip">they help the bush.</button>
+    <button class="chip">they usually stay away.</button>
+    <button class="chip">eat foxes.</button>
+    <button class="chip">they are in danger.</button>
+  </div>
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+</div>
+
+<!-- 10 TYPE IT -->
+<div class="card" data-type="typeit">
+  <span class="tag">EN2-CWT-03 &bull; EN2-VOCAB-01</span>
+  <h2>10. Type the conjunction (joining word) <button class="spk" data-say="Type the conjunction (joining word) that fits best in each sentence.">🔊</button></h2>
+  <p class="instr">Type the <b>conjunction (joining word)</b> that fits.</p>
+  <div class="q"><span class="qnum">1)</span> We love dingoes <input type="text" class="typeit" data-ans="because" placeholder="type here"> they help nature. <button class="spk" data-say="We love dingoes blank they help nature. The word gives a reason. It starts with the letter b.">🔊</button></div>
+  <div class="q"><span class="qnum">2)</span> Dingoes are wild, <input type="text" class="typeit" data-ans="but" placeholder="type here"> they are not usually scary. <button class="spk" data-say="Dingoes are wild, blank they are not usually scary. The word shows the other side. It starts with the letter b.">🔊</button></div>
+  <div class="q"><span class="qnum">3)</span> Dingoes are fast. They <input type="text" class="typeit" data-ans="also" placeholder="type here"> have sharp teeth. <button class="spk" data-say="Dingoes are fast. They blank have sharp teeth. The word adds more. It starts with the letter a.">🔊</button></div>
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+</div>
+
+</main>
+<div id="scorebar">
+  <span>⭐ Score: <span id="score">0</span> / <span id="total">0</span></span>
+  <button class="btn" id="finBtn" style="background:var(--gold);color:#3a2c00">Finish &amp; mark all</button>
+</div>
+<script>
+(function(){
+var hasTTS='speechSynthesis' in window,muted=false,voice=null,sel=null;
+var sndBtn=document.getElementById('soundBtn');
+function loadVoices(){
+  if(!hasTTS)return;
+  var vs=speechSynthesis.getVoices();
+  voice=vs.find(function(v){return /william/i.test(v.name)&&/AU/i.test(v.lang);})||
+        vs.find(function(v){return /william/i.test(v.name);})||
+        vs.find(function(v){return /en[-_]AU/i.test(v.lang);})||vs[0]||null;
+}
+if(hasTTS){speechSynthesis.onvoiceschanged=loadVoices;loadVoices();}
+sndBtn.addEventListener('click',function(){muted=!muted;if(muted)speechSynthesis.cancel();this.textContent=muted?'🔇 Sound: OFF':'🔊 Sound: ON';});
+function speak(t){if(muted||!t||!hasTTS)return;speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.rate=0.88;u.pitch=1.05;u.lang='en-AU';if(voice)u.voice=voice;speechSynthesis.speak(u);}
+function selChip(c){if(sel===c){c.classList.remove('sel');sel=null;}else{if(sel)sel.classList.remove('sel');sel=c;c.classList.add('sel');}}
+document.addEventListener('click',function(e){
+  if(e.target.closest('.spk')){speak(e.target.closest('.spk').dataset.say);return;}
+  var card=e.target.closest('.card');if(!card)return;
+  var tp=card.dataset.type;
+  if(tp==='sort'||tp==='match'){
+    var ch=e.target.closest('.chip');if(ch){speak(ch.textContent);selChip(ch);return;}
+    if(tp==='sort'){var dr=e.target.closest('[data-cat],[data-bank]');if(sel&&dr){dr.appendChild(sel);sel.classList.remove('sel','ok','no');sel=null;}}
+    if(tp==='match'){var sl=e.target.closest('.match-slot');if(sl&&sel){var ex=sl.querySelector('.chip');if(ex)card.querySelector('[data-bank]').appendChild(ex);sl.appendChild(sel);sel.classList.remove('sel','ok','no');sel=null;}var bk=e.target.closest('[data-bank]');if(bk&&sel&&!e.target.closest('.chip')){bk.appendChild(sel);sel.classList.remove('sel','ok','no');sel=null;}}
+    return;
+  }
+  if(tp==='tapword'){var w=e.target.closest('.w');if(w){w.classList.toggle('picked');w.classList.remove('ok','no');speak(w.textContent);}return;}
+  if(tp==='mcq'){var o=e.target.closest('.opt');if(o){var g=o.closest('.mcq');g.querySelectorAll('.opt').forEach(function(x){x.classList.remove('picked','ok','no');});o.classList.add('picked');speak(o.textContent);}return;}
+});
+document.querySelectorAll('[data-builder] .chip').forEach(function(c){c.addEventListener('click',function(){c.closest('.card').querySelector('.line').appendChild(c);});});
+document.querySelectorAll('.line').forEach(function(l){l.addEventListener('click',function(e){var c=e.target.closest('.chip');if(c)l.closest('.card').querySelector('[data-builder]').appendChild(c);});});
+function chkSort(card){var cs=card.querySelectorAll('.chip'),r=0,t=cs.length;cs.forEach(function(c){c.classList.remove('ok','no');if(c.parentElement.getAttribute('data-cat')===c.dataset.cat){c.classList.add('ok');r++;}else c.classList.add('no');});return[r,t];}
+function chkCloze(card){var ss=card.querySelectorAll('.dd'),r=0,t=ss.length;ss.forEach(function(s){s.classList.remove('ok','no');if(s.value&&s.value===s.dataset.ans){s.classList.add('ok');r++;}else s.classList.add('no');});return[r,t];}
+function chkMcq(card){var gs=card.querySelectorAll('.mcq'),r=0,t=gs.length;gs.forEach(function(g){g.querySelectorAll('.opt').forEach(function(o){o.classList.remove('ok','no');});var p=g.querySelector('.opt.picked');if(p&&p.dataset.correct==='1'){p.classList.add('ok');r++;}else if(p)p.classList.add('no');});return[r,t];}
+function chkBuild(card){var l=card.querySelector('.line'),a=l.dataset.answer.split('|'),g=[].map.call(l.querySelectorAll('.chip'),function(c){return c.textContent;});var ok=g.length===a.length&&g.every(function(w,i){return w===a[i];});l.style.borderColor=ok?'var(--green)':'var(--red)';return[ok?1:0,1];}
+function chkMatch(card){var ss=card.querySelectorAll('.match-slot'),r=0,t=ss.length;ss.forEach(function(s){s.classList.remove('ok','no');var c=s.querySelector('.chip');if(c&&c.textContent.trim()===s.dataset.correct){c.classList.add('ok');s.classList.add('ok');r++;}else{if(c)c.classList.add('no');s.classList.add('no');}});return[r,t];}
+function chkType(card){var is=card.querySelectorAll('.typeit'),r=0,t=is.length;is.forEach(function(i){i.classList.remove('ok','no');if(i.value.trim().toLowerCase()===i.dataset.ans.toLowerCase()){i.classList.add('ok');r++;}else i.classList.add('no');});return[r,t];}
+function chkTap(card){var es=card.querySelectorAll('.w'),r=0,t=es.length;es.forEach(function(e){e.classList.remove('ok','no');var s=e.dataset.correct==='1',h=e.classList.contains('picked');if(s===h){r++;if(h)e.classList.add('ok');}else e.classList.add('no');});var T=0,H=0,X=0;es.forEach(function(e){var c=e.dataset.correct==='1',p=e.classList.contains('picked');if(c)T++;if(c&&p)H++;if(!c&&p)X++;});return [Math.max(0,H-X),T];}
+function runCheck(card){var tp=card.dataset.type,r;
+  if(tp==='sort')r=chkSort(card);else if(tp==='cloze')r=chkCloze(card);else if(tp==='mcq')r=chkMcq(card);else if(tp==='build')r=chkBuild(card);else if(tp==='match')r=chkMatch(card);else if(tp==='typeit')r=chkType(card);else r=chkTap(card);
+  card._r=r[0];card._t=r[1];card._done=true;
+  var fb=card.querySelector('.fb'),win=r[0]===r[1];fb.className='fb '+(win?'ok':'no');fb.textContent=(win?'⭐ ':'')+r[0]+' / '+r[1]+' correct'+(win?' – well done!':' – check the red ones and try again.');
+  updateScore();}
+document.querySelectorAll('[data-check]').forEach(function(b){b.addEventListener('click',function(){runCheck(b.closest('.card'));});});
+document.querySelectorAll('[data-reset]').forEach(function(b){b.addEventListener('click',function(){var card=b.closest('.card'),bk=card.querySelector('[data-builder]');card.querySelectorAll('.line .chip').forEach(function(c){bk.appendChild(c);});card.querySelector('.line').style.borderColor='var(--gold)';card.querySelector('.fb').textContent='';card._done=false;updateScore();});});
+function updateScore(){var g=0,t=0;document.querySelectorAll('.card').forEach(function(c){if(c._done){g+=c._r;t+=c._t;}});document.getElementById('score').textContent=g;document.getElementById('total').textContent=t;}
+document.getElementById('finBtn').addEventListener('click',function(){document.querySelectorAll('.card').forEach(function(c){runCheck(c);});var g=+document.getElementById('score').textContent,t=+document.getElementById('total').textContent,pct=t?Math.round(g/t*100):0;var msg=pct>=80?'Amazing work!':pct>=50?'Good effort – keep practising!':'Nice try – let us practise together!';speak('You scored '+g+' out of '+t+'. '+msg);setTimeout(function(){alert('⭐ You scored '+g+' / '+t+' ('+pct+'%)!\n'+msg);},120);});
+})();
+</script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='writing-9-wandi';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-writing.js"></script>
+</body>
+</html>

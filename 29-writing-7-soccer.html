@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Wandi Week 7 – Fact, Opinion &amp; Power Words</title>
+<style>
+:root{--blue:#2E75B6;--dark:#1F3864;--green:#3a9d3a;--red:#d8473f;--soft:#f4f7fb;--chip:#eaf2fb;--chipb:#bcd6f2;--gold:#f2b705;}
+*{box-sizing:border-box;}
+body{font-family:"Comic Sans MS","Segoe UI",Arial,sans-serif;margin:0;background:var(--soft);color:#23303d;font-size:18px;line-height:1.6;}
+header{background:var(--dark);color:#fff;padding:12px 18px;position:sticky;top:0;z-index:5;}
+.hrow{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+header h1{margin:0;font-size:20px;}
+header p{margin:2px 0 0;opacity:.88;font-size:13px;}
+.hctrl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+select#vp{font-family:inherit;font-size:13px;padding:4px 6px;border-radius:8px;border:2px solid var(--chipb);max-width:200px;}
+main{max-width:880px;margin:0 auto;padding:16px 14px 90px;}
+.how{background:#fff;border:2px dashed var(--chipb);border-radius:14px;padding:12px 16px;margin:14px 0;font-size:16px;}
+.card{background:#fff;border-radius:16px;box-shadow:0 3px 10px rgba(0,0,0,.08);padding:16px 18px;margin:16px 0;border-top:7px solid var(--blue);}
+.card h2{margin:.1em 0;color:var(--dark);font-size:19px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.tag{display:inline-block;background:var(--chip);color:var(--blue);border-radius:20px;padding:2px 10px;font-size:13px;font-weight:bold;margin-bottom:4px;}
+.instr{margin:4px 0 10px;font-size:16px;}
+.q,.mcq,.tfq{margin:10px 0;padding:6px 0;border-bottom:1px solid #eef2f6;}
+.q:last-of-type,.mcq:last-of-type,.tfq:last-of-type{border-bottom:none;}
+.qnum{font-weight:bold;color:var(--blue);margin-right:4px;}
+select.dd{font-family:inherit;font-size:16px;padding:4px 7px;border:2px solid var(--chipb);border-radius:8px;background:#fff;margin:0 3px;}
+select.dd.ok{border-color:var(--green);background:#eafaea;}
+select.dd.no{border-color:var(--red);background:#fdeceb;}
+.bank,.drop{min-height:44px;display:flex;flex-wrap:wrap;gap:7px;padding:7px;border-radius:12px;}
+.bank{background:#f0f4f9;border:2px dashed var(--chipb);}
+.chip{font-family:inherit;font-size:15px;background:var(--chip);border:2px solid var(--chipb);color:#1d3a5f;border-radius:10px;padding:6px 11px;cursor:pointer;user-select:none;touch-action:manipulation;transition:transform .1s;}
+.chip.sel{background:var(--gold);border-color:#c98f00;color:#3a2c00;transform:scale(1.05);}
+.chip.picked{background:#dff0ff;border-color:var(--blue);}
+.chip.ok{background:#eafaea;border-color:var(--green);}
+.chip.no{background:#fdeceb;border-color:var(--red);}
+.buckets{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;}
+.bucket{flex:1;min-width:140px;background:#fff;border:2px solid var(--chipb);border-radius:12px;padding:7px;}
+.bucket h4{margin:2px 0 5px;text-align:center;color:var(--dark);font-size:15px;}
+.bucket .drop{background:#fafcfe;min-height:52px;}
+.bucket.hint-ok{border-color:var(--green)!important;background:#eafaea;}
+.bucket.hint-no{border-color:var(--red)!important;background:#fdeceb;}
+.opts{display:flex;gap:9px;flex-wrap:wrap;margin-top:6px;}
+.opt{font-family:inherit;font-size:15px;background:#fff;border:2px solid var(--chipb);border-radius:12px;padding:7px 14px;cursor:pointer;touch-action:manipulation;}
+.opt.picked{background:var(--gold);border-color:#c98f00;}
+.opt.ok{background:#eafaea;border-color:var(--green);}
+.opt.no{background:#fdeceb;border-color:var(--red);}
+.w{cursor:pointer;padding:3px 5px;border-radius:7px;border:2px solid transparent;display:inline-block;}
+.w.picked{background:var(--gold);border-color:#c98f00;}
+.w.ok{background:#eafaea;border-color:var(--green);}
+.w.no{background:#fdeceb;border-color:var(--red);}
+.line{min-height:46px;background:#fffdf3;border:2px solid var(--gold);border-radius:12px;padding:7px;display:flex;flex-wrap:wrap;gap:6px;margin-bottom:7px;}
+.match-rows{display:flex;flex-direction:column;gap:7px;margin-bottom:10px;}
+.match-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.match-lbl{flex:1;min-width:130px;font-size:16px;}
+.match-slot{min-width:110px;min-height:42px;border:2px dashed var(--chipb);border-radius:10px;padding:4px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;background:#fafcfe;}
+.match-slot.ok{border-color:var(--green);background:#eafaea;}
+.match-slot.no{border-color:var(--red);background:#fdeceb;}
+.typeit{font-family:inherit;font-size:16px;padding:4px 8px;border:2px solid var(--chipb);border-radius:8px;width:130px;margin:0 4px;}
+.typeit.ok{border-color:var(--green);background:#eafaea;}
+.typeit.no{border-color:var(--red);background:#fdeceb;}
+.spk{font-size:14px;background:#fff;color:var(--blue);border:2px solid var(--chipb);border-radius:20px;padding:2px 9px;cursor:pointer;}
+.spk:active{background:var(--chip);}
+.btn{font-family:inherit;font-size:16px;font-weight:bold;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:8px 16px;cursor:pointer;margin-top:7px;}
+.btn.ghost{background:#fff;color:var(--blue);border:2px solid var(--chipb);}
+.fb{font-weight:bold;margin:7px 0 0;min-height:20px;}
+.fb.ok{color:var(--green);}
+.fb.no{color:var(--red);}
+#scorebar{position:fixed;bottom:0;left:0;right:0;background:var(--dark);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:9px 16px;font-weight:bold;box-shadow:0 -2px 8px rgba(0,0,0,.2);gap:8px;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+<header>
+  <div class="hrow">
+    <div><h1>⚽ Week 7 – Fact, Opinion &amp; Power Words</h1>
+    <p>Wandi Unit 3 &nbsp;|&nbsp; Should everyone play soccer, or is it too competitive?</p></div>
+    <div class="hctrl">
+      <button class="btn ghost" id="soundBtn" style="background:#fff;font-size:14px;padding:5px 10px">🔊 Sound: ON</button>
+    </div>
+  </div>
+</header>
+<main>
+
+<!-- 1 SORT fact/opinion -->
+<div class="card" data-type="sort">
+  <span class="tag">EN2-CWT-03 &bull; EN2-VOCAB-01</span>
+  <h2>1. Fact or Opinion? <button class="spk" data-say="Fact or Opinion. Tap a card, then tap the Fact or Opinion box. A fact is true and real. An opinion is what someone thinks or feels.">🔊</button></h2>
+  <p class="instr">Tap a card then tap <b>FACT 📷</b> or <b>OPINION ❤️</b>.</p>
+  <div class="bank" data-bank>
+    <button class="chip" data-cat="fact">Soccer is played with a round ball.</button>
+    <button class="chip" data-cat="opinion">Soccer is the best sport ever.</button>
+    <button class="chip" data-cat="fact">A soccer team has eleven players.</button>
+    <button class="chip" data-cat="opinion">Soccer is too tiring to play.</button>
+    <button class="chip" data-cat="fact">Players kick the ball into a goal.</button>
+    <button class="chip" data-cat="opinion">Everyone should play soccer.</button>
+    <button class="chip" data-cat="fact">A soccer field has two goals.</button>
+    <button class="chip" data-cat="opinion">Soccer is more fun than basketball.</button>
+  </div>
+  <div class="buckets">
+    <div class="bucket"><h4>📷 FACT</h4><div class="drop" data-cat="fact"></div></div>
+    <div class="bucket"><h4>❤️ OPINION</h4><div class="drop" data-cat="opinion"></div></div>
+  </div>
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+</div>
+
+<!-- 2 MULTI power words -->
+<div class="card" data-type="multi">
+  <span class="tag">EN2-VOCAB-01</span>
+  <h2>2. Tap ALL the power words <button class="spk" data-say="Tap all the power words. Power words make our writing strong. They are: should, must, need to, have to, and important. Tap every power word you can find.">🔊</button></h2>
+  <p class="instr">Tap <b>every</b> power word. Leave the others alone.</p>
+  <div class="bank">
+    <button class="chip" data-correct="1">should</button>
+    <button class="chip">kick</button>
+    <button class="chip" data-correct="1">must</button>
+    <button class="chip">goal</button>
+    <button class="chip" data-correct="1">need to</button>
+    <button class="chip">green</button>
+    <button class="chip" data-correct="1">important</button>
+    <button class="chip">run</button>
+    <button class="chip" data-correct="1">have to</button>
+  </div>
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+</div>
+
+<!-- 3 CLOZE power words -->
+<div class="card" data-type="cloze">
+  <span class="tag">EN2-CWT-03</span>
+  <h2>3. Choose the power word <button class="spk" data-say="Choose the power word. Tap each box and pick the strongest word to finish the sentence.">🔊</button></h2>
+  <div class="q"><span class="qnum">1)</span> We <select class="dd" data-ans="should"><option value="">…</option><option>should</option><option>maybe</option><option>the</option></select> play soccer safely. <button class="spk" data-say="We blank play soccer safely. Choose should, maybe, or the.">🔊</button></div>
+  <div class="q"><span class="qnum">2)</span> Players <select class="dd" data-ans="must"><option value="">…</option><option>might</option><option>must</option><option>often</option></select> follow the rules. <button class="spk" data-say="Players blank follow the rules. Choose might, must, or often.">🔊</button></div>
+  <div class="q"><span class="qnum">3)</span> It is <select class="dd" data-ans="important"><option value="">…</option><option>quietly</option><option>sometimes</option><option>important</option></select> to practise every day. <button class="spk" data-say="It is blank to practise every day. Choose quietly, sometimes, or important.">🔊</button></div>
+  <div class="q"><span class="qnum">4)</span> We <select class="dd" data-ans="need"><option value="">…</option><option>need</option><option>like</option><option>went</option></select> to support our team. <button class="spk" data-say="We blank to support our team. Choose need, like, or went.">🔊</button></div>
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+</div>
+
+<!-- 4 SORT strong/soft -->
+<div class="card" data-type="sort">
+  <span class="tag">EN2-VOCAB-01</span>
+  <h2>4. Strong word or Soft word? <button class="spk" data-say="Strong word or soft word. Strong words sound very sure, like always, never, definitely, must. Soft words sound less sure, like maybe, might, sometimes, could.">🔊</button></h2>
+  <p class="instr">Tap a word card, then tap <b>STRONG 💪</b> or <b>SOFT 🌱</b>.</p>
+  <div class="bank" data-bank>
+    <button class="chip" data-cat="strong">always</button>
+    <button class="chip" data-cat="soft">maybe</button>
+    <button class="chip" data-cat="strong">never</button>
+    <button class="chip" data-cat="soft">might</button>
+    <button class="chip" data-cat="strong">definitely</button>
+    <button class="chip" data-cat="soft">sometimes</button>
+    <button class="chip" data-cat="strong">must</button>
+    <button class="chip" data-cat="soft">could</button>
+  </div>
+  <div class="buckets">
+    <div class="bucket"><h4>💪 STRONG</h4><div class="drop" data-cat="strong"></div></div>
+    <div class="bucket"><h4>🌱 SOFT</h4><div class="drop" data-cat="soft"></div></div>
+  </div>
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+</div>
+
+<!-- 5 TAPWORD strong word -->
+<div class="card" data-type="tapword">
+  <span class="tag">EN2-VOCAB-01</span>
+  <h2>5. Tap the strong word <button class="spk" data-say="Tap the strong word in each sentence. Strong words sound very sure.">🔊</button></h2>
+  <p class="instr">In each sentence, tap the <b>one strong word</b>.</p>
+  <div data-s><span class="w">Players</span> <span class="w" data-correct="1">must</span> <span class="w">wear</span> <span class="w">shin</span> <span class="w">pads.</span> <button class="spk" data-say="Players must wear shin pads.">🔊</button></div>
+  <div data-s><span class="w">Soccer</span> <span class="w">is</span> <span class="w" data-correct="1">always</span> <span class="w">exciting.</span> <button class="spk" data-say="Soccer is always exciting.">🔊</button></div>
+  <div data-s><span class="w">You</span> <span class="w">will</span> <span class="w" data-correct="1">never</span> <span class="w">give</span> <span class="w">up.</span> <button class="spk" data-say="You will never give up.">🔊</button></div>
+  <div data-s><span class="w">We</span> <span class="w" data-correct="1">definitely</span> <span class="w">need</span> <span class="w">more</span> <span class="w">practice.</span> <button class="spk" data-say="We definitely need more practice.">🔊</button></div>
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+</div>
+
+<!-- 6 MATCH power word to meaning -->
+<div class="card" data-type="match">
+  <span class="tag">EN2-VOCAB-01</span>
+  <h2>6. Match the power word to its meaning <button class="spk" data-say="Match the power word to its meaning. Tap a word from the bank, then tap the empty box next to what it means.">🔊</button></h2>
+  <p class="instr">Tap a word from the bank, then tap the empty box next to its meaning.</p>
+  <div class="match-rows">
+    <div class="match-row"><button class="spk" data-say="You ought to do it.">🔊</button><span class="match-lbl">You ought to do it</span><div class="match-slot" data-correct="should"></div></div>
+    <div class="match-row"><button class="spk" data-say="You absolutely have to.">🔊</button><span class="match-lbl">You absolutely have to</span><div class="match-slot" data-correct="must"></div></div>
+    <div class="match-row"><button class="spk" data-say="It really matters.">🔊</button><span class="match-lbl">It really matters</span><div class="match-slot" data-correct="important"></div></div>
+    <div class="match-row"><button class="spk" data-say="You require it.">🔊</button><span class="match-lbl">You require it</span><div class="match-slot" data-correct="need to"></div></div>
+  </div>
+  <div class="bank" data-bank>
+    <button class="chip">should</button><button class="chip">must</button>
+    <button class="chip">important</button><button class="chip">need to</button>
+  </div>
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+</div>
+
+<!-- 7 TF/MCQ is this a fact -->
+<div class="card" data-type="mcq">
+  <span class="tag">EN2-CWT-03</span>
+  <h2>7. True or False – is this a FACT? <button class="spk" data-say="True or False. Is this a fact? A fact is true and real. Tap True if it is a fact, False if it is an opinion.">🔊</button></h2>
+  <div class="mcq"><span class="qnum">1)</span> "Soccer is played with a round ball." <button class="spk" data-say="Soccer is played with a round ball.">🔊</button><div class="opts"><button class="opt" data-correct="1">✅ TRUE – it's a fact</button><button class="opt">❌ FALSE – it's an opinion</button></div></div>
+  <div class="mcq"><span class="qnum">2)</span> "Soccer is the greatest sport in the world." <button class="spk" data-say="Soccer is the greatest sport in the world.">🔊</button><div class="opts"><button class="opt">✅ TRUE – it's a fact</button><button class="opt" data-correct="1">❌ FALSE – it's an opinion</button></div></div>
+  <div class="mcq"><span class="qnum">3)</span> "Soccer players can score goals." <button class="spk" data-say="Soccer players can score goals.">🔊</button><div class="opts"><button class="opt" data-correct="1">✅ TRUE – it's a fact</button><button class="opt">❌ FALSE – it's an opinion</button></div></div>
+  <div class="mcq"><span class="qnum">4)</span> "Everyone should support the same team." <button class="spk" data-say="Everyone should support the same team.">🔊</button><div class="opts"><button class="opt">✅ TRUE – it's a fact</button><button class="opt" data-correct="1">❌ FALSE – it's an opinion</button></div></div>
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+</div>
+
+<!-- 8 MCQ which has power word -->
+<div class="card" data-type="mcq">
+  <span class="tag">EN2-CWT-03</span>
+  <h2>8. Which sentence has a power word? <button class="spk" data-say="Which sentence has a power word? Tap the sentence that uses a power word like should, must, important, need to, or have to.">🔊</button></h2>
+  <div class="mcq"><span class="qnum">1)</span><button class="spk" data-say="Soccer is fun. We must play fairly. The ball is round.">🔊</button><div class="opts"><button class="opt">Soccer is fun.</button><button class="opt" data-correct="1">We must play fairly.</button><button class="opt">The ball is round.</button></div></div>
+  <div class="mcq"><span class="qnum">2)</span><button class="spk" data-say="I like soccer. It is important to train hard. Soccer has rules.">🔊</button><div class="opts"><button class="opt">I like soccer.</button><button class="opt" data-correct="1">It is important to train hard.</button><button class="opt">Soccer has rules.</button></div></div>
+  <div class="mcq"><span class="qnum">3)</span><button class="spk" data-say="Players run fast. The grass is green. We should respect the referee.">🔊</button><div class="opts"><button class="opt">Players run fast.</button><button class="opt">The grass is green.</button><button class="opt" data-correct="1">We should respect the referee.</button></div></div>
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+</div>
+
+<!-- 9 SORT clue words fact/opinion -->
+<div class="card" data-type="sort">
+  <span class="tag">EN2-CWT-03</span>
+  <h2>9. Sort the clue words <button class="spk" data-say="Sort the clue words. Some words are clues that a sentence is a fact. Others are clues that it is an opinion. Tap a card then tap the right box.">🔊</button></h2>
+  <p class="instr">These words are <b>clues</b>. Sort them into fact clues and opinion clues.</p>
+  <div class="bank" data-bank>
+    <button class="chip" data-cat="fact">is</button>
+    <button class="chip" data-cat="opinion">I think</button>
+    <button class="chip" data-cat="fact">has</button>
+    <button class="chip" data-cat="opinion">best</button>
+    <button class="chip" data-cat="fact">can</button>
+    <button class="chip" data-cat="opinion">boring</button>
+    <button class="chip" data-cat="fact">scores</button>
+    <button class="chip" data-cat="opinion">should</button>
+  </div>
+  <div class="buckets">
+    <div class="bucket"><h4>📷 FACT clue</h4><div class="drop" data-cat="fact"></div></div>
+    <div class="bucket"><h4>❤️ OPINION clue</h4><div class="drop" data-cat="opinion"></div></div>
+  </div>
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+</div>
+
+<!-- 10 TYPE IT -->
+<div class="card" data-type="typeit">
+  <span class="tag">EN2-VOCAB-01 &bull; EN2-CWT-03</span>
+  <h2>10. Type the missing power word <button class="spk" data-say="Type the missing power word. Click the box and type the word that fits best.">🔊</button></h2>
+  <p class="instr">Type the <b>power word</b> that fits. Check your spelling!</p>
+  <div class="q"><span class="qnum">1)</span> Players <input type="text" class="typeit" data-ans="must" placeholder="type here"> follow the rules. <button class="spk" data-say="Players blank follow the rules. The power word means you absolutely have to. It starts with the letter m.">🔊</button></div>
+  <div class="q"><span class="qnum">2)</span> It is <input type="text" class="typeit" data-ans="important" placeholder="type here"> to train every day. <button class="spk" data-say="It is blank to train every day. The power word means it really matters. It starts with the letter i.">🔊</button></div>
+  <div class="q"><span class="qnum">3)</span> We <input type="text" class="typeit" data-ans="should" placeholder="type here"> support our teammates. <button class="spk" data-say="We blank support our teammates. The power word means you ought to. It starts with the letter s.">🔊</button></div>
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+</div>
+
+</main>
+<div id="scorebar">
+  <span>⭐ Score: <span id="score">0</span> / <span id="total">0</span></span>
+  <button class="btn" id="finBtn" style="background:var(--gold);color:#3a2c00">Finish &amp; mark all</button>
+</div>
+
+<script>
+(function(){
+var hasTTS='speechSynthesis' in window, muted=false, voice=null, sel=null;
+var sndBtn=document.getElementById('soundBtn');
+function loadVoices(){
+  if(!hasTTS)return;
+  var vs=speechSynthesis.getVoices();
+  voice=vs.find(function(v){return /william/i.test(v.name)&&/AU/i.test(v.lang);})||
+        vs.find(function(v){return /william/i.test(v.name);})||
+        vs.find(function(v){return /en[-_]AU/i.test(v.lang);})||vs[0]||null;
+}
+if(hasTTS){speechSynthesis.onvoiceschanged=loadVoices;loadVoices();}
+sndBtn.addEventListener('click',function(){muted=!muted;if(muted)speechSynthesis.cancel();this.textContent=muted?'🔇 Sound: OFF':'🔊 Sound: ON';});
+
+function speak(t){if(muted||!t||!hasTTS)return;speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.rate=0.88;u.pitch=1.05;u.lang='en-AU';if(voice)u.voice=voice;speechSynthesis.speak(u);}
+
+function selChip(c){if(sel===c){c.classList.remove('sel');sel=null;}else{if(sel)sel.classList.remove('sel');sel=c;c.classList.add('sel');}}
+
+document.addEventListener('click',function(e){
+  if(e.target.closest('.spk')){var b=e.target.closest('.spk');speak(b.dataset.say||b.parentElement.textContent);return;}
+  var card=e.target.closest('.card');if(!card)return;
+  var tp=card.dataset.type;
+  if(tp==='sort'||tp==='match'){
+    var ch=e.target.closest('.chip');
+    if(ch){
+      var wasSel=(sel===ch);speak(ch.textContent);selChip(ch);
+      card.querySelectorAll('.bucket').forEach(function(b){b.classList.remove('hint-ok','hint-no');});
+      if(!wasSel){
+        card.querySelectorAll('[data-ok]').forEach(function(d){d.closest('.bucket').classList.add('hint-ok');});
+        card.querySelectorAll('[data-no]').forEach(function(d){d.closest('.bucket').classList.add('hint-no');});
+      }
+      return;
+    }
+    if(tp==='sort'){var dr=e.target.closest('[data-cat],[data-bank]');if(sel&&dr){dr.appendChild(sel);sel.classList.remove('sel','ok','no');sel=null;card.querySelectorAll('.bucket').forEach(function(b){b.classList.remove('hint-ok','hint-no');});}}
+    if(tp==='match'){
+      var sl=e.target.closest('.match-slot');
+      if(sl&&sel){var ex=sl.querySelector('.chip');if(ex)card.querySelector('[data-bank]').appendChild(ex);sl.appendChild(sel);sel.classList.remove('sel','ok','no');sel=null;card.querySelectorAll('.bucket').forEach(function(b){b.classList.remove('hint-ok','hint-no');});}
+      var bk=e.target.closest('[data-bank]');if(bk&&sel&&!e.target.closest('.chip')){bk.appendChild(sel);sel.classList.remove('sel','ok','no');sel=null;card.querySelectorAll('.bucket').forEach(function(b){b.classList.remove('hint-ok','hint-no');});}
+    }
+    return;
+  }
+  if(tp==='multi'){var c=e.target.closest('.chip');if(c){c.classList.toggle('picked');c.classList.remove('ok','no');speak(c.textContent);}return;}
+  if(tp==='tapword'){var w=e.target.closest('.w');if(w){w.classList.toggle('picked');w.classList.remove('ok','no');speak(w.textContent);}return;}
+  if(tp==='mcq'){var o=e.target.closest('.opt');if(o){var g=o.closest('.mcq');g.querySelectorAll('.opt').forEach(function(x){x.classList.remove('picked','ok','no');});o.classList.add('picked');speak(o.textContent);}return;}
+});
+
+// builder
+document.querySelectorAll('[data-builder] .chip').forEach(function(c){c.addEventListener('click',function(){c.closest('.card').querySelector('.line').appendChild(c);});});
+document.querySelectorAll('.line').forEach(function(l){l.addEventListener('click',function(e){var c=e.target.closest('.chip');if(c)l.closest('.card').querySelector('[data-builder]').appendChild(c);});});
+
+function chkSort(card){var cs=card.querySelectorAll('.chip'),r=0,t=cs.length;cs.forEach(function(c){c.classList.remove('ok','no');if(c.parentElement.getAttribute('data-cat')===c.dataset.cat){c.classList.add('ok');r++;}else c.classList.add('no');});return[r,t];}
+function chkPick(card){var es=card.querySelectorAll('.chip,.w'),r=0,t=es.length;es.forEach(function(e){e.classList.remove('ok','no');var s=e.dataset.correct==='1',h=e.classList.contains('picked');if(s===h){r++;if(h)e.classList.add('ok');}else e.classList.add('no');});var T=0,H=0,X=0;es.forEach(function(e){var c=e.dataset.correct==='1',p=e.classList.contains('picked');if(c)T++;if(c&&p)H++;if(!c&&p)X++;});return [Math.max(0,H-X),T];}
+function chkCloze(card){var ss=card.querySelectorAll('.dd'),r=0,t=ss.length;ss.forEach(function(s){s.classList.remove('ok','no');if(s.value&&s.value===s.dataset.ans){s.classList.add('ok');r++;}else s.classList.add('no');});return[r,t];}
+function chkMcq(card){var gs=card.querySelectorAll('.mcq'),r=0,t=gs.length;gs.forEach(function(g){g.querySelectorAll('.opt').forEach(function(o){o.classList.remove('ok','no');});var p=g.querySelector('.opt.picked');if(p&&p.dataset.correct==='1'){p.classList.add('ok');r++;}else if(p)p.classList.add('no');});return[r,t];}
+function chkBuild(card){var l=card.querySelector('.line'),a=l.dataset.answer.split('|'),g=[].map.call(l.querySelectorAll('.chip'),function(c){return c.textContent;});var ok=g.length===a.length&&g.every(function(w,i){return w===a[i];});l.style.borderColor=ok?'var(--green)':'var(--red)';return[ok?1:0,1];}
+function chkMatch(card){var ss=card.querySelectorAll('.match-slot'),r=0,t=ss.length;ss.forEach(function(s){s.classList.remove('ok','no');var c=s.querySelector('.chip');if(c&&c.textContent.trim()===s.dataset.correct){c.classList.add('ok');s.classList.add('ok');r++;}else{if(c)c.classList.add('no');s.classList.add('no');}});return[r,t];}
+function chkType(card){var is=card.querySelectorAll('.typeit'),r=0,t=is.length;is.forEach(function(i){i.classList.remove('ok','no');if(i.value.trim().toLowerCase()===i.dataset.ans.toLowerCase()){i.classList.add('ok');r++;}else i.classList.add('no');});return[r,t];}
+
+function runCheck(card){
+  var tp=card.dataset.type,r;
+  if(tp==='sort')r=chkSort(card);
+  else if(tp==='cloze')r=chkCloze(card);
+  else if(tp==='mcq')r=chkMcq(card);
+  else if(tp==='build')r=chkBuild(card);
+  else if(tp==='match')r=chkMatch(card);
+  else if(tp==='typeit')r=chkType(card);
+  else r=chkPick(card);
+  card._r=r[0];card._t=r[1];card._done=true;
+  var fb=card.querySelector('.fb'),win=r[0]===r[1];
+  fb.className='fb '+(win?'ok':'no');
+  fb.textContent=(win?'⭐ ':'')+r[0]+' / '+r[1]+' correct'+(win?' – well done!':' – check the red ones and try again.');
+  updateScore();
+}
+document.querySelectorAll('[data-check]').forEach(function(b){b.addEventListener('click',function(){runCheck(b.closest('.card'));});});
+
+function updateScore(){var g=0,t=0;document.querySelectorAll('.card').forEach(function(c){if(c._done){g+=c._r;t+=c._t;}});document.getElementById('score').textContent=g;document.getElementById('total').textContent=t;}
+
+document.getElementById('finBtn').addEventListener('click',function(){
+  document.querySelectorAll('.card').forEach(function(c){runCheck(c);});
+  var g=+document.getElementById('score').textContent,t=+document.getElementById('total').textContent;
+  var pct=t?Math.round(g/t*100):0;
+  var msg=pct>=80?'Amazing word power!':pct>=50?'Good effort – keep practising!':'Nice try – let us practise together!';
+  speak('You scored '+g+' out of '+t+'. '+msg);
+  setTimeout(function(){alert('⭐ You scored '+g+' / '+t+' ('+pct+'%)!\n'+msg);},120);
+});
+// Auto-add retry buttons
+document.querySelectorAll('.card').forEach(function(card){
+  if(!card.querySelector('[data-retry]')){var chk=card.querySelector('[data-check]');if(chk){var r=document.createElement('button');r.className='btn ghost';r.setAttribute('data-retry','');r.textContent='↺ Try again';r.style.marginLeft='8px';chk.insertAdjacentElement('afterend',r);}}
+});
+document.addEventListener('click',function(e){
+  var btn=e.target.closest('[data-retry]');if(!btn)return;
+  var card=btn.closest('.card'),tp=card.dataset.type,fb=card.querySelector('.fb');
+  if(fb)fb.textContent='';card._done=false;card._r=0;card._t=0;
+  card.querySelectorAll('.bucket').forEach(function(b){b.classList.remove('hint-ok','hint-no');});
+  var bk=card.querySelector('[data-bank]')||card.querySelector('[data-builder]');
+  if(tp==='sort'||tp==='match'){if(bk)card.querySelectorAll('.chip').forEach(function(c){c.classList.remove('sel','ok','no','picked');bk.appendChild(c);});card.querySelectorAll('.drop,.match-slot').forEach(function(s){s.classList.remove('ok','no');});}
+  else if(tp==='cloze'){card.querySelectorAll('.dd').forEach(function(s){s.value='';s.classList.remove('ok','no');});}
+  else if(tp==='mcq'){card.querySelectorAll('.opt').forEach(function(o){o.classList.remove('picked','ok','no');});}
+  else if(tp==='multi'){card.querySelectorAll('.chip').forEach(function(c){c.classList.remove('picked','ok','no');});}
+  else if(tp==='tapword'){card.querySelectorAll('.w').forEach(function(w){w.classList.remove('picked','ok','no');});}
+  else if(tp==='typeit'){card.querySelectorAll('.typeit').forEach(function(i){i.value='';i.classList.remove('ok','no');});}
+  else if(tp==='build'){if(bk)card.querySelectorAll('.line .chip').forEach(function(c){bk.appendChild(c);});var ln=card.querySelector('.line');if(ln)ln.style.borderColor='var(--gold)';}
+  updateScore();
+});
+})();
+</script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='writing-7-soccer';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-writing.js"></script>
+</body>
+</html>

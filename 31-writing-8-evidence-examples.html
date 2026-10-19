@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Wandi Week 8 – Evidence & Examples</title>
+
+<style>
+
+:root{--blue:#2E75B6;--dark:#1F3864;--green:#3a9d3a;--red:#d8473f;--soft:#f4f7fb;--chip:#eaf2fb;--chipb:#bcd6f2;--gold:#f2b705;}
+
+*{box-sizing:border-box;}
+
+body{font-family:"Comic Sans MS","Segoe UI",Arial,sans-serif;margin:0;background:var(--soft);color:#23303d;font-size:18px;line-height:1.6;}
+
+header{background:var(--dark);color:#fff;padding:12px 18px;position:sticky;top:0;z-index:5;}
+
+.hrow{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+
+header h1{margin:0;font-size:20px;}header p{margin:2px 0 0;opacity:.88;font-size:13px;}
+
+.hctrl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+
+main{max-width:880px;margin:0 auto;padding:16px 14px 90px;}
+
+.card{background:#fff;border-radius:16px;box-shadow:0 3px 10px rgba(0,0,0,.08);padding:16px 18px;margin:16px 0;border-top:7px solid var(--blue);}
+
+.card h2{margin:.1em 0;color:var(--dark);font-size:19px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+
+.tag{display:inline-block;background:var(--chip);color:var(--blue);border-radius:20px;padding:2px 10px;font-size:13px;font-weight:bold;margin-bottom:4px;}
+
+.instr{margin:4px 0 10px;font-size:16px;}
+
+.q,.mcq{margin:10px 0;padding:6px 0;border-bottom:1px solid #eef2f6;}
+
+.q:last-of-type,.mcq:last-of-type{border-bottom:none;}
+
+.qnum{font-weight:bold;color:var(--blue);margin-right:4px;}
+
+select.dd{font-family:inherit;font-size:16px;padding:4px 7px;border:2px solid var(--chipb);border-radius:8px;background:#fff;margin:0 3px;}
+
+select.dd.ok{border-color:var(--green);background:#eafaea;}
+
+select.dd.no{border-color:var(--red);background:#fdeceb;}
+
+.bank,.drop{min-height:44px;display:flex;flex-wrap:wrap;gap:7px;padding:7px;border-radius:12px;}
+
+.bank{background:#f0f4f9;border:2px dashed var(--chipb);}
+
+.chip{font-family:inherit;font-size:15px;background:var(--chip);border:2px solid var(--chipb);color:#1d3a5f;border-radius:10px;padding:6px 11px;cursor:pointer;user-select:none;touch-action:manipulation;transition:transform .1s;}
+
+.chip.sel{background:var(--gold);border-color:#c98f00;color:#3a2c00;transform:scale(1.05);}
+
+.chip.picked{background:#dff0ff;border-color:var(--blue);}
+
+.chip.ok{background:#eafaea;border-color:var(--green);}
+
+.chip.no{background:#fdeceb;border-color:var(--red);}
+
+.buckets{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;}
+
+.bucket{flex:1;min-width:140px;background:#fff;border:2px solid var(--chipb);border-radius:12px;padding:7px;}
+
+.bucket h4{margin:2px 0 5px;text-align:center;color:var(--dark);font-size:15px;}
+
+.bucket .drop{background:#fafcfe;min-height:52px;}
+
+.opts{display:flex;gap:9px;flex-wrap:wrap;margin-top:6px;}
+
+.opt{font-family:inherit;font-size:15px;background:#fff;border:2px solid var(--chipb);border-radius:12px;padding:7px 14px;cursor:pointer;touch-action:manipulation;}
+
+.opt.picked{background:var(--gold);border-color:#c98f00;}
+
+.opt.ok{background:#eafaea;border-color:var(--green);}
+
+.opt.no{background:#fdeceb;border-color:var(--red);}
+
+.w{cursor:pointer;padding:3px 5px;border-radius:7px;border:2px solid transparent;display:inline-block;}
+
+.w.picked{background:var(--gold);border-color:#c98f00;}
+
+.w.ok{background:#eafaea;border-color:var(--green);}
+
+.w.no{background:#fdeceb;border-color:var(--red);}
+
+.line{min-height:46px;background:#fffdf3;border:2px solid var(--gold);border-radius:12px;padding:7px;display:flex;flex-wrap:wrap;gap:6px;margin-bottom:7px;}
+
+.match-rows{display:flex;flex-direction:column;gap:7px;margin-bottom:10px;}
+
+.match-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+
+.match-lbl{flex:1;min-width:140px;font-size:16px;}
+
+.match-slot{min-width:130px;min-height:42px;border:2px dashed var(--chipb);border-radius:10px;padding:4px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;background:#fafcfe;}
+
+.match-slot.ok{border-color:var(--green);background:#eafaea;}
+
+.match-slot.no{border-color:var(--red);background:#fdeceb;}
+
+.typeit{font-family:inherit;font-size:16px;padding:4px 8px;border:2px solid var(--chipb);border-radius:8px;width:130px;margin:0 4px;}
+
+.typeit.ok{border-color:var(--green);background:#eafaea;}
+
+.typeit.no{border-color:var(--red);background:#fdeceb;}
+
+.spk{font-size:14px;background:#fff;color:var(--blue);border:2px solid var(--chipb);border-radius:20px;padding:2px 9px;cursor:pointer;}
+
+.spk:active{background:var(--chip);}
+
+.btn{font-family:inherit;font-size:16px;font-weight:bold;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:8px 16px;cursor:pointer;margin-top:7px;}
+
+.btn.ghost{background:#fff;color:var(--blue);border:2px solid var(--chipb);}
+
+.fb{font-weight:bold;margin:7px 0 0;min-height:20px;}
+
+.fb.ok{color:var(--green);}
+
+.fb.no{color:var(--red);}
+
+#scorebar{position:fixed;bottom:0;left:0;right:0;background:var(--dark);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:9px 16px;font-weight:bold;box-shadow:0 -2px 8px rgba(0,0,0,.2);gap:8px;flex-wrap:wrap;}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+  <div class="hrow">
+
+    <div><h1>🔍 Week 8 – Evidence & Examples</h1>
+
+    <p>Wandi Unit 3 &nbsp;|&nbsp; Prove your point with proof!</p></div>
+
+    <div class="hctrl">
+
+      <button class="btn ghost" id="soundBtn" style="background:#fff;font-size:14px;padding:5px 10px">🔊 Sound: ON</button>
+
+    </div>
+
+  </div>
+
+</header>
+
+<main>
+
+<!-- 1 SORT claim vs evidence -->
+
+<div class="card" data-type="sort">
+
+  <span class="tag">EN2-CWT-03</span>
+
+  <h2>1. Claim or Evidence? <button class="spk" data-say="Claim or evidence. A claim is what you believe. Evidence is proof that shows your claim is true. Tap a card then tap the right box.">🔊</button></h2>
+
+  <p class="instr">Tap a sentence, then tap <b>CLAIM 💭</b> or <b>EVIDENCE 📊</b>.</p>
+
+  <div class="bank" data-bank>
+
+    <button class="chip" data-cat="claim">Gaming is good for you.</button>
+
+    <button class="chip" data-cat="evidence">Studies show gaming improves problem-solving skills.</button>
+
+    <button class="chip" data-cat="claim">Drawing helps you learn.</button>
+
+    <button class="chip" data-cat="evidence">Artists have better hand-eye coordination.</button>
+
+    <button class="chip" data-cat="claim">Team sports are fun.</button>
+
+    <button class="chip" data-cat="evidence">Players score more goals when they practice together.</button>
+
+  </div>
+
+  <div class="buckets">
+
+    <div class="bucket"><h4>💭 CLAIM</h4><div class="drop" data-cat="claim"></div></div>
+
+    <div class="bucket"><h4>📊 EVIDENCE</h4><div class="drop" data-cat="evidence"></div></div>
+
+  </div>
+
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+
+</div>
+
+<!-- 2 MCQ which is the example -->
+
+<div class="card" data-type="mcq">
+
+  <span class="tag">EN2-CWT-03</span>
+
+  <h2>2. Which sentence is the example? <button class="spk" data-say="Which sentence is the example? An example shows a real thing that proves the claim. Look for sentences that give details or facts.">🔊</button></h2>
+
+  <div class="mcq"><span class="qnum">1)</span><button class="spk" data-say="Gaming teaches skills. My brother solved a puzzle game in ten minutes. Games are fun.">🔊</button><div class="opts"><button class="opt">Gaming teaches skills.</button><button class="opt" data-correct="1">My brother solved a puzzle game in ten minutes.</button><button class="opt">Games are fun.</button></div></div>
+
+  <div class="mcq"><span class="qnum">2)</span><button class="spk" data-say="Drawing helps people relax. Art is important. I drew a picture every day and felt calm.">🔊</button><div class="opts"><button class="opt">Drawing helps people relax.</button><button class="opt">Art is important.</button><button class="opt" data-correct="1">I drew a picture every day and felt calm.</button></div></div>
+
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+
+</div>
+
+<!-- 3 BUILD a sentence with evidence -->
+
+<div class="card" data-type="build">
+
+  <span class="tag">EN2-CWT-03</span>
+
+  <h2>3. Build the sentence with evidence <button class="spk" data-say="Build the sentence with evidence. Tap the words in order to make a claim with proof.">🔊</button></h2>
+
+  <p class="instr">Tap the words <b>in order</b> to make a strong statement with proof.</p>
+
+  <div class="line" data-answer="Gaming|teaches|problem-solving|because|players|must|solve|puzzles|."></div>
+
+  <div class="bank" data-builder>
+
+    <button class="chip">must</button><button class="chip">solve</button><button class="chip">Gaming</button>
+
+    <button class="chip">problem-solving</button><button class="chip">because</button>
+
+    <button class="chip">teaches</button><button class="chip">players</button><button class="chip">puzzles</button><button class="chip">.</button>
+
+  </div>
+
+  <button class="btn" data-check>Check</button>
+
+  <button class="btn ghost" data-reset>Start again</button>
+
+  <p class="fb"></p>
+
+</div>
+
+<!-- 4 CLOZE fill in the example -->
+
+<div class="card" data-type="cloze">
+
+  <span class="tag">EN2-CWT-03</span>
+
+  <h2>4. Complete the example <button class="spk" data-say="Complete the example. Choose the word that gives a real example to prove the claim.">🔊</button></h2>
+
+  <div class="q"><span class="qnum">1)</span> Drawing helps you think. <select class="dd" data-ans="For"><option value="">…</option><option>For</option><option>But</option><option>Even</option></select> example, artists draw from nature. <button class="spk" data-say="Drawing helps you think. blank example, artists draw from nature.">🔊</button></div>
+
+  <div class="q"><span class="qnum">2)</span> Gaming is fun. Last week, I <select class="dd" data-ans="played"><option value="">…</option><option>played</option><option>think</option><option>said</option></select> my favourite game for an hour. <button class="spk" data-say="Gaming is fun. Last week, I blank my favourite game.">🔊</button></div>
+
+  <div class="q"><span class="qnum">3)</span> Team sports teach teamwork. <select class="dd" data-ans="When"><option value="">…</option><option>When</option><option>Before</option><option>If</option></select> my team plays together, we always win. <button class="spk" data-say="Team sports teach teamwork. blank my team plays together, we always win.">🔊</button></div>
+
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+
+</div>
+
+<!-- 5 MATCH claim to proof -->
+
+<div class="card" data-type="match">
+
+  <span class="tag">EN2-CWT-03</span>
+
+  <h2>5. Match the claim to its evidence <button class="spk" data-say="Match the claim to its evidence. Tap evidence from the bank, then tap the box next to the claim it proves.">🔊</button></h2>
+
+  <p class="instr">Tap evidence from the bank, then tap the box next to the claim it supports.</p>
+
+  <div class="match-rows">
+
+    <div class="match-row"><button class="spk" data-say="Gaming teaches skills.">🔊</button><span class="match-lbl">Gaming teaches skills.</span><div class="match-slot" data-correct="Players must solve puzzles to win."></div></div>
+
+    <div class="match-row"><button class="spk" data-say="Drawing helps you relax.">🔊</button><span class="match-lbl">Drawing helps you relax.</span><div class="match-slot" data-correct="Artists feel calmer after drawing."></div></div>
+
+    <div class="match-row"><button class="spk" data-say="Sports are healthy.">🔊</button><span class="match-lbl">Sports are healthy.</span><div class="match-slot" data-correct="Running makes your heart stronger."></div></div>
+
+  </div>
+
+  <div class="bank" data-bank>
+
+    <button class="chip">Players must solve puzzles to win.</button>
+
+    <button class="chip">Artists feel calmer after drawing.</button>
+
+    <button class="chip">Running makes your heart stronger.</button>
+
+  </div>
+
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+
+</div>
+
+<!-- 6 TF is this good evidence -->
+
+<div class="card" data-type="mcq">
+
+  <span class="tag">EN2-CWT-03</span>
+
+  <h2>6. Is this good evidence? <button class="spk" data-say="Is this good evidence? Good evidence gives details, facts, or real examples that prove your claim.">🔊</button></h2>
+
+  <div class="mcq"><span class="qnum">1)</span> Claim: Games help your brain. Evidence: "My friend played for two hours." <button class="spk" data-say="Claim games help your brain. Evidence my friend played for two hours.">🔊</button><div class="opts"><button class="opt">✅ Good – proves the claim</button><button class="opt" data-correct="1">❌ Weak – doesn't prove it</button></div></div>
+
+  <div class="mcq"><span class="qnum">2)</span> Claim: Drawing improves skills. Evidence: "Artists practice drawing every day to get better." <button class="spk" data-say="Claim drawing improves skills. Evidence artists practice every day.">🔊</button><div class="opts"><button class="opt" data-correct="1">✅ Good – shows proof</button><button class="opt">❌ Weak – not clear</button></div></div>
+
+  <div class="mcq"><span class="qnum">3)</span> Claim: Sports keep you fit. Evidence: "Runners who train hard become stronger." <button class="spk" data-say="Claim sports keep you fit. Evidence runners who train become stronger.">🔊</button><div class="opts"><button class="opt" data-correct="1">✅ Good – shows the connection</button><button class="opt">❌ Weak – no connection</button></div></div>
+
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+
+</div>
+
+<!-- 7 TAPWORD tap the example word -->
+
+<div class="card" data-type="tapword">
+
+  <span class="tag">EN2-CWT-03</span>
+
+  <h2>7. Tap the example <button class="spk" data-say="Tap the example in each sentence. Examples start with words like for instance, for example, or when I.">🔊</button></h2>
+
+  <p class="instr">Tap the part that gives an <b>example or proof</b>.</p>
+
+  <div data-s><span class="w">Gaming</span> <span class="w">teaches</span> <span class="w">thinking.</span> <span class="w" data-correct="1">For</span> <span class="w" data-correct="1">example,</span> <span class="w" data-correct="1">puzzle</span> <span class="w" data-correct="1">games</span> <span class="w" data-correct="1">are</span> <span class="w" data-correct="1">hard.</span> <button class="spk" data-say="Gaming teaches thinking. For example puzzle games are hard.">🔊</button></div>
+
+  <div data-s><span class="w">Drawing</span> <span class="w">is</span> <span class="w">relaxing.</span> <span class="w" data-correct="1">When</span> <span class="w" data-correct="1">I</span> <span class="w" data-correct="1">draw,</span> <span class="w" data-correct="1">I</span> <span class="w" data-correct="1">feel</span> <span class="w" data-correct="1">calm.</span> <button class="spk" data-say="Drawing is relaxing. When I draw I feel calm.">🔊</button></div>
+
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+
+</div>
+
+<!-- 8 MCQ which has the strongest proof -->
+
+<div class="card" data-type="mcq">
+
+  <span class="tag">EN2-CWT-03</span>
+
+  <h2>8. Which has the strongest proof? <button class="spk" data-say="Which has the strongest proof? The strongest proof gives specific facts or details.">🔊</button></h2>
+
+  <div class="mcq"><span class="qnum">1)</span><button class="spk" data-say="Claim sports are good. My team plays every week. My coach says sports help us.">🔊</button><div class="opts"><button class="opt">My team plays every week.</button><button class="opt" data-correct="1">My team improved our speed by training together.</button><button class="opt">My coach says sports help us.</button></div></div>
+
+  <div class="mcq"><span class="qnum">2)</span><button class="spk" data-say="Claim games are fun. Games have bright colours. I played for two hours last night.">🔊</button><div class="opts"><button class="opt">Games have bright colours.</button><button class="opt">I played for two hours last night.</button><button class="opt" data-correct="1">I solved ten levels in one week, which shows progress.</button></div></div>
+
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+
+</div>
+
+<!-- 9 CLOZE add the connecting word -->
+
+<div class="card" data-type="cloze">
+
+  <span class="tag">EN2-CWT-03</span>
+
+  <h2>9. Connect the claim to the proof <button class="spk" data-say="Connect the claim to the proof. Choose the word that links them together.">🔊</button></h2>
+
+  <div class="q"><span class="qnum">1)</span> Gaming helps thinking <select class="dd" data-ans="because"><option value="">…</option><option>because</option><option>but</option><option>or</option></select> you solve puzzles fast. <button class="spk" data-say="Gaming helps thinking blank you solve puzzles fast.">🔊</button></div>
+
+  <div class="q"><span class="qnum">2)</span> Drawing is fun <select class="dd" data-ans="as"><option value="">…</option><option>as</option><option>with</option><option>so</option></select> I showed in my art last week. <button class="spk" data-say="Drawing is fun blank I showed in my art last week.">🔊</button></div>
+
+  <div class="q"><span class="qnum">3)</span> Sports teach teamwork. <select class="dd" data-ans="For"><option value="">…</option><option>For</option><option>And</option><option>Or</option></select> instance, my team won by passing to each other. <button class="spk" data-say="Sports teach teamwork blank instance my team won by passing.">🔊</button></div>
+
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+
+</div>
+
+<!-- 10 TYPE IT -->
+
+<div class="card" data-type="typeit">
+
+  <span class="tag">EN2-CWT-03</span>
+
+  <h2>10. Type the missing word <button class="spk" data-say="Type the word that connects the claim to the proof.">🔊</button></h2>
+
+  <p class="instr">Type the <b>connecting word</b> that fits best.</p>
+
+  <div class="q"><span class="qnum">1)</span> Gaming is good <input type="text" class="typeit" data-ans="because" placeholder="type here"> it makes you think. <button class="spk" data-say="Gaming is good blank it makes you think. The word shows why. It starts with b.">🔊</button></div>
+
+  <div class="q"><span class="qnum">2)</span> <input type="text" class="typeit" data-ans="For" placeholder="type here"> example, I drew every day last month. <button class="spk" data-say="blank example I drew every day. The phrase introduces an example. It starts with f.">🔊</button></div>
+
+  <div class="q"><span class="qnum">3)</span> Sports teach skills. <input type="text" class="typeit" data-ans="When" placeholder="type here"> I train, I get stronger. <button class="spk" data-say="Sports teach skills. blank I train I get stronger. The word shows when. It starts with w.">🔊</button></div>
+
+  <button class="btn" data-check>Check</button><p class="fb"></p>
+
+</div>
+
+</main>
+
+<div id="scorebar">
+
+  <span>⭐ Score: <span id="score">0</span> / <span id="total">0</span></span>
+
+  <button class="btn" id="finBtn" style="background:var(--gold);color:#3a2c00">Finish &amp; mark all</button>
+
+</div>
+
+<script>
+
+(function(){
+
+var hasTTS='speechSynthesis' in window,muted=false,voice=null,sel=null;
+
+var sndBtn=document.getElementById('soundBtn');
+
+function loadVoices(){
+
+  if(!hasTTS)return;
+
+  var vs=speechSynthesis.getVoices();
+
+  voice=vs.find(function(v){return /william/i.test(v.name)&&/AU/i.test(v.lang);})||
+
+        vs.find(function(v){return /william/i.test(v.name);})||
+
+        vs.find(function(v){return /en[-_]AU/i.test(v.lang);})||vs[0]||null;
+
+}
+
+if(hasTTS){speechSynthesis.onvoiceschanged=loadVoices;loadVoices();}
+
+sndBtn.addEventListener('click',function(){muted=!muted;if(muted)speechSynthesis.cancel();this.textContent=muted?'🔇 Sound: OFF':'🔊 Sound: ON';});
+
+function speak(t){if(muted||!t||!hasTTS)return;speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.rate=0.88;u.pitch=1.05;u.lang='en-AU';if(voice)u.voice=voice;speechSynthesis.speak(u);}
+
+function selChip(c){if(sel===c){c.classList.remove('sel');sel=null;}else{if(sel)sel.classList.remove('sel');sel=c;c.classList.add('sel');}}
+
+document.addEventListener('click',function(e){
+
+  if(e.target.closest('.spk')){speak(e.target.closest('.spk').dataset.say);return;}
+
+  var card=e.target.closest('.card');if(!card)return;
+
+  var tp=card.dataset.type;
+
+  if(tp==='sort'||tp==='match'){
+
+    var ch=e.target.closest('.chip');if(ch){speak(ch.textContent);selChip(ch);return;}
+
+    if(tp==='sort'){var dr=e.target.closest('[data-cat],[data-bank]');if(sel&&dr){dr.appendChild(sel);sel.classList.remove('sel','ok','no');sel=null;}}
+
+    if(tp==='match'){var sl=e.target.closest('.match-slot');if(sl&&sel){var ex=sl.querySelector('.chip');if(ex)card.querySelector('[data-bank]').appendChild(ex);sl.appendChild(sel);sel.classList.remove('sel','ok','no');sel=null;}var bk=e.target.closest('[data-bank]');if(bk&&sel&&!e.target.closest('.chip')){bk.appendChild(sel);sel.classList.remove('sel','ok','no');sel=null;}}
+
+    return;
+
+  }
+
+  if(tp==='tapword'){var w=e.target.closest('.w');if(w){w.classList.toggle('picked');w.classList.remove('ok','no');speak(w.textContent);}return;}
+
+  if(tp==='mcq'){var o=e.target.closest('.opt');if(o){var g=o.closest('.mcq');g.querySelectorAll('.opt').forEach(function(x){x.classList.remove('picked','ok','no');});o.classList.add('picked');speak(o.textContent);}return;}
+
+});
+
+document.querySelectorAll('[data-builder] .chip').forEach(function(c){c.addEventListener('click',function(){c.closest('.card').querySelector('.line').appendChild(c);});});
+
+document.querySelectorAll('.line').forEach(function(l){l.addEventListener('click',function(e){var c=e.target.closest('.chip');if(c)l.closest('.card').querySelector('[data-builder]').appendChild(c);});});
+
+function chkSort(card){var cs=card.querySelectorAll('.chip'),r=0,t=cs.length;cs.forEach(function(c){c.classList.remove('ok','no');if(c.parentElement.getAttribute('data-cat')===c.dataset.cat){c.classList.add('ok');r++;}else c.classList.add('no');});return[r,t];}
+
+function chkCloze(card){var ss=card.querySelectorAll('.dd'),r=0,t=ss.length;ss.forEach(function(s){s.classList.remove('ok','no');if(s.value&&s.value===s.dataset.ans){s.classList.add('ok');r++;}else s.classList.add('no');});return[r,t];}
+
+function chkMcq(card){var gs=card.querySelectorAll('.mcq'),r=0,t=gs.length;gs.forEach(function(g){g.querySelectorAll('.opt').forEach(function(o){o.classList.remove('ok','no');});var p=g.querySelector('.opt.picked');if(p&&p.dataset.correct==='1'){p.classList.add('ok');r++;}else if(p)p.classList.add('no');});return[r,t];}
+
+function chkBuild(card){var l=card.querySelector('.line'),a=l.dataset.answer.split('|'),g=[].map.call(l.querySelectorAll('.chip'),function(c){return c.textContent;});var ok=g.length===a.length&&g.every(function(w,i){return w===a[i];});l.style.borderColor=ok?'var(--green)':'var(--red)';return[ok?1:0,1];}
+
+function chkMatch(card){var ss=card.querySelectorAll('.match-slot'),r=0,t=ss.length;ss.forEach(function(s){s.classList.remove('ok','no');var c=s.querySelector('.chip');if(c&&c.textContent.trim()===s.dataset.correct){c.classList.add('ok');s.classList.add('ok');r++;}else{if(c)c.classList.add('no');s.classList.add('no');}});return[r,t];}
+
+function chkType(card){var is=card.querySelectorAll('.typeit'),r=0,t=is.length;is.forEach(function(i){i.classList.remove('ok','no');if(i.value.trim().toLowerCase()===i.dataset.ans.toLowerCase()){i.classList.add('ok');r++;}else i.classList.add('no');});return[r,t];}
+
+function chkTap(card){var es=card.querySelectorAll('.w'),r=0,t=es.length;es.forEach(function(e){e.classList.remove('ok','no');var s=e.dataset.correct==='1',h=e.classList.contains('picked');if(s===h){r++;if(h)e.classList.add('ok');}else e.classList.add('no');});var T=0,H=0,X=0;es.forEach(function(e){var c=e.dataset.correct==='1',p=e.classList.contains('picked');if(c)T++;if(c&&p)H++;if(!c&&p)X++;});return [Math.max(0,H-X),T];}
+
+function runCheck(card){var tp=card.dataset.type,r;
+
+  if(tp==='sort')r=chkSort(card);else if(tp==='cloze')r=chkCloze(card);else if(tp==='mcq')r=chkMcq(card);else if(tp==='build')r=chkBuild(card);else if(tp==='match')r=chkMatch(card);else if(tp==='typeit')r=chkType(card);else r=chkTap(card);
+
+  card._r=r[0];card._t=r[1];card._done=true;
+
+  var fb=card.querySelector('.fb'),win=r[0]===r[1];fb.className='fb '+(win?'ok':'no');fb.textContent=(win?'⭐ ':'')+r[0]+' / '+r[1]+' correct'+(win?' – well done!':' – check the red ones and try again.');
+
+  updateScore();}
+
+document.querySelectorAll('[data-check]').forEach(function(b){b.addEventListener('click',function(){runCheck(b.closest('.card'));});});
+
+document.querySelectorAll('[data-reset]').forEach(function(b){b.addEventListener('click',function(){var card=b.closest('.card'),bk=card.querySelector('[data-builder]');card.querySelectorAll('.line .chip').forEach(function(c){bk.appendChild(c);});card.querySelector('.line').style.borderColor='var(--gold)';card.querySelector('.fb').textContent='';card._done=false;updateScore();});});
+
+function updateScore(){var g=0,t=0;document.querySelectorAll('.card').forEach(function(c){if(c._done){g+=c._r;t+=c._t;}});document.getElementById('score').textContent=g;document.getElementById('total').textContent=t;}
+
+document.getElementById('finBtn').addEventListener('click',function(){document.querySelectorAll('.card').forEach(function(c){runCheck(c);});var g=+document.getElementById('score').textContent,t=+document.getElementById('total').textContent,pct=t?Math.round(g/t*100):0;var msg=pct>=80?'Amazing evidence skills!':pct>=50?'Good effort – keep practising!':'Nice try – let us practise together!';speak('You scored '+g+' out of '+t+'. '+msg);setTimeout(function(){alert('⭐ You scored '+g+' / '+t+' ('+pct+'%)!\n'+msg);},120);});
+
+})();
+
+</script>
+
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='writing-8-evidence-examples';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-writing.js"></script>
+</body>
+
+</html>

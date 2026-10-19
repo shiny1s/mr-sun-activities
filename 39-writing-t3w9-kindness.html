@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Wandi Week 9 - Noun Groups Practice</title>
+<style>
+:root{--blue:#2E75B6;--dark:#1F3864;--green:#3a9d3a;--red:#d8473f;--soft:#f4f7fb;--chip:#eaf2fb;--chipb:#bcd6f2;--gold:#f2b705;}
+*{box-sizing:border-box;}
+body{font-family:"Comic Sans MS","Segoe UI",Arial,sans-serif;margin:0;background:var(--soft);color:#23303d;font-size:18px;line-height:1.6;}
+header{background:var(--dark);color:#fff;padding:12px 18px;position:sticky;top:0;z-index:5;}
+.hrow{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+header h1{margin:0;font-size:20px;}header p{margin:2px 0 0;opacity:.88;font-size:13px;}
+.hctrl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+main{max-width:880px;margin:0 auto;padding:16px 14px 90px;}
+.front-menu-page{display:flex;min-height:80vh;align-items:center;justify-content:center;padding:20px;}
+.front-menu-box{background:#fff;border-radius:20px;box-shadow:0 6px 24px rgba(0,0,0,.10);padding:44px 36px;text-align:center;max-width:600px;width:100%;border-top:8px solid var(--blue);}
+.front-menu-box h1{margin:0 0 8px;color:var(--dark);font-size:26px;}
+.front-menu-box .sub{margin:0 0 32px;color:#555;font-size:16px;line-height:1.5;}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.menu-btn{padding:24px 16px;border:none;border-radius:14px;font-family:inherit;font-size:17px;font-weight:bold;color:#fff;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.menu-btn:hover{transform:translateY(-3px);box-shadow:0 6px 15px rgba(0,0,0,.15);}
+.menu-btn.red-b{background:#e53935;}
+.menu-btn.yellow-b{background:#ffb300;color:#23303d;}
+.menu-btn.green-b{background:#43a047;}
+.menu-btn.blue-b{background:#1e88e5;}
+.back-btn{font-family:inherit;font-size:14px;background:#f0f0f0;color:#555;border:none;border-radius:8px;padding:7px 15px;cursor:pointer;margin-bottom:14px;display:inline-block;}
+.back-btn:hover{background:#ddd;}
+.info-box{background:#fffdf3;border:2px dashed var(--gold);border-radius:12px;padding:12px 16px;margin:12px 0;font-size:15px;color:#444;}
+.teach-box{background:#eef6fc;border-left:5px solid var(--blue);border-radius:0 12px 12px 0;padding:12px 16px;margin:14px 0;font-size:15px;color:#1d3a5f;}
+.teach-box b{color:var(--dark);}
+.card{background:#fff;border-radius:16px;box-shadow:0 3px 10px rgba(0,0,0,.08);padding:16px 18px;margin:16px 0;border-top:7px solid var(--blue);}
+.card h2{margin:.1em 0;color:var(--dark);font-size:19px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.tag{display:inline-block;background:var(--chip);color:var(--blue);border-radius:20px;padding:2px 10px;font-size:13px;font-weight:bold;margin-bottom:4px;}
+.instr{margin:4px 0 10px;font-size:16px;color:#555;}
+.q,.mcq{margin:14px 0;padding:10px 0;border-bottom:1px solid #eef2f6;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.q-content,.mcq-content{flex:1;min-width:260px;}
+.q:last-of-type,.mcq:last-of-type{border-bottom:none;}
+.qnum{font-weight:bold;color:var(--blue);margin-right:4px;}
+.bank{min-height:44px;display:flex;flex-wrap:wrap;gap:7px;padding:7px;border-radius:12px;background:#f0f4f9;border:2px dashed var(--chipb);}
+.chip{font-family:inherit;font-size:15px;background:var(--chip);border:2px solid var(--chipb);color:#1d3a5f;border-radius:10px;padding:6px 11px;cursor:pointer;user-select:none;touch-action:manipulation;transition:transform .1s;}
+.chip.sel{background:var(--gold);border-color:#c98f00;color:#3a2c00;transform:scale(1.05);}
+.chip.ok{background:#eafaea;border-color:var(--green);}
+.chip.no{background:#fdeceb;border-color:var(--red);}
+.buckets{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;}
+.bucket{background:#f9fbfd;border:3px dashed var(--chipb);border-radius:14px;padding:16px;min-height:260px;display:flex;flex-direction:column;}
+.bucket h4{margin:0 0 12px 0;text-align:center;color:var(--dark);font-size:17px;}
+.bucket .drop{background:rgba(0,0,0,0.03);min-height:180px;border-radius:10px;padding:14px;cursor:pointer;display:flex;flex-wrap:wrap;gap:7px;align-content:flex-start;}
+.opts{display:flex;gap:9px;flex-wrap:wrap;margin-top:8px;}
+.opt{font-family:inherit;font-size:15px;background:#fff;border:2px solid var(--chipb);border-radius:12px;padding:7px 14px;cursor:pointer;touch-action:manipulation;}
+.opt.picked{background:var(--gold);border-color:#c98f00;color:#3a2c00;font-weight:bold;}
+.opt.ok{background:#eafaea;border-color:var(--green);color:#1e4620;}
+.opt.no{background:#fdeceb;border-color:var(--red);color:#5c1e1e;}
+.w{cursor:pointer;padding:3px 5px;border-radius:7px;border:2px solid transparent;display:inline-block;}
+.w.picked{background:var(--gold);border-color:#c98f00;}
+.w.ok{background:#eafaea;border-color:var(--green);}
+.w.no{background:#fdeceb;border-color:var(--red);}
+.match-rows{display:flex;flex-direction:column;gap:7px;margin-bottom:10px;}
+.match-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.match-lbl{flex:1;min-width:240px;font-size:16px;}
+.match-slot{min-width:140px;min-height:42px;border:2px dashed var(--chipb);border-radius:10px;padding:4px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;background:#fafcfe;}
+.match-slot.ok{border-color:var(--green);background:#eafaea;}
+.match-slot.no{border-color:var(--red);background:#fdeceb;}
+.typeit{font-family:inherit;font-size:16px;padding:4px 8px;border:2px solid var(--chipb);border-radius:8px;width:140px;margin:0 4px;}
+.typeit.ok{border-color:var(--green);background:#eafaea;}
+.typeit.no{border-color:var(--red);background:#fdeceb;}
+.spk{font-size:14px;background:#fff;color:var(--blue);border:2px solid var(--chipb);border-radius:20px;padding:2px 9px;cursor:pointer;}
+.spk:active{background:var(--chip);}
+.btn{font-family:inherit;font-size:16px;font-weight:bold;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:8px 16px;cursor:pointer;margin-top:7px;}
+.btn.ghost{background:#fff;color:var(--blue);border:2px solid var(--chipb);}
+.fb{font-weight:bold;margin:7px 0 0;min-height:20px;font-size:16px;}
+.fb.ok{color:var(--green);}
+.fb.no{color:var(--red);}
+#finishbar{position:fixed;bottom:0;left:0;right:0;background:var(--dark);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:9px 16px;font-weight:bold;box-shadow:0 -2px 8px rgba(0,0,0,.2);gap:8px;flex-wrap:wrap;z-index:10;}
+@media(max-width:600px){.buckets{grid-template-columns:1fr;}.bucket{min-height:220px;}.bucket .drop{min-height:140px;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hrow">
+    <div>
+      <h1>✏️ Grammar Practice: Noun Groups</h1>
+      <p>Describing Words · Being Kind · Avoiding Escalation</p>
+    </div>
+    <div class="hctrl">
+      <button class="btn ghost" id="soundBtn" style="background:#fff;font-size:14px;padding:5px 10px">🔊 Sound: ON</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div id="front-menu">
+    <div class="front-menu-page">
+      <div class="front-menu-box">
+        <h1>✏️ Select Your Level Group</h1>
+        <p class="sub">Pick your colour group to start the grammar practice games.</p>
+        <div class="menu-grid">
+          <button class="menu-btn red-b" onclick="startGroup('red')">🔴 Red Group</button>
+          <button class="menu-btn yellow-b" onclick="startGroup('yellow')">🟡 Yellow Group</button>
+          <button class="menu-btn green-b" onclick="startGroup('green')">🟢 Green Group</button>
+          <button class="menu-btn blue-b" onclick="startGroup('blue')">🔵 Blue Group</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="group-workspace" style="display:none;">
+    <button class="back-btn" onclick="exitToHub()">← Go Back to Groups</button>
+    <div id="cards-container"></div>
+  </div>
+</main>
+
+<div id="finishbar" style="display:none;">
+  <span>⭐ Your Score: <span id="finish">0</span> / <span id="total">0</span></span>
+  <button class="btn" id="finBtn" style="background:var(--gold);color:#3a2c00">Finish Practice</button>
+</div>
+
+<script>
+(function(){
+var hasTTS='speechSynthesis' in window,muted=false,voice=null,sel=null;
+var sndBtn=document.getElementById('soundBtn');
+
+var studentNames = [
+  "Carlos", "Georgio", "Haydara", "Adam B", "Charlie", "Charbil", 
+  "Sarah", "Inala", "Issa", "Elia", "Peter", "Chelsea", "Arsen", 
+  "Emeliano", "Daniella", "Kaden", "Eali", "Indi", "Adam M", 
+  "Mia", "Kathy", "Violet", "Elina", "Ali", "Ashton", "Zainab", "Liyana"
+];
+
+function getPronouns(name) {
+  var lc = name.toLowerCase();
+  if(lc === 'elia') {
+    return { sub: "he", pos: "his" };
+  }
+  if(lc === 'eali' || lc === 'sarah' || lc === 'inala' || lc === 'chelsea' || lc === 'daniella' || lc === 'indi' || lc === 'mia' || lc === 'kathy' || lc === 'violet' || lc === 'elina' || lc === 'zainab' || lc === 'liyana') {
+    return { sub: "she", pos: "her" };
+  }
+  return { sub: "he", pos: "his" };
+}
+
+function grabRandomNames(count) {
+  var working = studentNames.slice();
+  for (var i = working.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = working[i]; working[i] = working[j]; working[j] = temp;
+  }
+  return working.slice(0, count);
+}
+
+function shuffleArray(arr) {
+  var working = arr.slice();
+  for (var i = working.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = working[i]; working[i] = working[j]; working[j] = temp;
+  }
+  return working;
+}
+
+function loadVoices(){
+  if(!hasTTS)return;
+  var vs=speechSynthesis.getVoices();
+  voice=vs.find(function(v){return /william/i.test(v.name)&&/AU/i.test(v.lang);})||
+        vs.find(function(v){return /en[-_]AU/i.test(v.lang);})||vs[0]||null;
+}
+if(hasTTS){speechSynthesis.onvoiceschanged=loadVoices;loadVoices();}
+sndBtn.addEventListener('click',function(){muted=!muted;if(muted)speechSynthesis.cancel();this.textContent=muted?'🔇 Sound: OFF':'🔊 Sound: ON';});
+
+function speak(t){
+  if(muted||!t||!hasTTS)return;
+
+  // pronunciation override
+  t = t.replace(/\beali\b/gi, 'I-la');
+  t = t.replace(/\belia\b/gi, 'Ehlia');
+  t = t.replace(/\bcharbil\b/gi, 'Shar-bell');
+  t = t.replace(/\bstudied\b/gi, 'studyed');
+  t = t.replace(/\bzainab\b/gi, 'zaynab');
+  t = t.replace(/\bali\b/gi, 'ahli');
+  t = t.replace(/\bliyana\b/gi, 'lee-ah-nah');
+
+  speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(t);
+  u.rate = 0.88;
+  u.pitch = 1.05;
+  u.lang = 'en-AU';
+  if(voice) u.voice = voice;
+  speechSynthesis.speak(u);
+}
+
+window.exitToHub = function() {
+  document.getElementById('group-workspace').style.display = 'none';
+  document.getElementById('finishbar').style.display = 'none';
+  document.getElementById('front-menu').style.display = 'block';
+  window.scrollTo(0,0);
+};
+
+window.startGroup = function(color) {
+  document.getElementById('front-menu').style.display = 'none';
+  document.getElementById('group-workspace').style.display = 'block';
+  document.getElementById('finishbar').style.display = 'flex';
+  
+  var container = document.getElementById('cards-container');
+  container.innerHTML = '';
+  
+  var ns = grabRandomNames(26);
+  var html = '';
+
+  if(color === 'red') {
+    var p0 = getPronouns(ns[0]);
+    var p1 = getPronouns(ns[1]);
+    var p2 = getPronouns(ns[2]);
+    var p3 = getPronouns(ns[3]);
+    var p4 = getPronouns(ns[4]);
+    var p5 = getPronouns(ns[5]);
+
+    var redCards = [
+      {
+        type: 'teach',
+        content: `
+          <div class="teach-box">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+              <b>💡 Quick Tip: Noun Groups</b>
+              <button class="spk" data-say="Quick Tip: Noun Groups. A noun group has a noun and words that describe it. For example, a kind smile.">🔊</button>
+            </div>
+            A <b>noun group</b> has a noun and words that describe it.<br>
+            <em>Example:</em> "a kind smile".
+          </div>
+        `
+      },
+      {
+        type: 'tapword',
+        tag: 'Level 1 - Finding Describers',
+        title: '1. Tap the Describing Word',
+        say: 'Tap the describing word inside the noun group.',
+        instr: 'Find and tap the describing word (adjective) that helps make peace.',
+        qs: [
+          { text: `${ns[0]} gave a friendly greeting.`, spanText: '<span class="w">' + ns[0] + '</span> <span class="w">gave</span> <span class="w">a</span> <span class="w" data-correct="1">friendly</span> <span class="w">greeting.</span>', say: ns[0] + ' gave a friendly greeting.' },
+          { text: `${ns[1]} took a deep breath.`, spanText: '<span class="w">' + ns[1] + '</span> <span class="w">took</span> <span class="w">a</span> <span class="w" data-correct="1">deep</span> <span class="w">breath.</span>', say: ns[1] + ' took a deep breath.' }
+        ]
+      },
+      {
+        type: 'mcq',
+        tag: 'Level 1 - Choosing Noun Groups',
+        title: '2. Choose the Best Noun Group',
+        say: 'Choose the noun group that helps avoid an argument.',
+        mcqs: [
+          {
+            text: `${ns[2]} used ____ to solve the problem.`,
+            say: `${ns[2]} used a calm voice to solve the problem.`,
+            opts: [
+              { text: 'a calm voice', correct: '1', say: 'a calm voice' },
+              { text: 'a loud shout', correct: '0', say: 'a loud shout' },
+              { text: 'an angry tone', correct: '0', say: 'an angry tone' }
+            ]
+          },
+          {
+            text: `${ns[3]} offered ____ when ${p3.pos} friend was sad.`,
+            say: `${ns[3]} offered some kind words when ${p3.pos} friend was sad.`,
+            opts: [
+              { text: 'some kind words', correct: '1', say: 'some kind words' },
+              { text: 'a harsh insult', correct: '0', say: 'a harsh insult' },
+              { text: 'a mean look', correct: '0', say: 'a mean look' }
+            ]
+          }
+        ]
+      },
+      {
+        type: 'typeit',
+        tag: 'Level 1 - Typing Practice',
+        title: '3. Type the Missing Word',
+        say: 'Type the describing word to complete the noun group.',
+        instr: 'Type either <b>kind</b> or <b>deep</b> to complete the helpful noun groups.',
+        qs: [
+          { text: `${ns[4]} paused and took a <input type="text" class="typeit" data-ans="deep" placeholder="describing word"> breath.`, say: `${ns[4]} paused and took a deep breath.` },
+          { text: `${ns[5]} is a very <input type="text" class="typeit" data-ans="kind" placeholder="describing word"> friend.`, say: `${ns[5]} is a very kind friend.` }
+        ]
+      }
+    ];
+
+    html += `
+      <div class="info-box" style="display:flex; justify-content:space-between; align-items:center;">
+        <span><b>🔴 Red Group Practice:</b> Find words that describe kind actions.</span>
+        <button class="spk" data-say="Red Group Practice. Find words that describe kind actions.">🔊</button>
+      </div>`;
+      
+    redCards.forEach(function(c){
+      if(c.type === 'teach'){
+        html += c.content;
+        return;
+      }
+      html += `<div class="card" data-type="${c.type}"><span class="tag">${c.tag}</span><h2>${c.title} <button class="spk" data-say="${c.say}">🔊</button></h2>`;
+      if(c.instr) html += `<p class="instr">${c.instr}</p>`;
+      
+      if(c.type === 'tapword'){
+        c.qs.forEach(function(q, idx){
+          html += `<div class="q"><div class="q-content"><span class="qnum">${idx+1})</span> ${q.spanText}</div><button class="spk" data-say="${q.say}">🔊</button></div>`;
+        });
+      } else if(c.type === 'mcq'){
+        c.mcqs.forEach(function(m, idx){
+          var shuffledOpts = shuffleArray(m.opts);
+          html += `<div class="mcq"><div class="mcq-content"><span class="qnum">${idx+1})</span> ${m.text}<div class="opts">`;
+          shuffledOpts.forEach(function(o){
+            html += `<button class="opt" ${o.correct==='1'?'data-correct="1"':''}>${o.text}</button>`;
+          });
+          html += `</div></div><button class="spk" data-say="${m.say}">🔊</button></div>`;
+        });
+      } else if(c.type === 'typeit'){
+        c.qs.forEach(function(q, idx){
+          html += `<div class="q"><div class="q-content"><span class="qnum">${idx+1})</span> ${q.text}</div><button class="spk" data-say="${q.say}">🔊</button></div>`;
+        });
+      }
+      html += `<button class="btn" data-check>Check Answers</button><p class="fb"></p></div>`;
+    });
+
+  } 
+  else if(color === 'yellow') {
+    var p6 = getPronouns(ns[6]);
+    var p7 = getPronouns(ns[7]);
+    var p8 = getPronouns(ns[8]);
+    var p11 = getPronouns(ns[11]);
+    var p12 = getPronouns(ns[12]);
+
+    var yellowCards = [
+      {
+        type: 'teach',
+        content: `
+          <div class="teach-box">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+              <b>💡 Quick Tip: The Whole Group</b>
+              <button class="spk" data-say="Quick Tip, The Whole Group. It includes a pointer, describing words, and a noun. Example, the thoughtful friend.">🔊</button>
+            </div>
+            It includes a pointer, describing words, and a noun.<br>
+            <em>Example:</em> "The thoughtful friend".
+          </div>
+        `
+      },
+      {
+        type: 'mcq',
+        tag: 'Level 2 - Identifying',
+        title: '1. Spot the Noun Group',
+        say: 'Choose the correct noun group in the sentence.',
+        mcqs: [
+          {
+            text: `Which group of words is the noun group in this sentence: "${ns[6]} is a calm student who walked away."`,
+            say: `Which group of words is the noun group in this sentence?`,
+            opts: [
+              { text: `${ns[6]}`, correct: '0', say: ns[6] },
+              { text: 'a calm student', correct: '1', say: 'a calm student' },
+              { text: 'walked away', correct: '0', say: 'walked away' }
+            ]
+          },
+          {
+            text: `Which noun group shows how ${ns[7]} builds peace and understanding?`,
+            say: `Which noun group shows how ${ns[7]} builds peace and understanding?`,
+            opts: [
+              { text: 'A thoughtful apology', correct: '1', say: 'A thoughtful apology' },
+              { text: 'A rude interruption', correct: '0', say: 'A rude interruption' },
+              { text: 'An angry glare', correct: '0', say: 'An angry glare' }
+            ]
+          },
+          {
+            text: `In "${ns[8]} gave a polite reply," what is the describing word in the noun group?`,
+            say: `In ${ns[8]} gave a polite reply, what is the describing word in the noun group?`,
+            opts: [
+              { text: 'polite', correct: '1', say: 'polite' },
+              { text: 'reply', correct: '0', say: 'reply' },
+              { text: 'gave', correct: '0', say: 'gave' }
+            ]
+          }
+        ]
+      },
+      {
+        type: 'teach',
+        content: `
+          <div class="teach-box">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+              <b>💡 Quick Tip: Kind Words Help</b>
+              <button class="spk" data-say="Quick Tip, Kind Words Help. Kind describing words keep the peace. Example, a gentle voice.">🔊</button>
+            </div>
+            Kind describing words keep the peace.<br>
+            <em>Example:</em> "A gentle voice".
+          </div>
+        `
+      },
+      {
+        type: 'typeit',
+        tag: 'Level 2 - Typing Practice',
+        title: '2. Type the Missing Adjective',
+        say: 'Type the missing describing word to keep things peaceful.',
+        instr: 'Type either <b>gentle</b> or <b>thoughtful</b>.',
+        qs: [
+          { text: `${ns[11]} spoke with a <input type="text" class="typeit" data-ans="gentle" placeholder="describing word"> voice.`, say: `${ns[11]} spoke with a gentle voice.` },
+          { text: `${ns[12]} wrote a <input type="text" class="typeit" data-ans="thoughtful" placeholder="describing word"> note to say sorry.`, say: `${ns[12]} wrote a thoughtful note to say sorry.` }
+        ]
+      }
+    ];
+
+    html += `
+      <div class="info-box" style="display:flex; justify-content:space-between; align-items:center;">
+        <span><b>🟡 Yellow Group Practice:</b> Find the whole noun group.</span>
+        <button class="spk" data-say="Yellow Group Practice. Find the whole noun group.">🔊</button>
+      </div>`;
+      
+    yellowCards.forEach(function(c){
+      if(c.type === 'teach'){
+        html += c.content;
+        return;
+      }
+      html += `<div class="card" data-type="${c.type}"><span class="tag">${c.tag}</span><h2>${c.title} <button class="spk" data-say="${c.say}">🔊</button></h2>`;
+      if(c.instr) html += `<p class="instr">${c.instr}</p>`;
+      
+      if(c.type === 'mcq'){
+        c.mcqs.forEach(function(m, idx){
+          var shuffledOpts = shuffleArray(m.opts);
+          html += `<div class="mcq"><div class="mcq-content"><span class="qnum">${idx+1})</span> ${m.text}<div class="opts">`;
+          shuffledOpts.forEach(function(o){
+            html += `<button class="opt" ${o.correct==='1'?'data-correct="1"':''}>${o.text}</button>`;
+          });
+          html += `</div></div><button class="spk" data-say="${m.say}">🔊</button></div>`;
+        });
+      } else if(c.type === 'typeit'){
+        c.qs.forEach(function(q, idx){
+          html += `<div class="q"><div class="q-content"><span class="qnum">${idx+1})</span> ${q.text}</div><button class="spk" data-say="${q.say}">🔊</button></div>`;
+        });
+      }
+      html += `<button class="btn" data-check>Check Answers</button><p class="fb"></p></div>`;
+    });
+
+  } 
+  else if(color === 'green') {
+    var p14 = getPronouns(ns[14]);
+    var p15 = getPronouns(ns[15]);
+    var p18 = getPronouns(ns[18]);
+    var p19 = getPronouns(ns[19]);
+
+    var greenCards = [
+      {
+        type: 'teach',
+        content: `
+          <div class="teach-box">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+              <b>💡 Quick Tip: Longer Noun Groups</b>
+              <button class="spk" data-say="Quick Tip, Longer Noun Groups. Add a phrase after the noun for more detail. Example, The boy with the kind voice.">🔊</button>
+            </div>
+            Add a phrase <i>after</i> the noun for more detail.<br>
+            <em>Example:</em> "The boy <b>with the kind voice</b>".
+          </div>
+        `
+      },
+      {
+        type: 'mcq',
+        tag: 'Level 3 - Prepositional Phrases',
+        title: '1. Expanded Noun Groups',
+        say: 'Identify the expanded noun group.',
+        mcqs: [
+          {
+            text: `Which part is the expanded noun group in: "${ns[14]} appreciated the boy with the kind smile."`,
+            say: `Which part is the expanded noun group?`,
+            opts: [
+              { text: 'the boy with the kind smile', correct: '1', say: 'the boy with the kind smile' },
+              { text: 'appreciated the boy', correct: '0', say: 'appreciated the boy' },
+              { text: 'with the kind', correct: '0', say: 'with the kind' }
+            ]
+          },
+          {
+            text: `Which expanded noun group describes how ${ns[15]} stays calm?`,
+            say: `Which expanded noun group describes how ${ns[15]} stays calm?`,
+            opts: [
+              { text: 'A student with a patient attitude', correct: '1', say: 'A student with a patient attitude' },
+              { text: 'A child with clenched fists', correct: '0', say: 'A child with clenched fists' },
+              { text: 'A person with a loud voice', correct: '0', say: 'A person with a loud voice' }
+            ]
+          }
+        ]
+      },
+      {
+        type: 'match',
+        tag: 'Level 3 - Matching Impact',
+        title: '2. Match the Noun Group to Its Effect',
+        say: 'Match each noun group to how it affects a situation.',
+        slots: [
+          { label: `${ns[18]}'s genuine, warm apology`, correct: 'fixes', say: `${ns[18]}'s genuine, warm apology` },
+          { label: `${ns[19]}'s harsh, angry shout`, correct: 'escalates', say: `${ns[19]}'s harsh, angry shout` },
+          { label: 'A long, deep breath', correct: 'relaxes', say: 'A long, deep breath' }
+        ],
+        chips: ['fixes', 'escalates', 'relaxes']
+      },
+      {
+        type: 'typeit',
+        tag: 'Level 3 - Production',
+        title: '3. Type the Missing Preposition',
+        say: 'Type the missing word to connect the extra detail in the noun group.',
+        instr: 'Type the word <b>with</b>.',
+        qs: [
+          { text: `The student <input type="text" class="typeit" data-ans="with" placeholder="word"> the gentle hands helped pick up the books.`, say: `The student with the gentle hands helped pick up the books.` },
+          { text: `${ns[20]} preferred a conversation <input type="text" class="typeit" data-ans="with" placeholder="word"> a calm tone.`, say: `${ns[20]} preferred a conversation with a calm tone.` }
+        ]
+      }
+    ];
+
+    html += `
+      <div class="info-box" style="display:flex; justify-content:space-between; align-items:center;">
+        <span><b>🟢 Green Group Practice:</b> Make noun groups longer with extra details.</span>
+        <button class="spk" data-say="Green Group Practice. Make noun groups longer with extra details.">🔊</button>
+      </div>`;
+      
+    greenCards.forEach(function(c){
+      if(c.type === 'teach'){
+        html += c.content;
+        return;
+      }
+      html += `<div class="card" data-type="${c.type}"><span class="tag">${c.tag}</span><h2>${c.title} <button class="spk" data-say="${c.say}">🔊</button></h2>`;
+      if(c.instr) html += `<p class="instr">${c.instr}</p>`;
+      
+      if(c.type === 'mcq'){
+        c.mcqs.forEach(function(m, idx){
+          var shuffledOpts = shuffleArray(m.opts);
+          html += `<div class="mcq"><div class="mcq-content"><span class="qnum">${idx+1})</span> ${m.text}<div class="opts">`;
+          shuffledOpts.forEach(function(o){
+            html += `<button class="opt" ${o.correct==='1'?'data-correct="1"':''}>${o.text}</button>`;
+          });
+          html += `</div></div><button class="spk" data-say="${m.say}">🔊</button></div>`;
+        });
+      } else if(c.type === 'match'){
+        html += `<div class="match-rows">`;
+        c.slots.forEach(function(s){
+          html += `<div class="match-row"><span class="match-lbl">${s.label}</span><div class="match-slot" data-correct="${s.correct}"></div><button class="spk" data-say="${s.say}">🔊</button></div>`;
+        });
+        html += `</div><div class="bank" data-bank>`;
+        var shuffledChips = shuffleArray(c.chips);
+        shuffledChips.forEach(function(ch){
+          html += `<button class="chip">${ch}</button>`;
+        });
+        html += `</div>`;
+      } else if(c.type === 'typeit'){
+        c.qs.forEach(function(q, idx){
+          html += `<div class="q"><div class="q-content"><span class="qnum">${idx+1})</span> ${q.text}</div><button class="spk" data-say="${q.say}">🔊</button></div>`;
+        });
+      }
+      html += `<button class="btn" data-check>Check Answers</button><p class="fb"></p></div>`;
+    });
+
+  } 
+  else if(color === 'blue') {
+    var p21 = getPronouns(ns[21]);
+    var p22 = getPronouns(ns[22]);
+    var p23 = getPronouns(ns[23]);
+
+    var blueCards = [
+      {
+        type: 'teach',
+        content: `
+          <div class="teach-box">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+              <b>💡 Quick Tip: Parts of a Noun Group</b>
+              <button class="spk" data-say="Quick Tip, Parts of a Noun Group. It has three parts: A pointer, a describer, and a noun.">🔊</button>
+            </div>
+            It usually has three parts:<br>
+            1. Pointer (e.g., "The")<br>
+            2. Describer (e.g., "calm")<br>
+            3. Noun (e.g., "voice")
+          </div>
+        `
+      },
+      {
+        type: 'mcq',
+        tag: 'Level 4 - Complex Noun Groups',
+        title: '1. Finding the Longest Noun Group',
+        say: 'Find the complex noun group that acts as the subject of the sentence.',
+        mcqs: [
+          {
+            text: `Which part is the main noun group in: "${ns[21]} made a very thoughtful and sincere apology that saved the friendship."`,
+            say: `Which part is the main noun group in this sentence?`,
+            opts: [
+              { text: 'A very thoughtful and sincere apology', correct: '1', say: 'A very thoughtful and sincere apology' },
+              { text: 'saved the friendship', correct: '0', say: 'saved the friendship' },
+              { text: 'thoughtful and sincere', correct: '0', say: 'thoughtful and sincere' }
+            ]
+          },
+          {
+            text: `In "${ns[22]} watched the incredibly patient teacher listen," what is the head noun of the object?`,
+            say: `What is the head noun?`,
+            opts: [
+              { text: 'teacher', correct: '1', say: 'teacher' },
+              { text: 'patient', correct: '0', say: 'patient' },
+              { text: 'The', correct: '0', say: 'The' }
+            ]
+          }
+        ]
+      },
+      {
+        type: 'match',
+        tag: 'Level 4 - Matching Roles',
+        title: '2. Match the Noun Group Parts',
+        say: 'Match each part from the noun group used by student ' + ns[23] + ' to its grammatical role.',
+        slots: [
+          { label: 'The (pointer)', correct: 'Pointer', say: 'The pointer' },
+          { label: 'friendly (describer)', correct: 'Describer', say: 'friendly describer' },
+          { label: 'student (head noun)', correct: 'Head Noun', say: 'student head noun' }
+        ],
+        chips: ['Pointer', 'Describer', 'Head Noun']
+      },
+      {
+        type: 'typeit',
+        tag: 'Level 4 - Production',
+        title: '3. Type the Missing Noun',
+        say: 'Type the missing head noun to complete the peaceful noun group.',
+        instr: 'Type the word <b>apology</b> or <b>breath</b>.',
+        qs: [
+          { text: `${ns[24]} offered a highly sincere and thoughtful <input type="text" class="typeit" data-ans="apology" placeholder="head noun">.`, say: `${ns[24]} offered a highly sincere and thoughtful apology.` },
+          { text: `Before reacting, taking a long, slow, deep <input type="text" class="typeit" data-ans="breath" placeholder="head noun"> is always best.`, say: `Before reacting, taking a long, slow, deep breath is always best.` }
+        ]
+      }
+    ];
+
+    html += `
+      <div class="info-box" style="display:flex; justify-content:space-between; align-items:center;">
+        <span><b>🔵 Blue Group Practice:</b> Break down longer noun groups.</span>
+        <button class="spk" data-say="Blue Group Practice. Break down longer noun groups.">🔊</button>
+      </div>`;
+      
+    blueCards.forEach(function(c){
+      if(c.type === 'teach'){
+        html += c.content;
+        return;
+      }
+      html += `<div class="card" data-type="${c.type}"><span class="tag">${c.tag}</span><h2>${c.title} <button class="spk" data-say="${c.say}">🔊</button></h2>`;
+      if(c.instr) html += `<p class="instr">${c.instr}</p>`;
+      
+      if(c.type === 'mcq'){
+        c.mcqs.forEach(function(m, idx){
+          var shuffledOpts = shuffleArray(m.opts);
+          html += `<div class="mcq"><div class="mcq-content"><span class="qnum">${idx+1})</span> ${m.text}<div class="opts">`;
+          shuffledOpts.forEach(function(o){
+            html += `<button class="opt" ${o.correct==='1'?'data-correct="1"':''}>${o.text}</button>`;
+          });
+          html += `</div></div><button class="spk" data-say="${m.say}">🔊</button></div>`;
+        });
+      } else if(c.type === 'match'){
+        html += `<div class="match-rows">`;
+        c.slots.forEach(function(s){
+          html += `<div class="match-row"><span class="match-lbl">${s.label}</span><div class="match-slot" data-correct="${s.correct}"></div><button class="spk" data-say="${s.say}">🔊</button></div>`;
+        });
+        html += `</div><div class="bank" data-bank>`;
+        var shuffledChips = shuffleArray(c.chips);
+        shuffledChips.forEach(function(ch){
+          html += `<button class="chip">${ch}</button>`;
+        });
+        html += `</div>`;
+      } else if(c.type === 'typeit'){
+        c.qs.forEach(function(q, idx){
+          html += `<div class="q"><div class="q-content"><span class="qnum">${idx+1})</span> ${q.text}</div><button class="spk" data-say="${q.say}">🔊</button></div>`;
+        });
+      }
+      html += `<button class="btn" data-check>Check Answers</button><p class="fb"></p></div>`;
+    });
+  }
+
+  container.innerHTML = html;
+
+  document.getElementById('finish').textContent = '0';
+  document.getElementById('total').textContent = '0';
+  window.scrollTo(0,0);
+};
+
+document.addEventListener('click',function(e){
+  if(e.target.closest('.spk')){
+    speak(e.target.closest('.spk').dataset.say);
+    return;
+  }
+  
+  var card=e.target.closest('.card'); 
+  if(!card) return;
+  var tp=card.dataset.type;
+
+  if(tp==='match'){
+    var ch=e.target.closest('.chip');
+    if(ch){
+      speak(ch.textContent);
+      selChip(ch);
+      return;
+    }
+    var sl=e.target.closest('.match-slot');
+    if(sl&&sel){
+      var ex=sl.querySelector('.chip');
+      if(ex) card.querySelector('[data-bank]').appendChild(ex);
+      sl.appendChild(sel);
+      sel.classList.remove('sel','ok','no');
+      sel=null;
+    }
+    var bk=e.target.closest('[data-bank]');
+    if(bk&&sel&&!e.target.closest('.chip')){
+      bk.appendChild(sel);
+      sel.classList.remove('sel','ok','no');
+      sel=null;
+    }
+    return;
+  }
+  if(tp==='tapword'){
+    var w=e.target.closest('.w');
+    if(w){
+      w.classList.toggle('picked');
+      w.classList.remove('ok','no');
+      speak(w.textContent);
+    }
+    return;
+  }
+  if(tp==='mcq'){
+    var o=e.target.closest('.opt');
+    if(o){
+      var g=o.closest('.mcq');
+      g.querySelectorAll('.opt').forEach(function(x){
+        x.classList.remove('picked','ok','no');
+      });
+      o.classList.add('picked');
+      speak(o.textContent);
+    }
+    return;
+  }
+});
+
+function selChip(c){
+  if(sel===c){
+    c.classList.remove('sel');
+    sel=null;
+  }else{
+    if(sel) sel.classList.remove('sel');
+    sel=c;
+    c.classList.add('sel');
+  }
+}
+
+function chkMcq(card){
+  var gs=card.querySelectorAll('.mcq'),r=0,t=gs.length;
+  gs.forEach(function(g){
+    g.querySelectorAll('.opt').forEach(function(o){o.classList.remove('ok','no');});
+    var p=g.querySelector('.opt.picked');
+    if(p&&p.dataset.correct==='1'){
+      p.classList.add('ok'); r++;
+    }else if(p) p.classList.add('no');
+  });
+  return[r,t];
+}
+
+function chkMatch(card){
+  var ss=card.querySelectorAll('.match-slot'),r=0,t=ss.length;
+  ss.forEach(function(s){
+    s.classList.remove('ok','no');
+    var c=s.querySelector('.chip');
+    if(c&&c.textContent.trim()===s.dataset.correct){
+      c.classList.add('ok'); s.classList.add('ok'); r++;
+    }else{
+      if(c) c.classList.add('no');
+      s.classList.add('no');
+    }
+  });
+  return[r,t];
+}
+
+function chkType(card){
+  var is=card.querySelectorAll('.typeit'),r=0,t=is.length;
+  is.forEach(function(i){
+    i.classList.remove('ok','no');
+    if(i.value.trim().toLowerCase()===i.dataset.ans.toLowerCase()){
+      i.classList.add('ok'); r++;
+    }else i.classList.add('no');
+  });
+  return[r,t];
+}
+
+function chkTap(card){
+  var qs=card.querySelectorAll('.q'),r=0,t=qs.length;
+  qs.forEach(function(q){
+    var correct=true, pickedAny=false;
+    q.querySelectorAll('.w').forEach(function(w){
+      w.classList.remove('ok','no');
+      var s=w.dataset.correct==='1',h=w.classList.contains('picked');
+      if(h) pickedAny=true;
+      if(s&&h) w.classList.add('ok');
+      else if(!s&&h) {w.classList.add('no');correct=false;}
+      else if(s&&!h) {w.classList.add('no');correct=false;}
+    });
+    if(correct&&pickedAny) r++;
+  });
+  return [r,t];
+}
+
+function createCheck(card){
+  var tp=card.dataset.type,r;
+  if(tp==='mcq') r=chkMcq(card);
+  else if(tp==='match') r=chkMatch(card);
+  else if(tp==='typeit') r=chkType(card);
+  else r=chkTap(card);
+  
+  card._r=r[0]; card._t=r[1]; card._done=true;
+  var fb=card.querySelector('.fb'),win=r[0]===r[1];
+  fb.className='fb '+(win?'ok':'no');
+  fb.textContent=(win?'⭐ ':'')+r[0]+' / '+r[1]+' correct!';
+  updateScore();
+}
+
+document.addEventListener('click', function(e){
+  var checkBtn = e.target.closest('[data-check]');
+  if(checkBtn) {
+    createCheck(checkBtn.closest('.card'));
+  }
+});
+
+function updateScore(){
+  var g=0,t=0;
+  document.querySelectorAll('.card').forEach(function(c){
+    if(c._done){g+=c._r; t+=c._t;}
+  });
+  document.getElementById('finish').textContent=g;
+  document.getElementById('total').textContent=t;
+}
+
+document.getElementById('finBtn').addEventListener('click',function(){
+  document.querySelectorAll('.card').forEach(function(c){if(c.dataset.type)createCheck(c);});
+  var g=+document.getElementById('finish').textContent,t=+document.getElementById('total').textContent,pct=t?Math.round(g/t*100):0;
+  var msg=pct>=80?'Great work!':'Keep trying!';
+  speak('Finished. You got '+g+' out of '+t+'. '+msg);
+  setTimeout(function(){alert('⭐ Done: '+g+' / '+t+' ('+pct+'%)!\n'+msg);},120);
+});
+
+})();
+</script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='writing-t3w9-kindness';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-writing.js"></script>
+</body>
+</html>

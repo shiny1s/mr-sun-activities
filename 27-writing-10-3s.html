@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Wandi Week 9 – Joining Words Practice</title>
+<style>
+:root{--blue:#2E75B6;--dark:#1F3864;--green:#3a9d3a;--red:#d8473f;--soft:#f4f7fb;--chip:#eaf2fb;--chipb:#bcd6f2;--gold:#f2b705;}
+*{box-sizing:border-box;}
+body{font-family:"Comic Sans MS","Segoe UI",Arial,sans-serif;margin:0;background:var(--soft);color:#23303d;font-size:18px;line-height:1.6;}
+header{background:var(--dark);color:#fff;padding:12px 18px;position:sticky;top:0;z-index:5;}
+.hrow{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+header h1{margin:0;font-size:20px;}header p{margin:2px 0 0;opacity:.88;font-size:13px;}
+.hctrl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+main{max-width:880px;margin:0 auto;padding:16px 14px 90px;}
+.front-menu-page{display:flex;min-height:80vh;align-items:center;justify-content:center;padding:20px;}
+.front-menu-box{background:#fff;border-radius:20px;box-shadow:0 6px 24px rgba(0,0,0,.10);padding:44px 36px;text-align:center;max-width:600px;width:100%;border-top:8px solid var(--blue);}
+.front-menu-box h1{margin:0 0 8px;color:var(--dark);font-size:26px;}
+.front-menu-box .sub{margin:0 0 32px;color:#555;font-size:16px;line-height:1.5;}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.menu-btn{padding:24px 16px;border:none;border-radius:14px;font-family:inherit;font-size:17px;font-weight:bold;color:#fff;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.menu-btn:hover{transform:translateY(-3px);box-shadow:0 6px 15px rgba(0,0,0,.15);}
+.menu-btn.red-b{background:#e53935;}
+.menu-btn.yellow-b{background:#ffb300;color:#23303d;}
+.menu-btn.green-b{background:#43a047;}
+.menu-btn.blue-b{background:#1e88e5;}
+.back-btn{font-family:inherit;font-size:14px;background:#f0f0f0;color:#555;border:none;border-radius:8px;padding:7px 15px;cursor:pointer;margin-bottom:14px;display:inline-block;}
+.back-btn:hover{background:#ddd;}
+.info-box{background:#fffdf3;border:2px dashed var(--gold);border-radius:12px;padding:12px 16px;margin:12px 0;font-size:15px;color:#444;}
+.card{background:#fff;border-radius:16px;box-shadow:0 3px 10px rgba(0,0,0,.08);padding:16px 18px;margin:16px 0;border-top:7px solid var(--blue);}
+.card h2{margin:.1em 0;color:var(--dark);font-size:19px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.tag{display:inline-block;background:var(--chip);color:var(--blue);border-radius:20px;padding:2px 10px;font-size:13px;font-weight:bold;margin-bottom:4px;}
+.instr{margin:4px 0 10px;font-size:16px;color:#555;}
+.q,.mcq{margin:14px 0;padding:10px 0;border-bottom:1px solid #eef2f6;}
+.q:last-of-type,.mcq:last-of-type{border-bottom:none;}
+.qnum{font-weight:bold;color:var(--blue);margin-right:4px;}
+.bank{min-height:44px;display:flex;flex-wrap:wrap;gap:7px;padding:7px;border-radius:12px;background:#f0f4f9;border:2px dashed var(--chipb);}
+.chip{font-family:inherit;font-size:15px;background:var(--chip);border:2px solid var(--chipb);color:#1d3a5f;border-radius:10px;padding:6px 11px;cursor:pointer;user-select:none;touch-action:manipulation;transition:transform .1s;}
+.chip.sel{background:var(--gold);border-color:#c98f00;color:#3a2c00;transform:scale(1.05);}
+.chip.ok{background:#eafaea;border-color:var(--green);}
+.chip.no{background:#fdeceb;border-color:var(--red);}
+.buckets{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;}
+.bucket{background:#f9fbfd;border:3px dashed var(--chipb);border-radius:14px;padding:16px;min-height:260px;display:flex;flex-direction:column;}
+.bucket h4{margin:0 0 12px 0;text-align:center;color:var(--dark);font-size:17px;}
+.bucket .drop{background:rgba(0,0,0,0.03);min-height:180px;border-radius:10px;padding:14px;cursor:pointer;display:flex;flex-wrap:wrap;gap:7px;align-content:flex-start;}
+.opts{display:flex;gap:9px;flex-wrap:wrap;margin-top:8px;}
+.opt{font-family:inherit;font-size:15px;background:#fff;border:2px solid var(--chipb);border-radius:12px;padding:7px 14px;cursor:pointer;touch-action:manipulation;}
+.opt.picked{background:var(--gold);border-color:#c98f00;color:#3a2c00;font-weight:bold;}
+.opt.ok{background:#eafaea;border-color:var(--green);color:#1e4620;}
+.opt.no{background:#fdeceb;border-color:var(--red);color:#5c1e1e;}
+.w{cursor:pointer;padding:3px 5px;border-radius:7px;border:2px solid transparent;display:inline-block;}
+.w.picked{background:var(--gold);border-color:#c98f00;}
+.w.ok{background:#eafaea;border-color:var(--green);}
+.w.no{background:#fdeceb;border-color:var(--red);}
+.line{min-height:46px;background:#fffdf3;border:2px solid var(--gold);border-radius:12px;padding:7px;display:flex;flex-wrap:wrap;gap:6px;margin-bottom:7px;}
+.match-rows{display:flex;flex-direction:column;gap:7px;margin-bottom:10px;}
+.match-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.match-lbl{flex:1;min-width:240px;font-size:16px;}
+.match-slot{min-width:140px;min-height:42px;border:2px dashed var(--chipb);border-radius:10px;padding:4px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;background:#fafcfe;}
+.match-slot.ok{border-color:var(--green);background:#eafaea;}
+.match-slot.no{border-color:var(--red);background:#fdeceb;}
+.typeit{font-family:inherit;font-size:16px;padding:4px 8px;border:2px solid var(--chipb);border-radius:8px;width:140px;margin:0 4px;}
+.typeit.ok{border-color:var(--green);background:#eafaea;}
+.typeit.no{border-color:var(--red);background:#fdeceb;}
+.spk{font-size:14px;background:#fff;color:var(--blue);border:2px solid var(--chipb);border-radius:20px;padding:2px 9px;cursor:pointer;}
+.spk:active{background:var(--chip);}
+.btn{font-family:inherit;font-size:16px;font-weight:bold;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:8px 16px;cursor:pointer;margin-top:7px;}
+.btn.ghost{background:#fff;color:var(--blue);border:2px solid var(--chipb);}
+.fb{font-weight:bold;margin:7px 0 0;min-height:20px;font-size:16px;}
+.fb.ok{color:var(--green);}
+.fb.no{color:var(--red);}
+#finishbar{position:fixed;bottom:0;left:0;right:0;background:var(--dark);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:9px 16px;font-weight:bold;box-shadow:0 -2px 8px rgba(0,0,0,.2);gap:8px;flex-wrap:wrap;z-index:10;}
+@media(max-width:600px){.buckets{grid-template-columns:1fr;}.bucket{min-height:220px;}.bucket .drop{min-height:140px;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hrow">
+    <div>
+      <h1>✏️ Joining Words Practice</h1>
+      <p>Easy Joining Words · Frame Words · Copying Into Books</p>
+    </div>
+    <div class="hctrl">
+      <button class="btn ghost" id="soundBtn" style="background:#fff;font-size:14px;padding:5px 10px">🔊 Sound: ON</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div id="front-menu">
+    <div class="front-menu-page">
+      <div class="front-menu-box">
+        <h1>✏️ Select Your Level Group</h1>
+        <p class="sub">Pick your colour group to start the practice games.</p>
+        <div class="menu-grid">
+          <button class="menu-btn red-b" onclick="startGroup('red')">🔴 Red Group</button>
+          <button class="menu-btn yellow-b" onclick="startGroup('yellow')">🟡 Yellow Group</button>
+          <button class="menu-btn green-b" onclick="startGroup('green')">🟢 Green Group</button>
+          <button class="menu-btn blue-b" onclick="startGroup('blue')">🔵 Blue Group</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="group-workspace" style="display:none;">
+    <button class="back-btn" onclick="exitToHub()">← Go Back to Groups</button>
+    <div id="cards-container"></div>
+  </div>
+</main>
+
+<div id="finishbar" style="display:none;">
+  <span>⭐ Your Score: <span id="finish">0</span> / <span id="total">0</span></span>
+  <button class="btn" id="finBtn" style="background:var(--gold);color:#3a2c00">Finish Practice</button>
+</div>
+
+<script>
+(function(){
+var hasTTS='speechSynthesis' in window,muted=false,voice=null,sel=null;
+var sndBtn=document.getElementById('soundBtn');
+
+// Student Name Core Pool Array
+var studentNames = [
+  "Carlos", "Georgio", "Haydara", "Adam B", "Charlie", "Charbil", 
+  "Sarah", "Inala", "Issa", "Elia", "Peter", "Chelsea", "Arsen", 
+  "Emeliano", "Daniella", "Kaden", "Eali", "Indi", "Adam M", 
+  "Mia", "Kathy", "Violet", "Elina", "Ali", "Ashton", "Zainab"
+];
+
+// Helper to determine gender pronouns dynamically
+function getPronouns(name) {
+  var lc = name.toLowerCase();
+  if(lc === 'eali' || lc === 'sarah' || lc === 'inala' || lc === 'chelsea' || lc === 'daniella' || lc === 'indi' || lc === 'mia' || lc === 'kathy' || lc === 'violet' || lc === 'elina' || lc === 'zainab') {
+    return { sub: "she", pos: "her" };
+  }
+  return { sub: "he", pos: "his" };
+}
+
+function grabRandomNames(count) {
+  var working = studentNames.slice();
+  for (var i = working.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = working[i]; working[i] = working[j]; working[j] = temp;
+  }
+  return working.slice(0, count);
+}
+
+function loadVoices(){
+  if(!hasTTS)return;
+  var vs=speechSynthesis.getVoices();
+  voice=vs.find(function(v){return /william/i.test(v.name)&&/AU/i.test(v.lang);})||
+        vs.find(function(v){return /en[-_]AU/i.test(v.lang);})||vs[0]||null;
+}
+if(hasTTS){speechSynthesis.onvoiceschanged=loadVoices;loadVoices();}
+sndBtn.addEventListener('click',function(){muted=!muted;if(muted)speechSynthesis.cancel();this.textContent=muted?'🔇 Sound: OFF':'🔊 Sound: ON';});
+
+function speak(t){
+  if(muted||!t||!hasTTS)return;
+  speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(t);
+  u.rate=0.88; u.pitch=1.05; u.lang='en-AU';
+  if(voice)u.voice=voice;
+  speechSynthesis.speak(u);
+}
+
+window.exitToHub = function() {
+  document.getElementById('group-workspace').style.display = 'none';
+  document.getElementById('finishbar').style.display = 'none';
+  document.getElementById('front-menu').style.display = 'block';
+  window.scrollTo(0,0);
+};
+
+window.startGroup = function(color) {
+  document.getElementById('front-menu').style.display = 'none';
+  document.getElementById('group-workspace').style.display = 'block';
+  document.getElementById('finishbar').style.display = 'flex';
+  
+  var container = document.getElementById('cards-container');
+  container.innerHTML = '';
+  
+  var ns = grabRandomNames(16);
+  var html = '';
+
+  if(color === 'red') {
+    var p1 = getPronouns(ns[1]);
+    html += `
+    <div class="info-box">
+      <b>🔴 Red Group Practice:</b> Let us use easy joining words like <b>and</b>, <b>but</b>, and <b>so</b>.
+    </div>
+
+    <div class="card" data-type="tapword">
+      <span class="tag">Level 1</span>
+      <h2>1. Tap the single joining word <button class="spk" data-say="Tap the word that links the two parts together.">🔊</button></h2>
+      <p class="instr">Find and tap the joining word.</p>
+      <div class="q"><span class="qnum">1)</span> <span class="w">${ns[0]}</span> <span class="w">copied</span> <span class="w">words</span> <span class="w" data-correct="1">and</span> <span class="w">closed</span> <span class="w">the</span> <span class="w">book.</span> <button class="spk" data-say="${ns[0]} copied words and closed the book.">🔊</button></div>
+      <div class="q"><span class="qnum">2)</span> <span class="w">${ns[1]}</span> <span class="w">likes</span> <span class="w">to</span> <span class="w">draw</span> <span class="w" data-correct="1">but</span> <span class="w">${p1.sub}</span> <span class="w">must</span> <span class="w">copy</span> <span class="w">first.</span> <button class="spk" data-say="${ns[1]} likes to draw but needs to copy first.">🔊</button></div>
+      <button class="btn" data-check>Check Answers</button><p class="fb"></p>
+    </div>
+
+    <div class="card" data-type="mcq">
+      <span class="tag">Level 1</span>
+      <h2>2. Choose the best joining word <button class="spk" data-say="Tap the joining word that fits best.">🔊</button></h2>
+      <div class="mcq">
+        <span class="qnum">1)</span> ${ns[2]} finished writing into books, ____ they sat down.
+        <div class="opts">
+          <button class="opt" data-correct="1">so</button>
+          <button class="opt">but</button>
+          <button class="opt">or</button>
+        </div>
+      </div>
+      <div class="mcq">
+        <span class="qnum">2)</span> ${ns[3]} looked at the board, ____ it was too far away.
+        <div class="opts">
+          <button class="opt">and</button>
+          <button class="opt" data-correct="1">but</button>
+          <button class="opt">so</button>
+        </div>
+      </div>
+      <button class="btn" data-check>Check Answers</button><p class="fb"></p>
+    </div>
+
+    <div class="card" data-type="typeit">
+      <span class="tag">Level 1</span>
+      <h2>3. Type the missing word <button class="spk" data-say="Type and, but, or so.">🔊</button></h2>
+      <p class="instr">Type either <b>and</b>, <b>but</b>, or <b>so</b>.</p>
+      <div class="q"><span class="qnum">1)</span> ${ns[4]} wrote a line <input type="text" class="typeit" data-ans="and" placeholder="and / but / so"> shut the book.</div>
+      <div class="q"><span class="qnum">2)</span> ${ns[5]} opened the page, <input type="text" class="typeit" data-ans="but" placeholder="and / but / so"> track was lost.</div>
+      <button class="btn" data-check>Check Answers</button><p class="fb"></p>
+    </div>`;
+  } 
+  else if(color === 'yellow') {
+    var p0 = getPronouns(ns[0]);
+    var p1 = getPronouns(ns[1]);
+    var p3 = getPronouns(ns[3]);
+    var p5 = getPronouns(ns[5]);
+    html += `
+    <div class="info-box">
+      <b>🟡 Yellow Group Practice:</b> More work with the <b>FANBOYS</b> matching words (and, but, or, so, yet).
+    </div>
+
+    <div class="card" data-type="mcq">
+      <span class="tag">Level 2</span>
+      <h2>1. Pick the matching word <button class="spk" data-say="Choose the word that makes sense.">🔊</button></h2>
+      <div class="mcq">
+        <span class="qnum">1)</span> ${ns[0]} has a red pen, ____ ${p0.sub} does not use it.
+        <div class="opts">
+          <button class="opt">so</button>
+          <button class="opt" data-correct="1">yet</button>
+          <button class="opt">or</button>
+        </div>
+      </div>
+      <div class="mcq">
+        <span class="qnum">2)</span> ${ns[1]} worked hard copying into books, ____ ${p1.sub} still had one left.
+        <div class="opts">
+          <button class="opt" data-correct="1">yet</button>
+          <button class="opt">so</button>
+          <button class="opt">and</button>
+        </div>
+      </div>
+      <button class="btn" data-check>Check Answers</button><p class="fb"></p>
+    </div>
+
+    <div class="card" data-type="sort">
+      <span class="tag">Level 2</span>
+      <h2>2. Sort the sentences <button class="spk" data-say="Sort the sentences. Does the word add more information, or does it show a problem?">🔊</button></h2>
+      <p class="instr">Tap a sentence, then sort into <b>Adds More</b> or <b>Shows a Problem</b>.</p>
+      <div class="bank" data-bank>
+        <button class="chip" data-cat="add">${ns[2]} wrote a sentence and drew a picture.</button>
+        <button class="chip" data-cat="prob">${ns[3]} tried to copy fast, yet ${p3.sub} made a spot.</button>
+        <button class="chip" data-cat="add">${ns[4]} liked the story and copied the text.</button>
+        <button class="chip" data-cat="prob">${ns[5]} wanted to finish, yet ${p5.pos} pencil broke.</button>
+      </div>
+      <div class="buckets">
+        <div class="bucket" data-cat="add"><h4>➕ Adds More (and)</h4><div class="drop" data-cat="add"></div></div>
+        <div class="bucket" data-cat="prob"><h4>⚠️ Shows a Problem (yet)</h4><div class="drop" data-cat="prob"></div></div>
+      </div>
+      <button class="btn" data-check>Check Answers</button><p class="fb"></p>
+    </div>`;
+  } 
+  else if(color === 'green') {
+    var p1 = getPronouns(ns[1]);
+    var p2 = getPronouns(ns[2]);
+    html += `
+    <div class="info-box">
+      <b>🟢 Green Group Practice:</b> Learning special joining words like <b>if</b>, <b>when</b>, <b>while</b>, and <b>until</b>.
+    </div>
+
+    <div class="card" data-type="mcq">
+      <span class="tag">Level 3</span>
+      <h2>1. Pick the matching word <button class="spk" data-say="Pick the word that fixes the text sentence.">🔊</button></h2>
+      <div class="mcq">
+        <span class="qnum">1)</span> ${ns[0]} neatly copied words ____ the teacher spoke.
+        <div class="opts">
+          <button class="opt" data-correct="1">while</button>
+          <button class="opt">if</button>
+          <button class="opt">until</button>
+        </div>
+      </div>
+      <div class="mcq">
+        <span class="qnum">2)</span> ${ns[1]} cannot close ${p1.pos} book ____ ${p1.sub} finishes the line.
+        <div class="opts">
+          <button class="opt">since</button>
+          <button class="opt" data-correct="1">until</button>
+          <button class="opt">but</button>
+        </div>
+      </div>
+      <div class="mcq">
+        <span class="qnum">3)</span> When ${ns[2]} practices ${p2.pos} writing, ____ neatness improves.
+        <div class="opts">
+          <button class="opt" data-correct="1">then</button>
+          <button class="opt">but</button>
+          <button class="opt">or</button>
+        </div>
+      </div>
+      <button class="btn" data-check>Check Answers</button><p class="fb"></p>
+    </div>
+
+    <div class="card" data-type="match">
+      <span class="tag">Level 3</span>
+      <h2>2. Match the word to what it does <button class="spk" data-say="Match the chips to the blank slots.">🔊</button></h2>
+      <div class="match-rows">
+        <div class="match-row"><span class="match-lbl">Shows a choice needs to happen (if)</span><div class="match-slot" data-correct="if"></div></div>
+        <div class="match-row"><span class="match-lbl">Shows something happens at that time (when)</span><div class="match-slot" data-correct="when"></div></div>
+      </div>
+      <div class="bank" data-bank>
+        <button class="chip">if</button><button class="chip">when</button>
+      </div>
+      <button class="btn" data-check>Check Answers</button><p class="fb"></p>
+    </div>`;
+  } 
+  else if(color === 'blue') {
+    var p1 = getPronouns(ns[1]);
+    html += `
+    <div class="info-box">
+      <b>🔵 Blue Group Practice:</b> Moving group words to the front of a sentence using a comma.
+    </div>
+
+    <div class="card" data-type="mcq">
+      <span class="tag">Level 4</span>
+      <h2>1. Find the correct front phrase sentence <button class="spk" data-say="Look for the comma helper after the front words.">🔊</button></h2>
+      <div class="mcq">
+        <span class="qnum">1)</span> Which sentence uses the comma helper correctly?
+        <div class="opts">
+          <button class="opt" data-correct="1">Before lunch, ${ns[0]} copied the words into books.</button>
+          <button class="opt">Before lunch ${ns[0]} copied the words into books.</button>
+          <button class="opt">Before, lunch ${ns[0]} copied the words into books.</button>
+        </div>
+      </div>
+      <div class="mcq">
+        <span class="qnum">2)</span> Which sentence shows neat spacing with front words?
+        <div class="opts">
+          <button class="opt">With care ${ns[1]} wrote down ${p1.pos} page lines.</button>
+          <button class="opt" data-correct="1">With care, ${ns[1]} wrote down ${p1.pos} page lines.</button>
+          <button class="opt">With, care ${ns[1]} wrote down ${p1.pos} page lines.</button>
+        </div>
+      </div>
+      <button class="btn" data-check>Check Answers</button><p class="fb"></p>
+    </div>
+
+    <div class="card" data-type="build">
+      <span class="tag">Level 4</span>
+      <h2>2. Build the sentence <button class="spk" data-say="Tap the words in order. Put the front phrase first.">🔊</button></h2>
+      <p class="instr">Put the front time words first with a comma helper:</p>
+      <div class="line" data-answer="Without|delay|,|${ns[2]}|copied|words|into|books|."></div>
+      <div class="bank" data-builder>
+        <button class="chip">copied</button><button class="chip">words</button>
+        <button class="chip">Without</button><button class="chip">delay</button><button class="chip">,</button>
+        <button class="chip">into</button><button class="chip">books</button><button class="chip">${ns[2]}</button><button class="chip">.</button>
+      </div>
+      <button class="btn" data-check>Check Answers</button>
+      <button class="btn ghost" data-reset>Reset Line</button>
+      <p class="fb"></p>
+    </div>`;
+  }
+
+  container.innerHTML = html;
+
+  container.querySelectorAll('[data-builder] .chip').forEach(function(c){
+    c.addEventListener('click',function(){
+      c.closest('.card').querySelector('.line').appendChild(c);
+    });
+  });
+  
+  container.querySelectorAll('.line').forEach(function(l){
+    l.addEventListener('click',function(e){
+      var c=e.target.closest('.chip');
+      if(c) l.closest('.card').querySelector('[data-builder]').appendChild(c);
+    });
+  });
+
+  document.getElementById('finish').textContent = '0';
+  document.getElementById('total').textContent = '0';
+  window.scrollTo(0,0);
+};
+
+// Event routing click listener
+document.addEventListener('click',function(e){
+  if(e.target.closest('.spk')){
+    speak(e.target.closest('.spk').dataset.say);
+    return;
+  }
+  
+  var card=e.target.closest('.card'); 
+  if(!card) return;
+  var tp=card.dataset.type;
+
+  if(tp==='sort'||tp==='match'){
+    var ch=e.target.closest('.chip');
+    if(ch){
+      speak(ch.textContent);
+      selChip(ch);
+      return;
+    }
+    if(tp==='sort'){
+      var drop=e.target.closest('.drop');
+      if(drop&&sel){
+        drop.appendChild(sel);
+        sel.classList.remove('sel','ok','no');
+        sel=null;
+        return;
+      }
+      var bk=e.target.closest('[data-bank]');
+      if(bk&&sel&&!e.target.closest('.chip')){
+        bk.appendChild(sel);
+        sel.classList.remove('sel','ok','no');
+        sel=null;
+        return;
+      }
+    }
+    if(tp==='match'){
+      var sl=e.target.closest('.match-slot');
+      if(sl&&sel){
+        var ex=sl.querySelector('.chip');
+        if(ex) card.querySelector('[data-bank]').appendChild(ex);
+        sl.appendChild(sel);
+        sel.classList.remove('sel','ok','no');
+        sel=null;
+      }
+      var bk=e.target.closest('[data-bank]');
+      if(bk&&sel&&!e.target.closest('.chip')){
+        bk.appendChild(sel);
+        sel.classList.remove('sel','ok','no');
+        sel=null;
+      }
+    }
+    return;
+  }
+  if(tp==='tapword'){
+    var w=e.target.closest('.w');
+    if(w){
+      w.classList.toggle('picked');
+      w.classList.remove('ok','no');
+      speak(w.textContent);
+    }
+    return;
+  }
+  if(tp==='mcq'){
+    var o=e.target.closest('.opt');
+    if(o){
+      var g=o.closest('.mcq');
+      g.querySelectorAll('.opt').forEach(function(x){
+        x.classList.remove('picked','ok','no');
+      });
+      o.classList.add('picked');
+      speak(o.textContent);
+    }
+    return;
+  }
+});
+
+function selChip(c){
+  if(sel===c){
+    c.classList.remove('sel');
+    sel=null;
+  }else{
+    if(sel) sel.classList.remove('sel');
+    sel=c;
+    c.classList.add('sel');
+  }
+}
+
+// Check algorithms
+function chkSort(card){
+  var cs=card.querySelectorAll('.chip'),r=0,t=cs.length;
+  cs.forEach(function(c){
+    c.classList.remove('ok','no');
+    if(c.parentElement.getAttribute('data-cat')===c.dataset.cat){
+      c.classList.add('ok'); r++;
+    } else c.classList.add('no');
+  });
+  return[r,t];
+}
+
+function chkMcq(card){
+  var gs=card.querySelectorAll('.mcq'),r=0,t=gs.length;
+  gs.forEach(function(g){
+    g.querySelectorAll('.opt').forEach(function(o){o.classList.remove('ok','no');});
+    var p=g.querySelector('.opt.picked');
+    if(p&&p.dataset.correct==='1'){
+      p.classList.add('ok'); r++;
+    }else if(p) p.classList.add('no');
+  });
+  return[r,t];
+}
+
+function chkBuild(card){
+  var l=card.querySelector('.line'),a=l.dataset.answer.split('|'),g=[].map.call(l.querySelectorAll('.chip'),function(c){return c.textContent;});
+  var ok=g.length===a.length&&g.every(function(w,i){return w===a[i];});
+  l.style.borderColor=ok?'var(--green)':'var(--red)';
+  return[ok?1:0,1];
+}
+
+function chkMatch(card){
+  var ss=card.querySelectorAll('.match-slot'),r=0,t=ss.length;
+  ss.forEach(function(s){
+    s.classList.remove('ok','no');
+    var c=s.querySelector('.chip');
+    if(c&&c.textContent.trim()===s.dataset.correct){
+      c.classList.add('ok'); s.classList.add('ok'); r++;
+    }else{
+      if(c) c.classList.add('no');
+      s.classList.add('no');
+    }
+  });
+  return[r,t];
+}
+
+function chkType(card){
+  var is=card.querySelectorAll('.typeit'),r=0,t=is.length;
+  is.forEach(function(i){
+    i.classList.remove('ok','no');
+    if(i.value.trim().toLowerCase()===i.dataset.ans.toLowerCase()){
+      i.classList.add('ok'); r++;
+    }else i.classList.add('no');
+  });
+  return[r,t];
+}
+
+function chkTap(card){
+  var es=card.querySelectorAll('.w'),r=0,t=es.length;
+  es.forEach(function(e){
+    e.classList.remove('ok','no');
+    var s=e.dataset.correct==='1',h=e.classList.contains('picked');
+    if(s===h){
+      r++; if(h) e.classList.add('ok');
+    }else e.classList.add('no');
+  });
+  var T=0,H=0,X=0;es.forEach(function(e){var c=e.dataset.correct==='1',p=e.classList.contains('picked');if(c)T++;if(c&&p)H++;if(!c&&p)X++;});return [Math.max(0,H-X),T];
+}
+
+function createCheck(card){
+  var tp=card.dataset.type,r;
+  if(tp==='sort') r=chkSort(card);
+  else if(tp==='mcq') r=chkMcq(card);
+  else if(tp==='build') r=chkBuild(card);
+  else if(tp==='match') r=chkMatch(card);
+  else if(tp==='typeit') r=chkType(card);
+  else r=chkTap(card);
+  
+  card._r=r[0]; card._t=r[1]; card._done=true;
+  var fb=card.querySelector('.fb'),win=r[0]===r[1];
+  fb.className='fb '+(win?'ok':'no');
+  fb.textContent=(win?'⭐ ':'')+r[0]+' / '+r[1]+' correct!';
+  updateScore();
+}
+
+document.addEventListener('click', function(e){
+  var checkBtn = e.target.closest('[data-check]');
+  if(checkBtn) {
+    createCheck(checkBtn.closest('.card'));
+  }
+  var resetBtn = e.target.closest('[data-reset]');
+  if(resetBtn) {
+    var card=resetBtn.closest('.card'),bk=card.querySelector('[data-builder]');
+    card.querySelectorAll('.line .chip').forEach(function(c){bk.appendChild(c);});
+    card.querySelector('.line').style.borderColor='var(--gold)';
+    card.querySelector('.fb').textContent='';
+    card._done=false;
+    updateScore();
+  }
+});
+
+function updateScore(){
+  var g=0,t=0;
+  document.querySelectorAll('.card').forEach(function(c){
+    if(c._done){g+=c._r; t+=c._t;}
+  });
+  document.getElementById('finish').textContent=g;
+  document.getElementById('total').textContent=t;
+}
+
+document.getElementById('finBtn').addEventListener('click',function(){
+  document.querySelectorAll('.card').forEach(function(c){createCheck(c);});
+  var g=+document.getElementById('finish').textContent,t=+document.getElementById('total').textContent,pct=t?Math.round(g/t*100):0;
+  var msg=pct>=80?'Great work!':'Keep trying!';
+  speak('Finished. You got '+g+' out of '+t+'. '+msg);
+  setTimeout(function(){alert('⭐ Done: '+g+' / '+t+' ('+pct+'%)!\n'+msg);},120);
+});
+
+})();
+</script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='writing-10-3s';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-writing.js"></script>
+</body>
+</html>

@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Persuasive Writing - Anecdotes and Examples</title>
+    <style>
+        :root {
+            --blue: #2E75B6;
+            --dark: #1F3864;
+            --green: #3a9d3a;
+            --red: #d8473f;
+            --soft: #f4f7fb;
+            --chip: #eaf2fb;
+            --chipb: #bcd6f2;
+            --gold: #f2b705;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Comic Sans MS", "Segoe UI", Arial, sans-serif;
+            margin: 0;
+            background: var(--soft);
+            color: #23303d;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        header {
+            background: var(--dark);
+            color: #fff;
+            padding: 12px 18px;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        .hrow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        header p {
+            margin: 2px 0 0;
+            opacity: .88;
+            font-size: 13px;
+        }
+
+        .hctrl {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        main {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 16px 14px 90px;
+        }
+
+        .how {
+            background: #fff;
+            border: 2px dashed var(--chipb);
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin: 14px 0;
+            font-size: 16px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, .08);
+            padding: 16px 18px;
+            margin: 16px 0;
+            border-top: 7px solid var(--blue);
+        }
+
+        .card h2 {
+            margin: .1em 0;
+            color: var(--dark);
+            font-size: 19px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--chip);
+            color: var(--blue);
+            border-radius: 20px;
+            padding: 2px 10px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .instr {
+            margin: 4px 0 10px;
+            font-size: 16px;
+        }
+
+        .q,
+        .mcq {
+            margin: 10px 0;
+            padding: 6px 0;
+            border-bottom: 1px solid #eef2f6;
+        }
+
+        .q:last-of-type,
+        .mcq:last-of-type {
+            border-bottom: none;
+        }
+
+        .qnum {
+            font-weight: bold;
+            color: var(--blue);
+            margin-right: 4px;
+        }
+
+        select.dd {
+            font-family: inherit;
+            font-size: 16px;
+            padding: 4px 7px;
+            border: 2px solid var(--chipb);
+            border-radius: 8px;
+            background: #fff;
+            margin: 0 3px;
+        }
+
+        select.dd.ok {
+            border-color: var(--green);
+            background: #eafaea;
+        }
+
+        select.dd.no {
+            border-color: var(--red);
+            background: #fdeceb;
+        }
+
+        .bank {
+            min-height: 44px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            padding: 7px;
+            border-radius: 12px;
+            background: #f0f4f9;
+            border: 2px dashed var(--chipb);
+        }
+
+        .chip {
+            font-family: inherit;
+            font-size: 15px;
+            background: var(--chip);
+            border: 2px solid var(--chipb);
+            color: #1d3a5f;
+            border-radius: 10px;
+            padding: 6px 11px;
+            cursor: pointer;
+            user-select: none;
+            touch-action: manipulation;
+            transition: transform .1s;
+        }
+
+        .chip.sel {
+            background: var(--gold);
+            border-color: #c98f00;
+            color: #3a2c00;
+            transform: scale(1.05);
+        }
+
+        .chip.picked {
+            background: #dff0ff;
+            border-color: var(--blue);
+        }
+
+        .chip.ok {
+            background: #eafaea;
+            border-color: var(--green);
+        }
+
+        .chip.no {
+            background: #fdeceb;
+            border-color: var(--red);
+        }
+
+        .buckets {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .bucket {
+            background: #f9fbfd;
+            border: 3px dashed var(--chipb);
+            border-radius: 14px;
+            padding: 16px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bucket h4 {
+            margin: 0 0 12px 0;
+            text-align: center;
+            color: var(--dark);
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .bucket .drop {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.05) 100%);
+            min-height: 240px;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            align-content: flex-start;
+        }
+
+        .bucket .drop:hover {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.1) 100%);
+            border-color: #ccc;
+        }
+
+        .bucket .drop.drag-over {
+            border-color: var(--green);
+            background: rgba(58, 157, 58, 0.15);
+        }
+
+        .bucket[data-cat="example"] .drop.drag-over {
+            border-color: var(--gold);
+            background: rgba(242, 183, 5, 0.15);
+        }
+
+        .opts {
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        .opt {
+            font-family: inherit;
+            font-size: 15px;
+            background: #fff;
+            border: 2px solid var(--chipb);
+            border-radius: 12px;
+            padding: 7px 14px;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        .opt.picked {
+            background: var(--gold);
+            border-color: #c98f00;
+        }
+
+        .opt.ok {
+            background: #eafaea;
+            border-color: var(--green);
+        }
+
+        .opt.no {
+            background: #fdeceb;
+            border-color: var(--red);
+        }
+
+        .w {
+            cursor: pointer;
+            padding: 3px 5px;
+            border-radius: 7px;
+            border: 2px solid transparent;
+            display: inline-block;
+        }
+
+        .w.picked {
+            background: var(--gold);
+            border-color: #c98f00;
+        }
+
+        .w.ok {
+            background: #eafaea;
+            border-color: var(--green);
+        }
+
+        .w.no {
+            background: #fdeceb;
+            border-color: var(--red);
+        }
+
+        .line {
+            min-height: 46px;
+            background: #fffdf3;
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 7px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 7px;
+        }
+
+        .match-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            margin-bottom: 10px;
+        }
+
+        .match-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .match-lbl {
+            flex: 1;
+            min-width: 140px;
+            font-size: 16px;
+        }
+
+        .match-slot {
+            min-width: 100px;
+            min-height: 42px;
+            border: 2px dashed var(--chipb);
+            border-radius: 10px;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
+            background: #fafcfe;
+        }
+
+        .match-slot.ok {
+            border-color: var(--green);
+            background: #eafaea;
+        }
+
+        .match-slot.no {
+            border-color: var(--red);
+            background: #fdeceb;
+        }
+
+        .typeit {
+            font-family: inherit;
+            font-size: 16px;
+            padding: 4px 8px;
+            border: 2px solid var(--chipb);
+            border-radius: 8px;
+            width: 120px;
+            margin: 0 4px;
+        }
+
+        .typeit.ok {
+            border-color: var(--green);
+            background: #eafaea;
+        }
+
+        .typeit.no {
+            border-color: var(--red);
+            background: #fdeceb;
+        }
+
+        .spk {
+            font-size: 14px;
+            background: #fff;
+            color: var(--blue);
+            border: 2px solid var(--chipb);
+            border-radius: 20px;
+            padding: 2px 9px;
+            cursor: pointer;
+        }
+
+        .spk:active {
+            background: var(--chip);
+        }
+
+        .btn {
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: bold;
+            background: var(--blue);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            margin-top: 7px;
+        }
+
+        .btn.ghost {
+            background: #fff;
+            color: var(--blue);
+            border: 2px solid var(--chipb);
+        }
+
+        .fb {
+            font-weight: bold;
+            margin: 7px 0 0;
+            min-height: 20px;
+        }
+
+        .fb.ok {
+            color: var(--green);
+        }
+
+        .fb.no {
+            color: var(--red);
+        }
+
+        #scorebar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--dark);
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 9px 16px;
+            font-weight: bold;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, .2);
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        @media(max-width:600px) {
+            .buckets {
+                grid-template-columns: 1fr;
+            }
+
+            .bucket {
+                min-height: 250px;
+            }
+
+            .bucket .drop {
+                min-height: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="hrow">
+            <div>
+                <h1>Persuasive Writing - Anecdotes and Examples</h1>
+                <p>Persuasive Writing Unit &nbsp;|&nbsp; Adding Evidence to Reasons</p>
+            </div>
+            <div class="hctrl">
+                <button class="btn ghost" id="soundBtn" style="background:#fff;font-size:14px;padding:5px 10px">Sound: ON</button>
+            </div>
+        </div>
+    </header>
+    <main>
+
+        <div class="card" data-type="cloze">
+            <h2>1. Concept: Examples <button class="spk" data-say="Concept One: Examples. When we write a persuasive speech, we must prove our reasons. One way is to use an Example. An example gives a specific fact or detail. We often start with For example or For instance.">🔊</button></h2>
+            <div class="how">
+                When we write a persuasive speech, we must prove our reasons. One way is to use an <b>Example</b>. An example gives a specific fact or detail to show why you are right. We often start with <i>"For example..."</i> or <i>"For instance..."</i>
+            </div>
+            <p class="instr"><b>Mini Activity:</b> Choose the correct words to complete the example.</p>
+            
+            <div class="q"><span class="qnum">1)</span> Reason: We should eat fresh fruit. <br> <select class="dd" data-ans="For instance">
+                    <option value="">…</option>
+                    <option>For instance</option>
+                    <option>I remember</option>
+                </select>, oranges are packed with healthy vitamins. <button class="spk" data-say="Reason: We should eat fresh fruit. Blank, oranges are packed with healthy vitamins. Choose For instance, or I remember.">🔊</button></div>
+                
+            <div class="q"><span class="qnum">2)</span> Reason: Reading books is fun. <br> <select class="dd" data-ans="For example">
+                    <option value="">…</option>
+                    <option>Once I</option>
+                    <option>For example</option>
+                </select>, you can read about space or deep oceans. <button class="spk" data-say="Reason: Reading books is fun. Blank, you can read about space or deep oceans. Choose Once I, or For example.">🔊</button></div>
+
+            <button class="btn" data-check>Check</button>
+            <button class="btn ghost" data-reset>Start again</button>
+            <p class="fb"></p>
+        </div>
+
+        <div class="card" data-type="mcq">
+            <h2>2. Concept: Anecdotes <button class="spk" data-say="Concept Two: Anecdotes. Another way to prove your reason is to use an Anecdote. An anecdote is a short personal story about something that happened to you. It helps the reader feel what you felt. We often start with I remember when, or Once, I.">🔊</button></h2>
+            <div class="how">
+                Another way to prove your reason is to use an <b>Anecdote</b>. An anecdote is a short personal story about something that happened to you. It helps the reader feel what you felt. We often start with <i>"I remember when..."</i> or <i>"Once, I..."</i>
+            </div>
+            <p class="instr"><b>Mini Activity:</b> Which sentence is a personal anecdote?</p>
+            
+            <div class="mcq"><span class="qnum">1)</span> Which of these tells a short story about the author? <button class="spk" data-say="Which of these tells a short story about the author?">🔊</button>
+                <div class="opts" data-randomise>
+                    <button class="opt" data-correct="1">I remember when I fell off my bike and scratched my knee.</button>
+                    <button class="opt">For example, riding a bike requires balance and practice.</button>
+                </div>
+            </div>
+            
+            <div class="mcq"><span class="qnum">2)</span> Which of these is a personal anecdote? <button class="spk" data-say="Which of these is a personal anecdote?">🔊</button>
+                <div class="opts" data-randomise>
+                    <button class="opt" data-correct="1">Last week, my family went to the footy and had a great time.</button>
+                    <button class="opt">For instance, many people enjoy playing sport on the weekend.</button>
+                </div>
+            </div>
+
+            <button class="btn" data-check>Check</button>
+            <button class="btn ghost" data-reset>Start again</button>
+            <p class="fb"></p>
+        </div>
+
+        <div class="card sort-card" data-type="sort">
+            <span class="tag">EN2-PERS-02</span>
+            <h2>
+                3. Sort the evidence
+                <button class="spk" data-say="Sort the evidence. Some sentences are short personal stories, called anecdotes. Others are facts, called examples. Tap a sentence, then tap Anecdote or Example.">🔊</button>
+            </h2>
+            <p class="instr">
+                Tap a sentence to select it, then tap <b>ANECDOTE 🟢</b> or <b>EXAMPLE 🟡</b>.
+            </p>
+
+            <div class="bank" data-bank>
+                <button class="chip" data-cat="anecdote" type="button">When I broke my arm, the doctors were amazing.</button>
+                <button class="chip" data-cat="example" type="button">For example, hospitals have x-ray machines and bandages.</button>
+                <button class="chip" data-cat="anecdote" type="button">I remember the time my cat got stuck in a big tree.</button>
+                <button class="chip" data-cat="example" type="button">Such as tigers, lions, and leopards.</button>
+                <button class="chip" data-cat="anecdote" type="button">My family always recycles our plastic bottles at home.</button>
+                <button class="chip" data-cat="example" type="button">For instance, you can recycle paper, cardboard, and glass.</button>
+            </div>
+
+            <div class="buckets">
+                <div class="bucket" data-cat="anecdote">
+                    <h4>🟢 ANECDOTE (Story)</h4>
+                    <div class="drop" data-cat="anecdote"></div>
+                </div>
+                <div class="bucket" data-cat="example">
+                    <h4>🟡 EXAMPLE (Fact)</h4>
+                    <div class="drop" data-cat="example"></div>
+                </div>
+            </div>
+
+            <button class="btn" data-check type="button">Check</button>
+            <button class="btn ghost" data-reset>Start again</button>
+            <p class="fb"></p>
+        </div>
+
+        <div class="card" data-type="match">
+            <span class="tag">EN2-PERS-02</span>
+            <h2>4. Match the reason to the evidence <button class="spk" data-say="Match the reason to the evidence. Tap an example or anecdote from the bank, then tap the empty box next to the reason it proves.">🔊</button></h2>
+            <p class="instr">Tap a card from the bank, then tap the box next to the reason it matches.</p>
+            <div class="match-rows">
+                <div class="match-row"><button class="spk" data-say="Reason: Exercise is fun.">🔊</button><span class="match-lbl">Reason: Exercise is fun.</span>
+                    <div class="match-slot" data-correct="I always smile when playing footy."></div>
+                </div>
+                <div class="match-row"><button class="spk" data-say="Reason: Reading makes you smart.">🔊</button><span class="match-lbl">Reason: Reading makes you smart.</span>
+                    <div class="match-slot" data-correct="For instance, books teach you new words."></div>
+                </div>
+                <div class="match-row"><button class="spk" data-say="Reason: Vegetables are healthy.">🔊</button><span class="match-lbl">Reason: Vegetables are healthy.</span>
+                    <div class="match-slot" data-correct="Such as carrots, which help your eyes."></div>
+                </div>
+            </div>
+            <div class="bank" data-bank>
+                <button class="chip">I always smile when playing footy.</button><button class="chip">For instance, books teach you new words.</button><button class="chip">Such as carrots, which help your eyes.</button>
+            </div>
+            <button class="btn" data-check>Check</button>
+            <button class="btn ghost" data-reset>Start again</button>
+            <p class="fb"></p>
+        </div>
+
+        <div class="card" data-type="tapword">
+            <span class="tag">EN2-PERS-02</span>
+            <h2>5. Tap the storytelling words <button class="spk" data-say="Tap the storytelling words in each sentence. These are the words that tell the reader a personal anecdote is starting.">🔊</button></h2>
+            <p class="instr">Tap the words that show a <b>personal story (anecdote)</b> is starting.</p>
+            <div data-s><span class="w" data-correct="1">I</span> <span class="w" data-correct="1">remember</span> <span class="w">when</span> <span class="w">we</span> <span class="w">went</span> <span class="w">camping</span> <span class="w">last</span> <span class="w">year.</span> <button class="spk" data-say="I remember when we went camping last year.">🔊</button></div>
+            <div data-s><span class="w" data-correct="1">Last</span> <span class="w" data-correct="1">week</span> <span class="w">my</span> <span class="w">friend</span> <span class="w">learned</span> <span class="w">how</span> <span class="w">to</span> <span class="w">swim.</span> <button class="spk" data-say="Last week my friend learned how to swim.">🔊</button></div>
+            <div data-s><span class="w" data-correct="1">Once</span> <span class="w" data-correct="1">I</span> <span class="w">found</span> <span class="w">a</span> <span class="w">shiny</span> <span class="w">shell</span> <span class="w">at</span> <span class="w">the</span> <span class="w">beach.</span> <button class="spk" data-say="Once I found a shiny shell at the beach.">🔊</button></div>
+            <button class="btn" data-check>Check</button>
+            <button class="btn ghost" data-reset>Start again</button>
+            <p class="fb"></p>
+        </div>
+
+        <div class="card" data-type="build">
+            <span class="tag">EN2-PERS-02</span>
+            <h2>6. Build the example sentence <button class="spk" data-say="Build the example sentence. Tap the words in order to make a sentence that gives an example.">🔊</button></h2>
+            <p class="instr">Tap the words <b>in the right order</b> to make a sentence that gives an example. Start with the transition words.</p>
+            <div class="line" data-answer="For|example,|koalas|eat|eucalyptus|leaves."></div>
+            <div class="bank" data-builder>
+                <button class="chip">eucalyptus</button><button class="chip">eat</button><button class="chip">leaves.</button>
+                <button class="chip">For</button><button class="chip">koalas</button><button class="chip">example,</button>
+            </div>
+            <button class="btn" data-check>Check</button>
+            <button class="btn ghost" data-reset>Start again</button>
+            <p class="fb"></p>
+        </div>
+        
+        <div class="card" data-type="build">
+            <span class="tag">EN2-PERS-02</span>
+            <h2>7. Build the anecdote sentence <button class="spk" data-say="Build the anecdote sentence. Tap the words in order to make a sentence that tells a personal story.">🔊</button></h2>
+            <p class="instr">Tap the words <b>in the right order</b> to make a personal story. Start with the storytelling words.</p>
+            <div class="line" data-answer="I|remember|when|we|planted|a|tree."></div>
+            <div class="bank" data-builder>
+                <button class="chip">when</button><button class="chip">I</button><button class="chip">a</button>
+                <button class="chip">we</button><button class="chip">tree.</button><button class="chip">remember</button>
+                <button class="chip">planted</button>
+            </div>
+            <button class="btn" data-check>Check</button>
+            <button class="btn ghost" data-reset>Start again</button>
+            <p class="fb"></p>
+        </div>
+
+        <div class="card" data-type="mcq">
+            <span class="tag">EN2-PERS-02</span>
+            <h2>8. Which is the best example for the reason? <button class="spk" data-say="Which is the best example for the reason? Tap the option that best proves the reason given.">🔊</button></h2>
+            <div class="mcq"><span class="qnum">1)</span> Reason: "We should eat less sugar to stay healthy." <button class="spk" data-say="Reason: We should eat less sugar to stay healthy. Which is the best example?">🔊</button>
+                <div class="opts" data-randomise>
+                    <button class="opt">For example, I like the colour blue.</button>
+                    <button class="opt" data-correct="1">For instance, eating too many lollies can hurt your teeth.</button>
+                    <button class="opt">Sugar is sweet and tastes very good.</button>
+                </div>
+            </div>
+            <div class="mcq"><span class="qnum">2)</span> Reason: "Team sports teach you how to work together." <button class="spk" data-say="Reason: Team sports teach you how to work together. Which is the best example?">🔊</button>
+                <div class="opts" data-randomise>
+                    <button class="opt" data-correct="1">For example, you have to pass the ball to your teammates to score.</button>
+                    <button class="opt">For instance, I own a very bouncy basketball.</button>
+                    <button class="opt">Running around the oval is good exercise.</button>
+                </div>
+            </div>
+            <button class="btn" data-check>Check</button>
+            <button class="btn ghost" data-reset>Start again</button>
+            <p class="fb"></p>
+        </div>
+
+        <div class="card" data-type="match">
+            <span class="tag">EN2-PERS-02</span>
+            <h2>9. Match the word to its definition <button class="spk" data-say="Match the word to its definition. Tap a writing word from the bank, then tap the empty box next to its meaning.">🔊</button></h2>
+            <p class="instr">Tap a card from the bank, then tap the empty box next to what it means in persuasive writing.</p>
+            <div class="match-rows">
+                <div class="match-row"><button class="spk" data-say="Explains why you believe something.">🔊</button><span class="match-lbl">Explains why you believe something.</span>
+                    <div class="match-slot" data-correct="Reason"></div>
+                </div>
+                <div class="match-row"><button class="spk" data-say="A specific fact or thing that proves your point.">🔊</button><span class="match-lbl">A specific fact or thing that proves your point.</span>
+                    <div class="match-slot" data-correct="Example"></div>
+                </div>
+                <div class="match-row"><button class="spk" data-say="A short personal story about what happened to you.">🔊</button><span class="match-lbl">A short personal story about what happened to you.</span>
+                    <div class="match-slot" data-correct="Anecdote"></div>
+                </div>
+            </div>
+            <div class="bank" data-bank>
+                <button class="chip">Reason</button>
+                <button class="chip">Example</button>
+                <button class="chip">Anecdote</button>
+            </div>
+            <button class="btn" data-check>Check</button>
+            <button class="btn ghost" data-reset>Start again</button>
+            <p class="fb"></p>
+        </div>
+
+        <div class="card" data-type="typeit">
+            <span class="tag">EN2-PERS-02 &bull; EN2-VOCAB-01</span>
+            <h2>10. Type the missing transition word <button class="spk" data-say="Type the missing transition word that completes each sentence.">🔊</button></h2>
+            <p class="instr">Type the correct <b>word</b> to complete the phrase.</p>
+            <div class="q"><span class="qnum">1)</span> For <input type="text" class="typeit" data-ans="example" placeholder="type here">, you can easily recycle paper and plastic. <button class="spk" data-say="For blank, you can easily recycle paper and plastic. Type the word example.">🔊</button></div>
+            <div class="q"><span class="qnum">2)</span> For <input type="text" class="typeit" data-ans="instance" placeholder="type here">, cycling to school is great exercise. <button class="spk" data-say="For blank, cycling to school is great exercise. Type the word instance.">🔊</button></div>
+            <div class="q"><span class="qnum">3)</span> I <input type="text" class="typeit" data-ans="remember" placeholder="type here"> when I first learned how to ride a bike. <button class="spk" data-say="I blank when I first learned how to ride a bike. Type the word remember.">🔊</button></div>
+            <button class="btn" data-check>Check</button>
+            <button class="btn ghost" data-reset>Start again</button>
+            <p class="fb"></p>
+        </div>
+
+    </main>
+    <div id="scorebar">
+        <span>⭐ Score: <span id="score">0</span> / <span id="total">0</span></span>
+        <button class="btn" id="finBtn" style="background:var(--gold);color:#3a2c00">Finish &amp; mark all</button>
+    </div>
+    <script>
+        (function() {
+            var hasTTS = 'speechSynthesis' in window,
+                muted = false,
+                voice = null,
+                sel = null;
+            var sndBtn = document.getElementById('soundBtn');
+
+            // Randomise multiple choice answers
+            document.querySelectorAll('.opts[data-randomise]').forEach(function(optContainer) {
+                var buttons = Array.from(optContainer.children);
+                for (var i = buttons.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    optContainer.appendChild(buttons[j]);
+                }
+            });
+
+            function loadVoices() {
+                if (!hasTTS) return;
+                var vs = speechSynthesis.getVoices();
+                voice = vs.find(function(v) {
+                        return /william/i.test(v.name) && /AU/i.test(v.lang);
+                    }) ||
+                    vs.find(function(v) {
+                        return /william/i.test(v.name);
+                    }) ||
+                    vs.find(function(v) {
+                        return /en[-_]AU/i.test(v.lang);
+                    }) || vs[0] || null;
+            }
+            if (hasTTS) {
+                speechSynthesis.onvoiceschanged = loadVoices;
+                loadVoices();
+            }
+            sndBtn.addEventListener('click', function() {
+                muted = !muted;
+                if (muted) speechSynthesis.cancel();
+                this.textContent = muted ? 'Sound: OFF' : 'Sound: ON';
+            });
+
+
+            function speak(t) {
+                if (muted || !t || !hasTTS) return;
+                speechSynthesis.cancel();
+                
+                let spokenText = t;
+                // Replace words with phonetic spellings just for the audio
+                spokenText = spokenText.replace(/\bvitamins\b/gi, 'vytamins');
+                
+                var u = new SpeechSynthesisUtterance(spokenText);
+                u.rate = 0.95;
+                u.pitch = 1.0;
+                u.lang = 'en-AU';
+                if (voice) u.voice = voice;
+                speechSynthesis.speak(u);
+        
+            }
+
+            function selChip(c) {
+                if (sel === c) {
+                    c.classList.remove('sel');
+                    sel = null;
+                } else {
+                    if (sel) sel.classList.remove('sel');
+                    sel = c;
+                    c.classList.add('sel');
+                }
+            }
+
+            function updateDropHeight(drop) {
+                if (!drop) return;
+                var cardCount = drop.querySelectorAll('.chip').length;
+                var baseHeight = 240;
+                var newHeight = baseHeight + (cardCount * 50);
+                drop.style.minHeight = newHeight + 'px';
+            }
+
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.spk')) {
+                    speak(e.target.closest('.spk').dataset.say);
+                    return;
+                }
+                var card = e.target.closest('.card');
+                if (!card) return;
+                var tp = card.dataset.type;
+
+                if (tp === 'sort' || tp === 'match') {
+                    var ch = e.target.closest('.chip');
+                    if (ch) {
+                        speak(ch.textContent);
+                        selChip(ch);
+                        return;
+                    }
+                    if (tp === 'sort') {
+                        var drop = e.target.closest('.drop');
+                        if (drop && sel) {
+                            drop.appendChild(sel);
+                            sel.classList.remove('sel', 'ok', 'no');
+                            updateDropHeight(drop);
+                            sel = null;
+                            return;
+                        }
+                        var bk = e.target.closest('[data-bank]');
+                        if (bk && sel && !e.target.closest('.chip')) {
+                            bk.appendChild(sel);
+                            sel.classList.remove('sel', 'ok', 'no');
+                            var parentDrop = sel.closest('.drop');
+                            if (parentDrop) updateDropHeight(parentDrop);
+                            sel = null;
+                            return;
+                        }
+                    }
+                    if (tp === 'match') {
+                        var sl = e.target.closest('.match-slot');
+                        if (sl && sel) {
+                            var ex = sl.querySelector('.chip');
+                            if (ex) card.querySelector('[data-bank]').appendChild(ex);
+                            sl.appendChild(sel);
+                            sel.classList.remove('sel', 'ok', 'no');
+                            sel = null;
+                        }
+                        var bk2 = e.target.closest('[data-bank]');
+                        if (bk2 && sel && !e.target.closest('.chip')) {
+                            bk2.appendChild(sel);
+                            sel.classList.remove('sel', 'ok', 'no');
+                            sel = null;
+                        }
+                    }
+                    return;
+                }
+
+                if (tp === 'tapword') {
+                    var w = e.target.closest('.w');
+                    if (w) {
+                        w.classList.toggle('picked');
+                        w.classList.remove('ok', 'no');
+                        speak(w.textContent);
+                    }
+                    return;
+                }
+
+                if (tp === 'mcq') {
+                    var o = e.target.closest('.opt');
+                    if (o) {
+                        var g = o.closest('.mcq');
+                        g.querySelectorAll('.opt').forEach(function(x) {
+                            x.classList.remove('picked', 'ok', 'no');
+                        });
+                        o.classList.add('picked');
+                        speak(o.textContent);
+                    }
+                    return;
+                }
+            });
+
+            document.querySelectorAll('[data-builder] .chip').forEach(function(c) {
+                c.addEventListener('click', function() {
+                    c.closest('.card').querySelector('.line').appendChild(c);
+                });
+            });
+
+            document.querySelectorAll('.line').forEach(function(l) {
+                l.addEventListener('click', function(e) {
+                    var c = e.target.closest('.chip');
+                    if (c) l.closest('.card').querySelector('[data-builder]').appendChild(c);
+                });
+            });
+
+            function chkSort(card) {
+                var cs = card.querySelectorAll('.chip'),
+                    r = 0,
+                    t = cs.length;
+                cs.forEach(function(c) {
+                    c.classList.remove('ok', 'no');
+                    if (c.parentElement.getAttribute('data-cat') === c.dataset.cat) {
+                        c.classList.add('ok');
+                        r++;
+                    } else c.classList.add('no');
+                });
+                return [r, t];
+            }
+
+            function chkCloze(card) {
+                var ss = card.querySelectorAll('.dd'),
+                    r = 0,
+                    t = ss.length;
+                ss.forEach(function(s) {
+                    s.classList.remove('ok', 'no');
+                    if (s.value && s.value === s.dataset.ans) {
+                        s.classList.add('ok');
+                        r++;
+                    } else s.classList.add('no');
+                });
+                return [r, t];
+            }
+
+            function chkMcq(card) {
+                var gs = card.querySelectorAll('.mcq'),
+                    r = 0,
+                    t = gs.length;
+                gs.forEach(function(g) {
+                    g.querySelectorAll('.opt').forEach(function(o) {
+                        o.classList.remove('ok', 'no');
+                    });
+                    var p = g.querySelector('.opt.picked');
+                    if (p && p.dataset.correct === '1') {
+                        p.classList.add('ok');
+                        r++;
+                    } else if (p) p.classList.add('no');
+                });
+                return [r, t];
+            }
+
+            function chkBuild(card) {
+                var l = card.querySelector('.line'),
+                    a = l.dataset.answer.split('|'),
+                    g = [].map.call(l.querySelectorAll('.chip'), function(c) {
+                        return c.textContent;
+                    });
+                var ok = g.length === a.length && g.every(function(w, i) {
+                    return w === a[i];
+                });
+                l.style.borderColor = ok ? 'var(--green)' : 'var(--red)';
+                return [ok ? 1 : 0, 1];
+            }
+
+            function chkMatch(card) {
+                var ss = card.querySelectorAll('.match-slot'),
+                    r = 0,
+                    t = ss.length;
+                ss.forEach(function(s) {
+                    s.classList.remove('ok', 'no');
+                    var c = s.querySelector('.chip');
+                    if (c && c.textContent.trim() === s.dataset.correct) {
+                        c.classList.add('ok');
+                        s.classList.add('ok');
+                        r++;
+                    } else {
+                        if (c) c.classList.add('no');
+                        s.classList.add('no');
+                    }
+                });
+                return [r, t];
+            }
+
+            function chkType(card) {
+                var is = card.querySelectorAll('.typeit'),
+                    r = 0,
+                    t = is.length;
+                is.forEach(function(i) {
+                    i.classList.remove('ok', 'no');
+                    if (i.value.trim().toLowerCase() === i.dataset.ans.toLowerCase()) {
+                        i.classList.add('ok');
+                        r++;
+                    } else i.classList.add('no');
+                });
+                return [r, t];
+            }
+
+            function chkTap(card) {
+                var es = card.querySelectorAll('.w'),
+                    r = 0,
+                    t = es.length;
+                es.forEach(function(e) {
+                    e.classList.remove('ok', 'no');
+                    var s = e.dataset.correct === '1',
+                        h = e.classList.contains('picked');
+                    if (s === h) {
+                        r++;
+                        if (h) e.classList.add('ok');
+                    } else e.classList.add('no');
+                });
+                var T=0,H=0,X=0;es.forEach(function(e){var c=e.dataset.correct==='1',p=e.classList.contains('picked');if(c)T++;if(c&&p)H++;if(!c&&p)X++;});return [Math.max(0,H-X),T];
+            }
+
+            function runCheck(card) {
+                var tp = card.dataset.type,
+                    r;
+                if (tp === 'sort') r = chkSort(card);
+                else if (tp === 'cloze') r = chkCloze(card);
+                else if (tp === 'mcq') r = chkMcq(card);
+                else if (tp === 'build') r = chkBuild(card);
+                else if (tp === 'match') r = chkMatch(card);
+                else if (tp === 'typeit') r = chkType(card);
+                else r = chkTap(card);
+                card._r = r[0];
+                card._t = r[1];
+                card._done = true;
+                var fb = card.querySelector('.fb'),
+                    win = r[0] === r[1];
+                fb.className = 'fb ' + (win ? 'ok' : 'no');
+                fb.textContent = (win ? '⭐ ' : '') + r[0] + ' / ' + r[1] + ' correct' + (win ? ' - well done!' : ' - check the red ones and try again.');
+                updateScore();
+            }
+
+            document.querySelectorAll('[data-check]').forEach(function(b) {
+                b.addEventListener('click', function() {
+                    runCheck(b.closest('.card'));
+                });
+            });
+
+            document.querySelectorAll('[data-reset]').forEach(function(b) {
+                b.addEventListener('click', function() {
+                    var card = b.closest('.card');
+                    card.querySelectorAll('select.dd').forEach(function(s) {
+                        s.value = '';
+                        s.classList.remove('ok', 'no');
+                    });
+                    card.querySelectorAll('.opt').forEach(function(o) {
+                        o.classList.remove('picked', 'ok', 'no');
+                    });
+                    card.querySelectorAll('.w').forEach(function(w) {
+                        w.classList.remove('picked', 'ok', 'no');
+                    });
+                    card.querySelectorAll('.typeit').forEach(function(i) {
+                        i.value = '';
+                        i.classList.remove('ok', 'no');
+                    });
+
+                    var bk = card.querySelector('[data-builder]');
+                    if (bk) {
+                        card.querySelectorAll('.line .chip').forEach(function(c) {
+                            bk.appendChild(c);
+                        });
+                        card.querySelector('.line').style.borderColor = 'var(--gold)';
+                    }
+
+                    if (card.dataset.type === 'sort') {
+                        card.querySelectorAll('.drop .chip').forEach(function(c) {
+                            card.querySelector('[data-bank]').appendChild(c);
+                        });
+                        card.querySelectorAll('.drop').forEach(function(d) {
+                            d.classList.remove('ok', 'no');
+                            updateDropHeight(d);
+                        });
+                    }
+
+                    if (card.dataset.type === 'match') {
+                        card.querySelectorAll('.match-slot .chip').forEach(function(c) {
+                            card.querySelector('[data-bank]').appendChild(c);
+                        });
+                        card.querySelectorAll('.match-slot').forEach(function(s) {
+                            s.classList.remove('ok', 'no');
+                        });
+                        sel = null;
+                    }
+
+                    card.querySelector('.fb').textContent = '';
+                    card._done = false;
+                    card._r = 0;
+                    card._t = 0;
+                    updateScore();
+                });
+            });
+
+            function updateScore() {
+                var g = 0,
+                    t = 0;
+                document.querySelectorAll('.card').forEach(function(c) {
+                    if (c._done) {
+                        g += c._r;
+                        t += c._t;
+                    }
+                });
+                document.getElementById('score').textContent = g;
+                document.getElementById('total').textContent = t;
+            }
+
+            document.getElementById('finBtn').addEventListener('click', function() {
+                document.querySelectorAll('.card').forEach(function(c) {
+                    runCheck(c);
+                });
+                var g = +document.getElementById('score').textContent,
+                    t = +document.getElementById('total').textContent,
+                    pct = t ? Math.round(g / t * 100) : 0;
+                var msg = pct >= 80 ? 'Amazing work!' : pct >= 50 ? 'Good effort - keep practising!' : 'Nice try - let us practise together!';
+                speak('You scored ' + g + ' out of ' + t + '. ' + msg);
+                setTimeout(function() {
+                    alert('⭐ You scored ' + g + ' / ' + t + ' (' + pct + '%)!\n' + msg);
+                }, 120);
+            });
+        })();
+    </script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='writing-t3w4-anecdotes-and-examples';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-writing.js"></script>
+</body>
+
+</html>
