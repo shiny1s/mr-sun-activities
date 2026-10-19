@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Writing T4W1: Tense, pronouns and agreement</title>
+<style>
+:root{
+  --blue:#2E75B6; --dark:#1F3864; --green:#2f8f43; --red:#c62828;
+  --soft:#f4f7fb; --ink:#23303d; --gold:#f2b705;
+}
+*{box-sizing:border-box}
+body{
+  font-family:"Nunito","Segoe UI",Arial,sans-serif;margin:0;background:var(--soft);
+  background-image:radial-gradient(#d7dee6 2px,transparent 2px);background-size:30px 30px;
+  color:var(--ink);font-size:18px;line-height:1.6;
+}
+header{background:linear-gradient(135deg,var(--dark),var(--blue));color:#fff;padding:14px 18px;position:sticky;top:0;z-index:5}
+header h1{margin:0;font-size:23px}
+header p{margin:4px 0 0;opacity:.92;font-size:15px}
+#menu{padding:24px;max-width:800px;margin:auto}
+#menu h2{text-align:center;color:var(--dark)}
+.menu-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.menu-btn{padding:30px 20px;border:0;border-radius:16px;font:inherit;font-size:20px;font-weight:900;color:#fff;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.15)}
+.menu-btn.red{background:linear-gradient(135deg,#ef5350,#c62828)}
+.menu-btn.yellow{background:linear-gradient(135deg,#ffca28,#f57f17);color:#333}
+.menu-btn.green{background:linear-gradient(135deg,#66bb6a,#2e7d32)}
+.menu-btn.blue{background:linear-gradient(135deg,#42a5f5,#1565c0)}
+main{padding:18px 16px 110px;max-width:920px;margin:auto}
+.card{background:#fff;border-radius:20px;box-shadow:0 8px 24px rgba(0,0,0,.08);padding:22px;margin:20px 0;border-top:8px solid var(--accent,var(--blue))}
+.qblock{background:#f7f9fc;border:1px solid #e3eaf2;border-radius:14px;margin:18px 0;padding:16px}
+.qblock h3{margin:0 0 8px;font-size:19px;color:var(--dark);display:flex;gap:8px;align-items:flex-start}
+.help{background:#fff8e1;border-left:5px solid var(--gold);padding:10px 12px;border-radius:8px;font-size:16px;margin:8px 0}
+.options{display:grid;gap:9px}
+.option-row{display:flex;gap:8px;align-items:stretch}
+.options button.answer{flex:1;background:#fff;border:2px solid #ccd8e6;border-radius:10px;text-align:left;padding:11px 12px;color:#203963;font:inherit;font-size:17px;cursor:pointer}
+.options button.answer:hover{background:#eaf2fb}
+.options button.answer.sel{border-color:#2d78b5;background:#e4f1ff;font-weight:700}
+.options button.answer.good{border-color:#2a9439;background:#e9f7eb}
+.options button.answer.bad{border-color:#cc3434;background:#ffecec}
+.reading{background:#edf3fb;padding:14px;border-radius:12px;border-left:5px solid var(--accent,var(--blue));margin-bottom:14px}
+.read-line{display:flex;gap:8px;align-items:flex-start;margin:7px 0}
+.read-line span{flex:1}
+.smallnote{font-size:14px;color:#536375;font-style:italic}
+.feedback{font-weight:700;min-height:24px;margin:8px 0 0}
+.btn{font:inherit;font-size:16px;font-weight:700;background:var(--blue);color:#fff;border:0;border-radius:12px;padding:10px 18px;cursor:pointer;margin:7px 6px 0 0}
+.btn.retry{background:#6c757d}
+footer{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(to right,var(--dark),var(--ink));color:#fff;padding:12px 18px;display:flex;gap:12px;align-items:center;justify-content:space-between;z-index:10}
+footer button{background:#ffc400;color:#333;border:0;border-radius:8px;font-weight:700;padding:10px 18px;font-size:16px;cursor:pointer}
+.audio,.q-audio{background:#fff;border:2px solid #ccd8e6;border-radius:18px;color:#203963;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.audio{padding:6px 13px;font-size:14px;margin-bottom:10px}
+.q-audio{padding:4px 9px;font-size:15px;flex:none}
+.q-audio:hover,.audio:hover{background:#eef4fa}
+.builder-bank,.builder-drop{display:flex;flex-wrap:wrap;gap:10px;min-height:64px;padding:12px;border-radius:12px;margin-bottom:10px}
+.builder-bank{background:#fff;border:1px solid #ccd8e6}
+.builder-drop{background:#fafcfe;border:3px dashed #ccd8e6;align-content:flex-start}
+.b-chip{font:inherit;font-size:17px;font-weight:700;background:#fff;border:2px solid #ccd8e6;color:#203963;border-radius:10px;padding:9px 14px;cursor:pointer}
+.c-1{background:#ffe0e2;color:#a31515;border-color:#ef9a9a}
+.c-2{background:#d9f2dc;color:#1b5e20;border-color:#a5d6a7}
+.c-3{background:#d6e9fb;color:#0d47a1;border-color:#90caf9}
+.c-4{background:#fff6c2;color:#8a5b00;border-color:#ffe082}
+.c-5{background:#ead9f5;color:#4a148c;border-color:#ce93d8}
+textarea{font:inherit;padding:12px;border:2px solid #ccd8e6;border-radius:10px;width:100%;min-height:130px;resize:vertical;margin:8px 0}
+.frame{border:2px solid #e3eaf2;border-radius:12px;padding:12px;margin:10px 0;background:#fff}
+.frame-label{font-weight:900;font-size:15px;text-transform:uppercase;letter-spacing:.4px}
+.frame-red{border-left:8px solid #e57373}
+.frame-green{border-left:8px solid #81c784}
+.frame-blue{border-left:8px solid #64b5f6}
+.frame input{font:inherit;font-size:18px;width:100%;padding:10px;border:2px solid #ccd8e6;border-radius:8px;margin-top:6px}
+.word-bank{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.word-chip{font:inherit;font-weight:700;background:#f1f5fa;border:2px solid #ccd8e6;border-radius:18px;padding:6px 12px;cursor:pointer}
+.checklist{background:#eef7ef;border-left:5px solid var(--green);padding:10px 12px;border-radius:8px}
+.checklist li{margin:4px 0}
+[hidden]{display:none!important}
+@media(max-width:560px){
+  .menu-grid{grid-template-columns:1fr}
+  .card{padding:15px}
+  main{padding:12px 8px 120px}
+  header h1{font-size:19px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Writing T4W1: Tense, pronouns and agreement</h1>
+  <p>Keep the time clear. Make it clear who you mean. Match the subject and verb. Theme: Connection to Country.</p>
+</header>
+
+<section id="menu">
+  <h2>Choose your group</h2>
+  <div class="menu-grid">
+    <button class="menu-btn red" data-group="red">Red</button>
+    <button class="menu-btn yellow" data-group="yellow">Yellow</button>
+    <button class="menu-btn green" data-group="green">Green</button>
+    <button class="menu-btn blue" data-group="blue">Blue</button>
+  </div>
+</section>
+
+<main id="app" hidden></main>
+
+<footer id="scorebar" hidden>
+  <span id="score">Score: 0 / 0</span>
+  <button data-action="check">Finish and check</button>
+</footer>
+
+<script>
+const accents={red:"#c62828",yellow:"#f57f17",green:"#2e7d32",blue:"#1565c0"};
+const names={red:"Red",yellow:"Yellow",green:"Green",blue:"Blue"};
+let currentGroup=null;
+
+const grammarHelp=`
+<div class="help">
+  <strong>Grammar words made easy:</strong><br>
+  <strong>Tense</strong> means when something happens. <em>Yesterday</em> uses past tense. <em>Today</em> uses present tense. <em>Tomorrow</em> uses future tense.<br>
+  <strong>Pronoun</strong> is a word that replaces a noun, such as <em>he, she, it</em> or <em>they</em>.<br>
+  <strong>Agreement</strong> means the subject and verb match. For example, <em>The child listens</em>, but <em>The children listen</em>.
+</div>`;
+
+const groupsData={
+red:{
+  passageLines:[
+    "Country is our home.",
+    "It cares for us.",
+    "We care for the land."
+  ],
+  q:[
+    {prompt:"Tense: Choose the sentence about yesterday.",
+     help:"Yesterday means the past. Look for a past-tense verb.",
+     options:["Yesterday, we walked on Country.","Yesterday, we walk on Country.","Yesterday, we will walk on Country."],correct:0},
+    {prompt:"Pronouns: The land is very big. Choose the missing word.",
+     help:"The land is a thing, so use <em>it</em>.",
+     options:["It gives us food.","He gives us food.","They give us food."],correct:0},
+    {prompt:"Agreement: Choose the correct sentence.",
+     help:"One child listens. More than one child listen.",
+     options:["The child listens to the stories.","The child listen to the stories.","The child listening to the stories."],correct:0}
+  ],
+  builder:["Country","is","our","home."],
+  builderColors:["c-1","c-2","c-3","c-4"],
+  builderHelp:"Tap the blocks in this order: who or what, then is, then describing words.",
+  writing:{
+    type:"guided",
+    intro:"Choose words to finish each sentence. Tap a word, then tap the line again if you need to change it.",
+    frames:[
+      {label:"When and who",before:"Yesterday, I went to ",after:".",chips:["the park","the bush","the beach","my nan's house"],color:"frame-red"},
+      {label:"What you saw",before:"I saw ",after:".",chips:["a kangaroo","a bird","a river","trees","flowers"],color:"frame-green"},
+      {label:"How you cared",before:"We looked after ",after:".",chips:["the land","the plants","the animals","the rubbish"],color:"frame-blue"}
+    ],
+    checklist:["Use capital letters.","Use full stops.","Use past-tense words such as went, saw and looked."]
+  }
+},
+yellow:{
+  passageLines:[
+    "The Elders tell stories about the past.",
+    "They teach us to care for the land and the rivers."
+  ],
+  q:[
+    {prompt:"Tense: Choose the sentence about tomorrow.",
+     help:"Tomorrow means the future. Look for <em>will</em>.",
+     options:["Tomorrow, we will watch the animals.","Tomorrow, we watched the animals.","Tomorrow, we watches the animals."],correct:0},
+    {prompt:"Pronouns: Uncle painted a beautiful artwork. Choose the missing word.",
+     help:"Uncle is one male person, so use <em>he</em>.",
+     options:["He used ochre from the earth.","They used ochre from the earth.","It used ochre from the earth."],correct:0},
+    {prompt:"Agreement: Choose the correct sentence.",
+     help:"More than one bird means the verb does not end in <em>s</em>.",
+     options:["The birds fly high in the sky.","The birds flies high in the sky.","The birds flying high in the sky."],correct:0},
+    {prompt:"Tense: Choose the correct sentence.",
+     help:"Last night means the past.",
+     options:["Last night, the wind blew through the trees.","Last night, the wind blow through the trees.","Last night, the wind blowing through the trees."],correct:0}
+  ],
+  builder:["We","must","care for","the land","and rivers."],
+  builderColors:["c-1","c-2","c-3","c-4","c-5"],
+  builderHelp:"Start with who, then add the verb, then finish the idea.",
+  writing:{
+    type:"planned",
+    intro:"Write two connected sentences about something you did outside yesterday.",
+    planner:[
+      {label:"Where did you go?",placeholder:"For example: I went to the park."},
+      {label:"What did you see or do?",placeholder:"For example: I saw a magpie."},
+      {label:"Use a pronoun instead of repeating the noun.",placeholder:"For example: It was noisy."}
+    ],
+    checklist:["Use past tense.","Use a noun first, then a pronoun.","Check capital letters and full stops."]
+  }
+},
+green:{
+  passageLines:[
+    "Country holds the spirit of the ancestors.",
+    "It is much more than rocks and trees.",
+    "When we listen to the land, it shares its history with us."
+  ],
+  q:[
+    {prompt:"Tense: Choose the correct sentence.",
+     help:"Long ago means the past.",
+     options:["Long ago, the ancestors walked across this vast land.","Long ago, the ancestors will walk across this vast land.","Long ago, the ancestors walks across this vast land."],correct:0},
+    {prompt:"Pronouns: The children sat by the fire, where they listened closely to the Elders. Choose the missing pronoun.",
+     help:"Children means more than one person.",
+     options:["they","it","she"],correct:0},
+    {prompt:"Agreement: Choose the correct sentence.",
+     help:"The subject is <em>spirit</em>, which is one thing, so use <em>connects</em>.",
+     options:["The spirit of the land connects us all.","The spirit of the land connect us all.","The spirits of the land connects us all."],correct:0},
+    {prompt:"Pronouns: The river provides fresh water. Choose the missing pronoun.",
+     help:"A river is a thing, so use <em>it</em>.",
+     options:["It is vital for survival.","He is vital for survival.","They are vital for survival."],correct:0}
+  ],
+  builder:["Connection to Country","means","protecting","our sacred places","forever."],
+  builderColors:[],
+  builderHelp:"Build the sentence from the subject to the verb, then add the extra information.",
+  writing:{
+    type:"planned",
+    intro:"Write two connected sentences about a natural place you visited.",
+    planner:[
+      {label:"Which place did you visit?",placeholder:"For example: Last year, I visited the Blue Mountains."},
+      {label:"What did you see or hear?",placeholder:"Use past tense."},
+      {label:"Use a clear pronoun.",placeholder:"For example: It was peaceful."}
+    ],
+    checklist:["Make the past tense clear.","Check subject and verb agreement.","Use pronouns that clearly refer to a noun."]
+  }
+},
+blue:{
+  passageLines:[
+    "For First Nations peoples, Country is a living entity.",
+    "It includes spirituality, traditions and family ties.",
+    "When communities protect their environment, they preserve their heritage for future generations."
+  ],
+  q:[
+    {prompt:"Tense: Choose the correct sentence.",
+     help:"Next week means the future.",
+     options:["Next week, the community will host a traditional ceremony.","Next week, the community hosted a traditional ceremony.","Next week, the community hosts a traditional ceremony."],correct:0},
+    {prompt:"Pronouns: The ancient traditions are important because they teach respect for nature. Choose the missing pronoun.",
+     help:"Traditions means more than one thing.",
+     options:["they","it","we"],correct:0},
+    {prompt:"Agreement: Choose the correct sentence.",
+     help:"The subject is <em>connection</em>, which is one thing.",
+     options:["A deep connection to the rivers and mountains strengthens our identity.","A deep connection to the rivers and mountains strengthen our identity.","Deep connections to the river strengthens our identity."],correct:0},
+    {prompt:"Pronouns: The Elders passed down knowledge so that it would guide the next generation. Choose the missing pronoun.",
+     help:"Knowledge is one thing.",
+     options:["it","they","he"],correct:0},
+    {prompt:"Tense: Choose the sentence that makes sense.",
+     help:"Today is present. Tomorrow is future.",
+     options:["If we listen carefully today, the land will share its wisdom tomorrow.","If we listen carefully today, the land shared its wisdom tomorrow.","If we listened carefully today, the land will share its wisdom tomorrow."],correct:0}
+  ],
+  builder:["The deep bond","with the land","includes","spirituality, family","and our ancient language."],
+  builderColors:[],
+  builderHelp:"Start with the subject, add the linking words, then finish with the list.",
+  writing:{
+    type:"planned",
+    intro:"Write a short paragraph of three or four sentences explaining why protecting nature is important.",
+    planner:[
+      {label:"State your main idea in present tense.",placeholder:"For example: Protecting nature is important because..."},
+      {label:"Give one reason or example.",placeholder:"Use clear pronouns."},
+      {label:"Make a prediction using future tense.",placeholder:"For example: If we care for Country, it will..."}
+    ],
+    checklist:["Use present tense for facts.","Use future tense for predictions.","Check every pronoun clearly refers to a noun.","Check subject and verb agreement."]
+  }
+}
+};
+
+function shuffle(list){
+  const a=[...list];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function speak(text){
+  if(!window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang="en-AU";
+  u.rate=.9;
+  speechSynthesis.speak(u);
+}
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function audioButton(text,label="Listen"){
+  return `<button class="q-audio" data-say="${esc(text)}" aria-label="${esc(label)}">🔊</button>`;
+}
+
+function openGroup(group){
+  currentGroup=group;
+  const d=groupsData[group];
+  const app=document.getElementById("app");
+  document.getElementById("menu").hidden=true;
+  app.hidden=false;
+  document.getElementById("scorebar").hidden=false;
+
+  let h=`<div class="card" style="--accent:${accents[group]}">
+    <button class="btn retry" data-action="back">← Back to menu</button>
+    <h2 style="color:${accents[group]}">${names[group]} Group</h2>
+    <p>Read the text, complete the grammar tasks, build a sentence, then complete the writing challenge.</p>
+    ${grammarHelp}`;
+
+  h+=`<section class="qblock"><h3>Read the text ${audioButton(d.passageLines.join(" "),"Listen to the whole text")}</h3><div class="reading">`;
+  d.passageLines.forEach(line=>{
+    h+=`<div class="read-line"><span>${esc(line)}</span>${audioButton(line,"Listen to this line")}</div>`;
+  });
+  h+=`</div></section>`;
+
+  d.q.forEach((q,i)=>{
+    const options=shuffle(q.options.map((text,index)=>({text,correct:index===q.correct})));
+    h+=`<section class="qblock" data-type="mcq">
+      <h3>${i+1}. <span>${q.prompt}</span> ${audioButton(q.prompt,"Listen to the question")}</h3>
+      <div class="help">${q.help} ${audioButton(q.help.replace(/<[^>]+>/g,""),"Listen to the hint")}</div>
+      <div class="options">`;
+    options.forEach(o=>{
+      h+=`<div class="option-row">
+        <button class="answer" data-correct="${o.correct}">${esc(o.text)}</button>
+        ${audioButton(o.text,"Listen to this answer")}
+      </div>`;
+    });
+    h+=`</div><p class="feedback" aria-live="polite"></p></section>`;
+  });
+
+  const chips=shuffle(d.builder.map((word,index)=>({word,index,color:d.builderColors[index]||""})));
+  h+=`<section class="qblock" data-type="builder">
+    <h3>Sentence Builder ${audioButton("Tap the blocks to build a correct sentence.")}</h3>
+    <div class="help">${d.builderHelp} ${audioButton(d.builderHelp)}</div>
+    <p class="smallnote">Tap a block to move it. Tap it again to send it back.</p>
+    <div class="builder-bank" id="b-bank">
+      ${chips.map(c=>`<button class="b-chip ${c.color}" data-index="${c.index}">${esc(c.word)}</button>`).join("")}
+    </div>
+    <div class="builder-drop" id="b-drop"></div>
+    <p class="feedback" aria-live="polite"></p>
+  </section>`;
+
+  h+=renderWriting(group,d.writing);
+  h+=`<button class="btn" data-action="check">Check answers</button>
+      <button class="btn retry" data-action="retry">Try again</button>
+      <p id="result" aria-live="polite" style="font-weight:700"></p></div>`;
+
+  app.innerHTML=h;
+  document.getElementById("score").textContent="Score: 0 / 0";
+  window.scrollTo(0,0);
+}
+
+function renderWriting(group,w){
+  let h=`<section class="qblock" data-type="writing">
+    <h3>Writing Challenge ${audioButton(w.intro)}</h3>
+    <p>${esc(w.intro)}</p>`;
+
+  if(w.type==="guided"){
+    h+=`<div class="help">Use the coloured sentence starters. Red is when and who. Green is what you saw. Blue is how you cared for something.</div>`;
+    w.frames.forEach((f,i)=>{
+      h+=`<div class="frame ${f.color}">
+        <div class="frame-label">${esc(f.label)} ${audioButton(f.label)}</div>
+        <div>${esc(f.before)} <input class="frame-input" data-frame="${i}" aria-label="${esc(f.label)}"> ${esc(f.after)}</div>
+        <div class="word-bank">
+          ${f.chips.map(c=>`<button class="word-chip" data-frame="${i}" data-word="${esc(c)}">${esc(c)}</button>`).join("")}
+        </div>
+      </div>`;
+    });
+    h+=`<button class="btn" data-action="read-writing">🔊 Read my sentences</button>`;
+  }else{
+    h+=`<div class="planner">`;
+    w.planner.forEach((p,i)=>{
+      h+=`<div class="frame">
+        <div class="frame-label">${esc(p.label)} ${audioButton(p.label)}</div>
+        <input class="plan-input" data-plan="${i}" placeholder="${esc(p.placeholder)}" aria-label="${esc(p.label)}">
+      </div>`;
+    });
+    h+=`</div>
+    <label for="writing-box"><strong>Now write your sentences here:</strong></label>
+    <textarea id="writing-box" aria-label="Your writing"></textarea>
+    <button class="btn" data-action="read-writing">🔊 Read my writing</button>`;
+  }
+
+  h+=`<div class="checklist"><strong>Check your writing:</strong><ul>${w.checklist.map(c=>`<li>${c} ${audioButton(c)}</li>`).join("")}</ul></div>
+  <p class="smallnote">Your teacher will read and discuss this writing with you. It is not automatically marked.</p></section>`;
+  return h;
+}
+
+function chooseAnswer(button){
+  const options=button.closest(".options");
+  options.querySelectorAll(".answer").forEach(b=>b.classList.remove("sel"));
+  button.classList.add("sel");
+}
+
+function moveChip(chip){
+  speak(chip.textContent);
+  const bank=document.getElementById("b-bank");
+  const drop=document.getElementById("b-drop");
+  (chip.parentElement===bank?drop:bank).appendChild(chip);
+}
+
+function checkAll(){
+  let right=0,total=0;
+
+  document.querySelectorAll('section[data-type="mcq"]').forEach(section=>{
+    total++;
+    const selected=section.querySelector(".answer.sel");
+    section.querySelectorAll(".answer").forEach(b=>b.classList.remove("good","bad"));
+    const correct=selected&&selected.dataset.correct==="true";
+    if(correct) right++;
+    if(selected) selected.classList.add(correct?"good":"bad");
+    section.querySelector(".feedback").innerHTML=correct
+      ?'<span style="color:var(--green)">✓ Correct.</span>'
+      :(selected?'<span style="color:var(--red)">✗ Try another answer.</span>':'<span style="color:var(--red)">Choose an answer.</span>');
+  });
+
+  const builder=document.querySelector('section[data-type="builder"]');
+  if(builder){
+    total++;
+    const drop=document.getElementById("b-drop");
+    const bank=document.getElementById("b-bank");
+    const feedback=builder.querySelector(".feedback");
+    if(bank.children.length){
+      feedback.innerHTML='<span style="color:var(--red)">Use every block to finish the sentence.</span>';
+    }else{
+      const ok=[...drop.children].every((chip,i)=>Number(chip.dataset.index)===i);
+      if(ok) right++;
+      feedback.innerHTML=ok
+        ?'<span style="color:var(--green)">✓ Correct sentence.</span>'
+        :'<span style="color:var(--red)">The blocks are in the wrong order. Try again.</span>';
+    }
+  }
+
+  document.getElementById("score").textContent=`Score: ${right} / ${total}`;
+  document.getElementById("result").textContent=`You got ${right} out of ${total} grammar and sentence-builder questions correct. Share your writing with your teacher.`;
+  document.getElementById("result").scrollIntoView({behavior:"smooth",block:"center"});
+}
+
+document.addEventListener("click",e=>{
+  const audio=e.target.closest("[data-say]");
+  if(audio){speak(audio.dataset.say);return;}
+
+  const groupButton=e.target.closest("[data-group]");
+  if(groupButton){openGroup(groupButton.dataset.group);return;}
+
+  const answer=e.target.closest(".answer");
+  if(answer){chooseAnswer(answer);return;}
+
+  const chip=e.target.closest(".b-chip");
+  if(chip){moveChip(chip);return;}
+
+  const wordChip=e.target.closest(".word-chip");
+  if(wordChip){
+    const input=document.querySelector(`.frame-input[data-frame="${wordChip.dataset.frame}"]`);
+    if(input){
+      input.value=wordChip.dataset.word;
+      const frame=groupsData[currentGroup].writing.frames[Number(wordChip.dataset.frame)];
+      speak(frame.before+input.value+frame.after);
+    }
+    return;
+  }
+
+  const action=e.target.closest("[data-action]");
+  if(!action) return;
+
+  if(action.dataset.action==="back"){
+    speechSynthesis&&speechSynthesis.cancel();
+    document.getElementById("menu").hidden=false;
+    document.getElementById("app").hidden=true;
+    document.getElementById("scorebar").hidden=true;
+    window.scrollTo(0,0);
+  }
+  if(action.dataset.action==="retry") openGroup(currentGroup);
+  if(action.dataset.action==="check") checkAll();
+  if(action.dataset.action==="read-writing"){
+    const guided=[...document.querySelectorAll(".frame-input")].map((input,i)=>{
+      const f=groupsData[currentGroup].writing.frames[i];
+      return f.before+(input.value||"____")+f.after;
+    }).join(" ");
+    const planned=document.getElementById("writing-box")?.value||"";
+    speak(guided||planned||"There is no writing to read yet.");
+  }
+});
+</script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='writing-t4w1-our-dreaming';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-t4w1.js"></script>
+</body>
+</html>
