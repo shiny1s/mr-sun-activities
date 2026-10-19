@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Persuasive Sentence Ladder – Soccer</title>
+<style>
+:root{--blue:#2E75B6;--dark:#1F3864;--green:#3a9d3a;--red:#d8473f;--soft:#f4f7fb;--chip:#eaf2fb;--chipb:#bcd6f2;--gold:#f2b705;}
+*{box-sizing:border-box}body{font-family:"Comic Sans MS","Segoe UI",Arial,sans-serif;margin:0;background:var(--soft);color:#23303d;font-size:18px;line-height:1.6}header{background:var(--dark);color:#fff;padding:14px 18px;position:sticky;top:0;z-index:5}.hrow{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}h1{margin:0;font-size:20px}p{margin:4px 0 0}.btn{font-family:inherit;font-size:16px;font-weight:bold;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:8px 14px;cursor:pointer}.btn.ghost{background:#fff;color:var(--blue);border:2px solid var(--chipb)}main{max-width:1000px;margin:0 auto;padding:16px 14px 100px}.card{background:#fff;border-radius:16px;box-shadow:0 3px 10px rgba(0,0,0,.08);padding:16px 18px;margin:16px 0;border-top:7px solid var(--blue)}.tag{display:inline-block;background:var(--chip);color:var(--blue);border-radius:20px;padding:2px 10px;font-size:13px;font-weight:bold}.level{border:2px solid var(--chipb);border-radius:14px;padding:12px;margin:10px 0;background:#fafcfe}.level h3{margin:0 0 8px;color:var(--dark)}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.sentence{flex:1;min-width:260px;background:#fffdf3;border:2px solid var(--gold);border-radius:12px;padding:10px 12px;min-height:48px}.sentence.ok{border-color:var(--green);background:#eafaea}.sentence.no{border-color:var(--red);background:#fdeceb}.input{font-family:inherit;font-size:16px;padding:8px 10px;border:2px solid var(--chipb);border-radius:10px;flex:1;min-width:220px}.input.ok{border-color:var(--green);background:#eafaea}.input.no{border-color:var(--red);background:#fdeceb}.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;padding:12px;background:#f9fbfe;border-radius:10px;align-content:flex-start}.chip{font-family:inherit;font-size:13px;background:var(--chip);border:2px solid var(--chipb);border-radius:12px;padding:4px 6px;cursor:pointer;user-select:none;white-space:nowrap;flex-shrink:0}.chip.sel{background:var(--gold);border-color:#c98f00}.small{font-size:14px;opacity:.9}.fb{font-weight:bold;min-height:20px;margin-top:8px}.fb.ok{color:var(--green)}.fb.no{color:var(--red)}#scorebar{position:fixed;bottom:0;left:0;right:0;background:var(--dark);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:9px 16px;font-weight:bold;box-shadow:0 -2px 8px rgba(0,0,0,.2);gap:8px;flex-wrap:wrap}
+/*wrapfix*/
+#buildLine{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;height:auto;white-space:normal}
+#buildLine .chip{margin:0}
+</style>
+</head>
+<body>
+<header>
+  <div class="hrow">
+    <div><h1>⚽ Persuasive Sentence Ladder – Soccer</h1><p>Copy it in your book or type it on screen, then expand and improve one persuasive sentence at a time.</p></div>
+    <div><button class="btn ghost" id="soundBtn">🔊 Sound: ON</button></div>
+  </div>
+</header>
+<main>
+  <div class="card">
+    <span class="tag">Interactive Writing</span>
+    <h2>Build a persuasive sentence from Level 1 to Level 3</h2>
+    <p>Tap a level to reveal it, then copy the sentence into your book or into the box. Students can compare how each version becomes more convincing.</p>
+    <div class="level" data-level="1">
+      <h3>Level 1: Opinion <button class="btn ghost speak" data-say="Read aloud: Level 1. Copy the opinion into your book or into the box.">🔊</button></h3>
+      <div class="row"><div class="sentence">We should play soccer.</div><button class="btn reveal">Reveal copy box</button></div>
+      <div class="row hidden" style="display:none;margin-top:10px"><input class="input" data-ans="We should play soccer." placeholder="Copy Level 1 here"><button class="btn check">Check</button></div>
+    </div>
+    <div class="level" data-level="2">
+      <h3>Level 2: Add a reason <button class="btn ghost speak" data-say="Read aloud: Level 2. Copy the sentence, then add a reason.">🔊</button></h3>
+      <div class="row"><div class="sentence">We should play soccer because it keeps us active.</div><button class="btn reveal">Reveal copy box</button></div>
+      <div class="row hidden" style="display:none;margin-top:10px"><input class="input" data-ans="We should play soccer because it keeps us active." placeholder="Copy Level 2 here"><button class="btn check">Check</button></div>
+    </div>
+    <div class="level" data-level="3">
+      <h3>Level 3: Add persuasive language <button class="btn ghost speak" data-say="Read aloud: Level 3. Copy the sentence, then add persuasive language.">🔊</button></h3>
+      <div class="row"><div class="sentence">We should play soccer because it keeps us active and builds teamwork.</div><button class="btn reveal">Reveal copy box</button></div>
+      <div class="row hidden" style="display:none;margin-top:10px"><input class="input" data-ans="We should play soccer because it keeps us active and builds teamwork." placeholder="Copy Level 3 here"><button class="btn check">Check</button></div>
+    </div>
+    <div class="level" data-level="4">
+      <h3>Full Sentence: Fully persuasive sentence <button class="btn ghost speak" data-say="Read aloud: Copy the fully persuasive sentence into your book or into the box.">🔊</button></h3>
+      <div class="row"><div class="sentence">We should play soccer because it keeps us active, builds teamwork, and helps us have fun together.</div><button class="btn reveal">Reveal copy box</button></div>
+      <div class="row hidden" style="display:none;margin-top:10px"><input class="input" data-ans="We should play soccer because it keeps us active, builds teamwork, and helps us have fun together." placeholder="Copy full sentence here"><button class="btn check">Check</button></div>
+    </div>
+    <div class="level">
+      <h3>Challenge: Put the persuasive sentence back together <button class="btn ghost speak" data-say="Read aloud: Challenge. Put the words in order to make the persuasive sentence.">🔊</button></h3>
+      <p class="small">Tap the chips in order to build the fully expanded sentence.</p>
+      <div class="sentence" id="buildLine"></div>
+      <div class="chips" id="bank">
+        <span class="chip">We</span><span class="chip">should</span><span class="chip">play</span><span class="chip">soccer</span><span class="chip">because</span><span class="chip">it</span><span class="chip">keeps</span><span class="chip">us</span><span class="chip">active,</span><span class="chip">builds</span><span class="chip">teamwork,</span><span class="chip">and</span><span class="chip">helps</span><span class="chip">us</span><span class="chip">have</span><span class="chip">fun</span><span class="chip">together.</span>
+      </div>
+      <div class="fb" id="buildFb"></div>
+    </div>
+  </div>
+</main>
+<div id="scorebar"><span>⭐ Score: <span id="score">0</span> / <span id="total">0</span></span><button class="btn" id="finishBtn" style="background:var(--gold);color:#3a2c00">Finish & mark all</button></div>
+<script>
+(function(){
+let score=0,total=0,sel=null,muted=false,voice=null,tts='speechSynthesis' in window;
+const soundBtn=document.getElementById('soundBtn');
+function speak(t){if(muted||!tts)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-AU';u.rate=.9;speechSynthesis.speak(u)}
+if(tts){speechSynthesis.onvoiceschanged=()=>{const vs=speechSynthesis.getVoices();voice=vs[0]||null};}
+soundBtn.onclick=()=>{muted=!muted;soundBtn.textContent=muted?'🔇 Sound: OFF':'🔊 Sound: ON';if(muted&&tts)speechSynthesis.cancel()};
+document.querySelectorAll('.reveal').forEach(btn=>btn.onclick=()=>{btn.parentElement.nextElementSibling.style.display='flex';});
+document.querySelectorAll('.speak').forEach(btn=>btn.onclick=()=>speak(btn.dataset.say));
+document.querySelectorAll('.check').forEach(btn=>btn.onclick=()=>{const level=btn.closest('.level');const inp=level.querySelector('.input');const ans=inp.dataset.ans.trim().toLowerCase();const val=inp.value.trim().toLowerCase();inp.classList.remove('ok','no');if(val===ans){inp.classList.add('ok');level.querySelector('.sentence').classList.add('ok');level.querySelector('.sentence').classList.remove('no');level.querySelector('.fb')?.remove();if(!level._done){score++;total++;level._done=true;}}else{inp.classList.add('no');level.querySelector('.sentence').classList.add('no');if(!level._done){total++;level._done=true;}}update();const fb=document.createElement('div');fb.className='fb '+(val===ans?'ok':'no');fb.textContent=val===ans?'Correct!':'Try again.';level.appendChild(fb);setTimeout(()=>fb.remove(),1200);});
+const buildLine=document.getElementById('buildLine');const bank=document.getElementById('bank');
+
+function shuffleChips(){const chips=Array.from(bank.querySelectorAll('.chip'));for(let i=chips.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[chips[i],chips[j]]=[chips[j],chips[i]];}bank.innerHTML='';chips.forEach(ch=>bank.appendChild(ch));}
+shuffleChips();
+
+document.querySelectorAll('#bank .chip').forEach(ch=>ch.onclick=()=>{buildLine.appendChild(ch);});
+buildLine.onclick=e=>{const ch=e.target.closest('.chip');if(ch)bank.appendChild(ch)};
+function buildText(){return [...buildLine.querySelectorAll('.chip')].map(c=>c.textContent).join(' ')}
+function checkBuild(){const ans='We should play soccer because it keeps us active, builds teamwork, and helps us have fun together.';const val=buildText().replace(/\s+/g,' ').trim();const fb=document.getElementById('buildFb');fb.className='fb '+(val===ans?'ok':'no');fb.textContent=val===ans?'Great sentence!':'Not quite yet.';if(!document.getElementById('buildLine')._done){score++;total++;document.getElementById('buildLine')._done=true;}update();}
+const challengeLevel=document.querySelectorAll('.level')[document.querySelectorAll('.level').length-1];const btnRow=document.createElement('div');btnRow.className='row';btnRow.style.marginTop='12px';btnRow.innerHTML='<button class="btn" id="checkBuild">Check</button><button class="btn ghost" id="resetBuild">Reset</button>';challengeLevel.appendChild(btnRow);
+document.getElementById('checkBuild').onclick=checkBuild;
+document.getElementById('resetBuild').onclick=()=>{[...buildLine.querySelectorAll('.chip')].forEach(c=>bank.appendChild(c));document.getElementById('buildFb').textContent='';};
+document.getElementById('finishBtn').onclick=()=>{document.querySelectorAll('.level .check').forEach(b=>b.click());checkBuild();alert(`⭐ You scored ${score} / ${total}!`);};
+function update(){document.getElementById('score').textContent=score;document.getElementById('total').textContent=total;}
+update();
+})();
+</script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='level-3-soccer';</script><script src="tracker.js"></script><script src="wrap.js"></script>
+</body>
+</html>
