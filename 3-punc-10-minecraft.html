@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Punctuation Practice - Minecraft Edition</title>
+<style>
+:root{--blue:#4a9c2a;--dark:#2e4c1e;--green:#5da632;--red:#b63728;--soft:#f0f5ec;--chip:#eef7ea;--chipb:#badba2;--gold:#dfa212;}
+*{box-sizing:border-box;}
+body{font-family:"Comic Sans MS","Segoe UI",Arial,sans-serif;margin:0;background:var(--soft);color:#233d1b;font-size:18px;line-height:1.6;}
+header{background:var(--dark);color:#fff;padding:12px 18px;position:sticky;top:0;z-index:5;}
+.hrow{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+header h1{margin:0;font-size:20px;}
+header p{margin:2px 0 0;opacity:.88;font-size:13px;}
+main{max-width:900px;margin:0 auto;padding:16px 14px 90px;}
+.card{background:#fff;border-radius:16px;box-shadow:0 3px 10px rgba(0,0,0,.08);padding:16px 18px;margin:16px 0;border-top:7px solid var(--blue);}
+.card h2{margin:.1em 0;color:var(--dark);font-size:19px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.tag{display:inline-block;background:var(--chip);color:var(--blue);border-radius:20px;padding:2px 10px;font-size:13px;font-weight:bold;margin-bottom:4px;}
+.instr{margin:4px 0 10px;font-size:16px;color:#555;}
+.activity{margin:25px 0;padding:12px;background:#fbfdfa;border-radius:12px;}
+.activity h3{margin:0 0 10px;font-size:17px;color:var(--dark);}
+.red-group{border-top-color:#e53935;}
+.yellow-group{border-top-color:#ffb300;}
+.green-group{border-top-color:#43a047;}
+.blue-group{border-top-color:#1e88e5;}
+.group-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.btn{font-family:inherit;font-size:16px;font-weight:bold;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:8px 16px;cursor:pointer;margin-top:7px;}
+.btn.ghost{background:#fff;color:var(--blue);border:2px solid var(--chipb);}
+.btn:hover{opacity:0.9;}
+.btn.small{font-size:14px;padding:5px 12px;margin:2px;}
+.btn.reset{background:#f0f0f0;color:#555;border:2px solid #ccc;font-size:14px;padding:5px 12px;margin:2px;}
+.spk{font-size:14px;background:#fff;color:var(--blue);border:2px solid var(--chipb);border-radius:20px;padding:2px 9px;cursor:pointer;margin-left:4px;}
+.spk:active{background:var(--chip);}
+.fb{font-weight:bold;margin:7px 0 0;min-height:20px;}
+.fb.ok{color:var(--green);}
+.fb.no{color:var(--red);}
+.q{margin:10px 0;padding:6px 0;border-bottom:1px solid #eef2f6;}
+.q:last-of-type{border-bottom:none;}
+.qnum{font-weight:bold;color:var(--blue);margin-right:4px;}
+.pick-q{margin:12px 0;padding:10px;background:#fff;border-radius:10px;border:1px solid #e0e8f4;}
+.pick-q .sent{font-size:17px;margin:0 0 8px;display:flex;align-items:center;flex-wrap:wrap;gap:6px;}
+.pick-chips{display:flex;gap:8px;flex-wrap:wrap;}
+.pick-chip{font-family:inherit;font-size:20px;font-weight:bold;background:var(--chip);border:2px solid var(--chipb);color:#1d3a5f;border-radius:10px;padding:6px 16px;cursor:pointer;transition:transform .1s;}
+.pick-chip:hover{transform:scale(1.08);}
+.pick-chip.sel{background:var(--gold);border-color:#c98f00;color:#3a2c00;}
+.pick-chip.ok{background:#eafaea;border-color:var(--green);}
+.pick-chip.no{background:#fdeceb;border-color:var(--red);}
+.insert-sentence{font-size:18px;line-height:2.2;margin:8px 0;padding:10px;background:#fff;border-radius:10px;border:1px solid #e0e8f4;}
+.ins-blank{display:inline-block;min-width:36px;text-align:center;border-bottom:2px solid var(--blue);padding:0 4px;margin:0 2px;cursor:pointer;font-weight:bold;color:var(--blue);font-size:20px;}
+.ins-blank.filled{color:#23303d;border-bottom-color:#aaa;}
+.ins-blank.ok{color:var(--green);border-bottom-color:var(--green);}
+.ins-blank.no{color:var(--red);border-bottom-color:var(--red);}
+.punc-bank{display:flex;gap:8px;flex-wrap:wrap;padding:8px;background:#f0f4f9;border-radius:10px;border:2px dashed var(--chipb);margin:8px 0;}
+.insert-chip{font-family:inherit;font-size:22px;font-weight:bold;background:var(--chip);border:2px solid var(--chipb);color:#1d3a5f;border-radius:10px;padding:6px 14px;cursor:pointer;transition:transform .1s;}
+.insert-chip:hover:not(:disabled){transform:scale(1.08);}
+.insert-chip.sel{background:var(--gold);border-color:#c98f00;color:#3a2c00;}
+.insert-chip.used{opacity:0.35;cursor:default;}
+.insert-chip:disabled{opacity:0.35;cursor:default;}
+.retype-wrong{font-size:17px;color:#a00;background:#fff4f4;border-left:4px solid var(--red);padding:6px 10px;border-radius:6px;margin:6px 0;}
+.retype-input{font-family:inherit;font-size:16px;padding:7px 10px;border:2px solid var(--chipb);border-radius:8px;width:100%;margin:5px 0;}
+.retype-input.ok{border-color:var(--green);background:#eafaea;}
+.retype-input.no{border-color:var(--red);background:#fdeceb;}
+.retype-hint{font-size:13px;color:#666;font-style:italic;margin:2px 0 6px;}
+.punc-select{font-family:inherit;font-size:17px;padding:3px 6px;border:2px solid var(--chipb);border-radius:7px;background:#fff;cursor:pointer;margin:0 2px;}
+.punc-select.ok{border-color:var(--green);background:#eafaea;}
+.punc-select.no{border-color:var(--red);background:#fdeceb;}
+.drop-sent{font-size:17px;line-height:2;margin:8px 0;padding:8px 10px;background:#fff;border-radius:10px;border:1px solid #e0e8f4;}
+.multiple-choice{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0;}
+.mc-option{background:#fff;border:2px solid var(--chipb);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:15px;flex:1;min-width:100px;text-align:center;transition:all .2s;}
+.mc-option:hover{background:var(--chip);}
+.mc-option.sel{background:var(--gold);border-color:#c98f00;}
+.mc-option.ok{background:#eafaea;border-color:var(--green);}
+.mc-option.no{background:#fdeceb;border-color:var(--red);}
+.mc-group{margin:12px 0;padding:10px;background:#fff;border-radius:10px;border:1px solid #e0e8f4;}
+.mc-group p{margin:0 0 8px;font-weight:bold;}
+.type-chips{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0;}
+.type-chip{font-family:inherit;font-size:15px;background:var(--chip);border:2px solid var(--chipb);color:#1d3a5f;border-radius:12px;padding:8px 16px;cursor:pointer;font-weight:bold;}
+.type-chip:hover{background:#d6e8fa;}
+.type-chip.sel{background:var(--gold);border-color:#c98f00;color:#3a2c00;}
+.type-chip.ok{background:#eafaea;border-color:var(--green);}
+.type-chip.no{background:#fdeceb;border-color:var(--red);}
+.sent-opts{display:flex;flex-direction:column;gap:8px;margin:8px 0;}
+.sent-opt{background:#fff;border:2px solid var(--chipb);border-radius:10px;padding:9px 14px;cursor:pointer;font-size:15px;text-align:left;}
+.sent-opt:hover{background:var(--chip);}
+.sent-opt.sel{background:var(--gold);border-color:#c98f00;}
+.sent-opt.ok{background:#eafaea;border-color:var(--green);}
+.sent-opt.no{background:#fdeceb;border-color:var(--red);}
+#scorebar{position:fixed;bottom:0;left:0;right:0;background:var(--dark);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:9px 16px;font-weight:bold;box-shadow:0 -2px 8px rgba(0,0,0,.2);gap:8px;flex-wrap:wrap;}
+.front-menu-page{display:flex;min-height:100vh;align-items:center;justify-content:center;padding:20px;background:var(--soft);}
+.front-menu-box{background:#fff;border-radius:20px;box-shadow:0 6px 24px rgba(0,0,0,.10);padding:44px 36px;text-align:center;max-width:540px;width:100%;}
+.front-menu-box h1{margin:0 0 8px;color:var(--dark);font-size:26px;}
+.front-menu-box .sub{margin:0 0 32px;color:#666;font-size:16px;line-height:1.5;}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.menu-btn{padding:30px 16px;border:none;border-radius:14px;font-family:inherit;font-size:18px;font-weight:bold;color:#fff;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 12px rgba(0,0,0,.15);}
+.menu-btn:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,.25);}
+.menu-btn.red{background:#e53935;}
+.menu-btn.yellow{background:#ffb300;color:#333;}
+.menu-btn.green{background:#43a047;}
+.menu-btn.blue{background:#1e88e5;}
+.back-btn{font-family:inherit;font-size:14px;background:#f0f0f0;color:#555;border:none;border-radius:8px;padding:7px 15px;cursor:pointer;margin-bottom:14px;display:inline-block;}
+.back-btn:hover{background:#ddd;}
+.words-box{background:#f9f9fb;padding:12px 15px;border-radius:8px;margin-bottom:15px;}
+.words-box p{color:var(--dark);font-weight:bold;margin:0;}
+@media(max-width:480px){.menu-btn{font-size:15px;padding:22px 10px;}.type-chips{gap:6px;}.type-chip{font-size:13px;padding:6px 10px;}}
+</style>
+</head>
+<body>
+
+<div id="front-menu">
+<div class="front-menu-page">
+<div class="front-menu-box">
+  <h1>🧱 Minecraft Punctuation Practice</h1>
+  <p class="sub">Capitals · End Punctuation · Commas · Dialogue<br>Select your biome rank to start.</p>
+  <div class="menu-grid">
+    <button class="menu-btn red"    onclick="showGroup('red')">🔴 Red Group</button>
+    <button class="menu-btn yellow" onclick="showGroup('yellow')">🟡 Yellow Group</button>
+    <button class="menu-btn green"  onclick="showGroup('green')">🟢 Green Group</button>
+    <button class="menu-btn blue"   onclick="showGroup('blue')">🔵 Blue Group</button>
+  </div>
+</div>
+</div>
+</div>
+
+<header id="main-header" style="display:none">
+<div class="hrow">
+  <div>
+    <h1>🧱 Minecraft Punctuation Practice</h1>
+    <p>Capitals · End Punctuation · Inventory Commas · Chat Logs · Block Types</p>
+  </div>
+  <button class="btn ghost" id="soundBtn" style="background:#fff;font-size:14px;padding:5px 10px">🔊 Sound: ON</button>
+</div>
+</header>
+
+<main id="main-content" style="display:none">
+
+<div class="card red-group" id="grp-red">
+<button class="back-btn" onclick="backToMenu()">← Back to Biomes</button>
+<div class="group-header">
+  <div><span class="tag">Spawn Point</span><h2>🔴 Redstone Biome – Basic Crafting</h2></div>
+</div>
+<div class="words-box"><p>📌 Focus: Starting capitals · Full stops · Question marks · Creeper warnings · Statement vs Question</p></div>
+
+<div class="activity">
+  <h3>1. Pick the Chat End Punctuation <button class="spk" onclick="speak('Activity one. Listen to each sentence. Tap the correct punctuation mark to go at the end.')">🔊 Listen</button></h3>
+  <p class="instr">Read the player chat. Tap the correct punctuation mark for the end.</p>
+
+  <div class="pick-q" data-ans=".">
+    <p class="sent"><button class="spk" onclick="speak('the zombie is burning')">🔊</button> The zombie is burning ___</p>
+    <div class="pick-chips"><button class="pick-chip">.</button><button class="pick-chip">?</button><button class="pick-chip">!</button></div>
+  </div>
+  <div class="pick-q" data-ans="?">
+    <p class="sent"><button class="spk" onclick="speak('where is my iron pickaxe')">🔊</button> Where is my iron pickaxe ___</p>
+    <div class="pick-chips"><button class="pick-chip">.</button><button class="pick-chip">?</button><button class="pick-chip">!</button></div>
+  </div>
+  <div class="pick-q" data-ans="!">
+    <p class="sent"><button class="spk" onclick="speak('watch out a creeper')">🔊</button> Watch out a creeper ___</p>
+    <div class="pick-chips"><button class="pick-chip">.</button><button class="pick-chip">?</button><button class="pick-chip">!</button></div>
+  </div>
+  <button class="btn small" onclick="checkPick(this)">Check</button><p class="fb"></p>
+</div>
+
+<div class="activity">
+  <h3>2. Repair the Text Signs <button class="spk" onclick="speak('Activity two. These sentences have mistakes. Type them correctly. Remember to start with a capital letter and end with the correct punctuation mark.')">🔊 Listen</button></h3>
+  <p class="instr">These signs have typos. Type them correctly with opening capitals and end punctuation.</p>
+  <p class="retype-hint">Tip: Type the world text exactly right, capitalizing names like Steve.</p>
+
+  <div class="q">
+    <span class="qnum">1)</span>
+    <button class="spk" onclick="speak('i mine diamonds')">🔊</button>
+    <div class="retype-wrong">i mine diamonds</div>
+    <input type="text" class="retype-input" data-ans="I mine diamonds." placeholder="Type the correct sentence here...">
+  </div>
+  <div class="q">
+    <span class="qnum">2)</span>
+    <button class="spk" onclick="speak('my dog is called steve')">🔊</button>
+    <div class="retype-wrong">my dog is called steve</div>
+    <input type="text" class="retype-input" data-ans="My dog is called Steve." placeholder="Type the correct sentence here...">
+  </div>
+  <button class="btn small" onclick="checkRetype(this)">Check</button><p class="fb"></p>
+</div>
+
+</div>
+
+<div class="card yellow-group" id="grp-yellow">
+<button class="back-btn" onclick="backToMenu()">← Back to Biomes</button>
+<div class="group-header">
+  <div><span class="tag">Mining Level</span><h2>🟡 Desert Biome – Inventory Sorting</h2></div>
+</div>
+<div class="words-box"><p>📌 Focus: Capitals (mob names, locations) · Inventory lists · Declarative / Interrogative mob logs</p></div>
+
+<div class="activity">
+  <h3>1. Which Word Needs a Capital? <button class="spk" onclick="speak('Activity one. Look at each sentence. Choose the word that needs a capital letter.')">🔊 Listen</button></h3>
+  <p class="instr">Choose the specific location or name that needs a capital letter.</p>
+
+  <div class="mc-group">
+    <p><button class="spk" onclick="speak('we are exploring the nether fortress')">🔊</button> we are exploring the <u>nether</u> fortress</p>
+    <div class="multiple-choice">
+      <button class="mc-option" data-correct="false">exploring</button>
+      <button class="mc-option" data-correct="true">nether</button>
+      <button class="mc-option" data-correct="false">fortress</button>
+    </div>
+  </div>
+  
+  <div class="mc-group">
+    <p><button class="spk" onclick="speak('my friend steve joined the server')">🔊</button> my friend <u>steve</u> joined the server</p>
+    <div class="multiple-choice">
+      <button class="mc-option" data-correct="false">friend</button>
+      <button class="mc-option" data-correct="true">steve</button>
+      <button class="mc-option" data-correct="false">joined</button>
+    </div>
+  </div>
+
+  <div class="mc-group">
+    <p><button class="spk" onclick="speak('we are traveling to the end')">🔊</button> we are traveling to the <u>end</u></p>
+    <div class="multiple-choice">
+      <button class="mc-option" data-correct="false">traveling</button>
+      <button class="mc-option" data-correct="true">end</button>
+      <button class="mc-option" data-correct="false">are</button>
+    </div>
+  </div>
+  
+  <button class="btn small" onclick="checkMC(this)">Check</button><p class="fb"></p>
+</div>
+
+<div class="activity">
+  <h3>2. Chest Inventory – Which Sentence is Correct? <button class="spk" onclick="speak('Activity two. Choose the sentence that has the commas in the right places.')">🔊 Listen</button></h3>
+  <p class="instr">Choose the collection sentence that uses commas correctly in a list.</p>
+
+  <div class="mc-group">
+    <p><button class="spk" onclick="speak('I have coal, iron and gold.')">🔊</button> <strong>Item List 1:</strong></p>
+    <div class="sent-opts">
+      <button class="sent-opt" data-correct="false" onclick="selSentOpt(this)">I have coal iron and gold.</button>
+      <button class="sent-opt" data-correct="true"  onclick="selSentOpt(this)">I have coal, iron and gold.</button>
+      <button class="sent-opt" data-correct="false" onclick="selSentOpt(this)">I have coal, iron, and, gold.</button>
+    </div>
+  </div>
+  
+  <div class="mc-group">
+    <p><button class="spk" onclick="speak('I need wood, stone and glass.')">🔊</button> <strong>Item List 2:</strong></p>
+    <div class="sent-opts">
+      <button class="sent-opt" data-correct="false" onclick="selSentOpt(this)">I need wood stone and glass.</button>
+      <button class="sent-opt" data-correct="true"  onclick="selSentOpt(this)">I need wood, stone and glass.</button>
+      <button class="sent-opt" data-correct="false" onclick="selSentOpt(this)">I need wood, stone, and, glass.</button>
+    </div>
+  </div>
+  
+  <div class="mc-group">
+    <p><button class="spk" onclick="speak('My hotbar has an axe, food and blocks.')">🔊</button> <strong>Item List 3:</strong></p>
+    <div class="sent-opts">
+      <button class="sent-opt" data-correct="true" onclick="selSentOpt(this)">My hotbar has an axe, food and blocks.</button>
+      <button class="sent-opt" data-correct="false"  onclick="selSentOpt(this)">My hotbar has an axe food and blocks.</button>
+      <button class="sent-opt" data-correct="false" onclick="selSentOpt(this)">My hotbar has an axe, food, and, blocks.</button>
+    </div>
+  </div>
+
+  <button class="btn small" onclick="checkSentOpts(this)">Check</button><p class="fb"></p>
+</div>
+
+</div>
+
+<div class="card green-group" id="grp-green">
+<button class="back-btn" onclick="backToMenu()">← Back to Biomes</button>
+<div class="group-header">
+  <div><span class="tag">Nether Hub</span><h2>🟢 Plains Biome – Village Interaction</h2></div>
+</div>
+<div class="words-box"><p>📌 Focus: Proper noun drops · Recipe lists · Basic chat dialogue</p></div>
+
+<div class="activity">
+  <h3>1. Insert Block Recipe Chips <button class="spk" onclick="speak('Activity one. These sentences have empty spaces. Select a punctuation chip, then tap the correct blank to place it.')">🔊 Listen</button></h3>
+  <p class="instr">Tap a punctuation chip, then insert it into the inventory craft text blanks.</p>
+  
+  <div class="insert-sentence" id="ins-green">
+    We need logs<span class="ins-blank" data-ans=",">___</span>
+    cobblestone<span class="ins-blank" data-ans=",">___</span>
+    sand<span class="ins-blank" data-ans=",">___</span>
+    and redstone dust<span class="ins-blank" data-ans=".">___</span>
+  </div>
+  
+  <div class="insert-sentence">
+    Quick<span class="ins-blank" data-ans=",">___</span> grab the diamond sword<span class="ins-blank" data-ans="!">___</span>
+  </div>
+  
+  <div class="insert-sentence">
+    Is it raining<span class="ins-blank" data-ans=",">___</span> or is that a ghast<span class="ins-blank" data-ans="?">___</span>
+  </div>
+
+  <div class="punc-bank" id="bank-green">
+    <button class="insert-chip" data-bank="green">,</button>
+    <button class="insert-chip" data-bank="green">,</button>
+    <button class="insert-chip" data-bank="green">,</button>
+    <button class="insert-chip" data-bank="green">,</button>
+    <button class="insert-chip" data-bank="green">,</button>
+    <button class="insert-chip" data-bank="green">.</button>
+    <button class="insert-chip" data-bank="green">!</button>
+    <button class="insert-chip" data-bank="green">?</button>
+  </div>
+  <button class="btn small" onclick="checkInsert(this)">Check</button>
+  <button class="btn reset" onclick="resetInsert(this)">Reset</button>
+  <p class="fb"></p>
+</div>
+
+<div class="activity">
+  <h3>2. Retype Multiplayer Chat <button class="spk" onclick="speak('Activity two. These dialogue sentences are missing speech marks, capitals and punctuation. Type them correctly.')">🔊 Listen</button></h3>
+  <p class="instr">Format the player dialogue properly using quotes and inner punctuation.</p>
+
+  <div class="q">
+    <span class="qnum">1)</span>
+    <button class="spk" onclick="speak('i found diamonds said alex')">🔊</button>
+    <div class="retype-wrong">i found diamonds said alex</div>
+    <input type="text" class="retype-input" data-ans='"I found diamonds," said Alex.' placeholder='Type correctly with speech marks...'>
+  </div>
+  
+  <div class="q">
+    <span class="qnum">2)</span>
+    <button class="spk" onclick="speak('do you have any food asked the player')">🔊</button>
+    <div class="retype-wrong">do you have any food asked the player</div>
+    <input type="text" class="retype-input" data-ans='"Do you have any food?" asked the player.' placeholder='Type correctly with speech marks...'>
+  </div>
+  
+  <div class="q">
+    <span class="qnum">3)</span>
+    <button class="spk" onclick="speak('run away yelled steve')">🔊</button>
+    <div class="retype-wrong">run away yelled steve</div>
+    <input type="text" class="retype-input" data-ans='"Run away!" yelled Steve.' placeholder='Type correctly with speech marks...'>
+  </div>
+
+  <button class="btn small" onclick="checkRetype(this)">Check</button><p class="fb"></p>
+</div>
+
+</div>
+
+<div class="card blue-group" id="grp-blue">
+<button class="back-btn" onclick="backToMenu()">← Back to Biomes</button>
+<div class="group-header">
+  <div><span class="tag">The End Portal</span><h2>🔵 Diamond Biome – Expert Server Logging</h2></div>
+</div>
+<div class="words-box"><p>📌 Focus: Fronted adverbials during raids · Server dialogue rules · Error logging</p></div>
+
+<div class="activity">
+  <h3>1. Raid Dropdowns – Commas after Openers <button class="spk" onclick="speak('Activity one. Use the dropdown menus to choose the correct punctuation for each blank.')">🔊 Listen</button></h3>
+  <p class="instr">Select appropriate commas after initial action descriptors.</p>
+
+  <div class="drop-sent q" data-ans=",">
+    <button class="spk" onclick="speak('Inside the cavern, the Enderman teleports.')">🔊</button>
+    Inside the cavern<select class="punc-select"><option value="">___</option><option value=",">,</option><option value=".">.</option></select> the Enderman teleports.
+  </div>
+  
+  <div class="drop-sent q" data-ans=",">
+    <button class="spk" onclick="speak('Before the sun goes down, we need to make beds.')">🔊</button>
+    Before the sun goes down<select class="punc-select"><option value="">___</option><option value=",">,</option><option value=".">.</option></select> we need to make beds.
+  </div>
+  
+  <div class="drop-sent q" data-ans=",">
+    <button class="spk" onclick="speak('Suddenly, a zombie broke down the wooden door.')">🔊</button>
+    Suddenly<select class="punc-select"><option value="">___</option><option value=",">,</option><option value=".">.</option></select> a zombie broke down the wooden door.
+  </div>
+
+  <button class="btn small" onclick="checkDropdown(this)">Check</button><p class="fb"></p>
+</div>
+
+<div class="activity">
+  <h3>2. Server Chat Rules <button class="spk" onclick="speak('Activity two. Choose the sentence with the correct speech marks and commas.')">🔊 Listen</button></h3>
+  <p class="instr">Choose the server log that has the right speech marks and commas.</p>
+  
+  <div class="mc-group">
+    <p><button class="spk" onclick="speak('Are you ready for the boss fight? asked the team.')">🔊</button> <strong>Log 1:</strong></p>
+    <div class="sent-opts">
+      <button class="sent-opt" data-correct="false" onclick="selSentOpt(this)">"Are you ready for the boss fight" asked the team.</button>
+      <button class="sent-opt" data-correct="true"  onclick="selSentOpt(this)">"Are you ready for the boss fight?" asked the team.</button>
+      <button class="sent-opt" data-correct="false" onclick="selSentOpt(this)">"Are you ready for the boss fight"? asked the team.</button>
+    </div>
+  </div>
+  
+  <div class="mc-group">
+    <p><button class="spk" onclick="speak('I lost all my items in the lava, sighed the miner.')">🔊</button> <strong>Log 2:</strong></p>
+    <div class="sent-opts">
+      <button class="sent-opt" data-correct="true" onclick="selSentOpt(this)">"I lost all my items in the lava," sighed the miner.</button>
+      <button class="sent-opt" data-correct="false"  onclick="selSentOpt(this)">"I lost all my items in the lava" sighed the miner.</button>
+      <button class="sent-opt" data-correct="false" onclick="selSentOpt(this)">"I lost all my items in the lava", sighed the miner.</button>
+    </div>
+  </div>
+
+  <button class="btn small" onclick="checkSentOpts(this)">Check</button><p class="fb"></p>
+</div>
+
+</div>
+</main>
+
+<div id="scorebar" style="display:none">
+  <span>⭐ Exp Points: <span id="score">0</span> / <span id="total">0</span></span>
+  <button class="btn" id="finBtn" style="background:var(--gold);color:#3a2c00;margin:0;">Leave Game &amp; Save Score</button>
+</div>
+
+<script>
+function showGroup(color) {
+  document.getElementById('front-menu').style.display = 'none';
+  document.getElementById('main-header').style.display = 'block';
+  document.getElementById('main-content').style.display = 'block';
+  document.getElementById('scorebar').style.display = 'flex';
+  document.querySelectorAll('.card').forEach(c => c.style.display = 'none');
+  document.getElementById('grp-' + color).style.display = 'block';
+  window.scrollTo(0, 0);
+}
+function backToMenu() {
+  document.getElementById('front-menu').style.display = 'block';
+  document.getElementById('main-header').style.display = 'none';
+  document.getElementById('main-content').style.display = 'none';
+  document.getElementById('scorebar').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+
+let muted = false;
+function speak(text) {
+  if (muted || !('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = 0.88;
+  u.lang = 'en-AU';
+  const voices = speechSynthesis.getVoices();
+  const preferred = voices.find(v => v.name.includes('William')) || voices.find(v => v.lang.startsWith('en-AU'));
+  if (preferred) u.voice = preferred;
+  speechSynthesis.speak(u);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.card').forEach(c => c.style.display = 'none');
+});
+
+document.getElementById('soundBtn').addEventListener('click', function() {
+  muted = !muted;
+  if (muted) speechSynthesis.cancel();
+  this.textContent = muted ? '🔇 Sound: OFF' : '🔊 Sound: ON';
+});
+
+const actResults = new WeakMap();
+function recordResult(activity, r, t) {
+  actResults.set(activity, { r, t });
+  updateScore();
+}
+function updateScore() {
+  let g = 0, tot = 0;
+  document.querySelectorAll('.activity').forEach(a => {
+    if (actResults.has(a)) { const x = actResults.get(a); g += x.r; tot += x.t; }
+  });
+  document.getElementById('score').textContent = g;
+  document.getElementById('total').textContent = tot;
+}
+function showFb(btn, r, t) {
+  const fb = btn.nextElementSibling;
+  const win = r === t;
+  fb.className = 'fb ' + (win ? 'ok' : 'no');
+  fb.textContent = (win ? '⭐ ' : '') + r + ' / ' + t + ' blocks verified' + (win ? ' – great building!' : ' – try crafting again!');
+  if (win) speak('Inventory verified!');
+}
+
+document.addEventListener('click', e => {
+  const opt = e.target.closest('.mc-option');
+  if (opt) {
+    const grp = opt.closest('.mc-group, .multiple-choice');
+    grp.querySelectorAll('.mc-option').forEach(o => o.classList.remove('sel'));
+    opt.classList.add('sel');
+  }
+});
+
+document.addEventListener('click', e => {
+  const chip = e.target.closest('.type-chip');
+  if (chip) {
+    const grp = chip.closest('[data-type-group]');
+    grp.querySelectorAll('.type-chip').forEach(c => c.classList.remove('sel'));
+    chip.classList.add('sel');
+  }
+});
+
+function selSentOpt(btn) {
+  const grp = btn.closest('.mc-group');
+  grp.querySelectorAll('.sent-opt').forEach(o => o.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+document.addEventListener('click', e => {
+  const chip = e.target.closest('.pick-chip');
+  if (chip) {
+    const grp = chip.closest('.pick-q');
+    grp.querySelectorAll('.pick-chip').forEach(c => c.classList.remove('sel'));
+    chip.classList.add('sel');
+  }
+});
+
+function checkPick(btn) {
+  const act = btn.closest('.activity');
+  const qs = act.querySelectorAll('.pick-q');
+  let r = 0, t = qs.length;
+  qs.forEach(q => {
+    q.querySelectorAll('.pick-chip').forEach(c => c.classList.remove('ok','no'));
+    const sel = q.querySelector('.pick-chip.sel');
+    if (sel && sel.textContent.trim() === q.dataset.ans) {
+      sel.classList.add('ok'); r++;
+    } else {
+      if (sel) sel.classList.add('no');
+      q.querySelectorAll('.pick-chip').forEach(c => {
+        if (c.textContent.trim() === q.dataset.ans) c.classList.add('ok');
+      });
+    }
+  });
+  recordResult(act, r, t);
+  showFb(btn, r, t);
+}
+
+let _insertSel = null;
+document.addEventListener('click', e => {
+  const chip = e.target.closest('.insert-chip');
+  const blank = e.target.closest('.ins-blank');
+  if (chip && !chip.disabled) {
+    const act = chip.closest('.activity');
+    act.querySelectorAll('.insert-chip').forEach(c => c.classList.remove('sel'));
+    if (_insertSel === chip) { _insertSel = null; } 
+    else { chip.classList.add('sel'); _insertSel = chip; }
+    return;
+  }
+  if (blank && _insertSel) {
+    blank.textContent = _insertSel.textContent;
+    blank.dataset.filled = _insertSel.textContent.trim();
+    blank.classList.add('filled');
+    _insertSel.disabled = true;
+    _insertSel.classList.remove('sel');
+    _insertSel.classList.add('used');
+    _insertSel = null;
+    return;
+  }
+});
+
+function checkInsert(btn) {
+  const act = btn.closest('.activity');
+  const blanks = act.querySelectorAll('.ins-blank');
+  let r = 0, t = blanks.length;
+  blanks.forEach(b => {
+    b.classList.remove('ok','no');
+    if ((b.dataset.filled || '') === b.dataset.ans) { b.classList.add('ok'); r++; }
+    else b.classList.add('no');
+  });
+  recordResult(act, r, t);
+  showFb(btn, r, t);
+}
+
+function resetInsert(btn) {
+  const act = btn.closest('.activity');
+  act.querySelectorAll('.ins-blank').forEach(b => {
+    b.textContent = '___'; b.dataset.filled = ''; b.classList.remove('filled','ok','no');
+  });
+  act.querySelectorAll('.insert-chip').forEach(c => {
+    c.disabled = false; c.classList.remove('used','sel','ok','no');
+  });
+  _insertSel = null;
+}
+
+function checkRetype(btn) {
+  const act = btn.closest('.activity');
+  const inputs = act.querySelectorAll('.retype-input');
+  let r = 0, t = inputs.length;
+  inputs.forEach(i => {
+    i.classList.remove('ok','no');
+    if (i.value.trim() === i.dataset.ans) { i.classList.add('ok'); r++; }
+    else i.classList.add('no');
+  });
+  recordResult(act, r, t);
+  showFb(btn, r, t);
+}
+
+function checkDropdown(btn) {
+  const act = btn.closest('.activity');
+  const selects = act.querySelectorAll('.punc-select');
+  let r = 0, t = selects.length;
+  selects.forEach(s => {
+    s.classList.remove('ok','no');
+    const parent = s.closest('[data-ans]');
+    if (s.value === parent.dataset.ans) { s.classList.add('ok'); r++; }
+    else s.classList.add('no');
+  });
+  recordResult(act, r, t);
+  showFb(btn, r, t);
+}
+
+function checkMC(btn) {
+  const act = btn.closest('.activity');
+  const groups = act.querySelectorAll('.mc-group');
+  let r = 0, t = groups.length;
+  groups.forEach(grp => {
+    grp.querySelectorAll('.mc-option').forEach(o => o.classList.remove('ok','no'));
+    const sel = grp.querySelector('.mc-option.sel');
+    const correct = grp.querySelector('.mc-option[data-correct="true"]');
+    if (sel && sel.dataset.correct === 'true') { sel.classList.add('ok'); r++; }
+    else { if (sel) sel.classList.add('no'); if (correct) correct.classList.add('ok'); }
+  });
+  recordResult(act, r, t);
+  showFb(btn, r, t);
+}
+
+function checkTypeChips(btn) {
+  const act = btn.closest('.activity');
+  const groups = act.querySelectorAll('.mc-group');
+  let r = 0, t = groups.length;
+  groups.forEach(grp => {
+    grp.querySelectorAll('.type-chip').forEach(c => c.classList.remove('ok','no'));
+    const sel = grp.querySelector('.type-chip.sel');
+    const correct = grp.querySelector('.type-chip[data-correct="true"]');
+    if (sel && sel.dataset.correct === 'true') { sel.classList.add('ok'); r++; }
+    else { if (sel) sel.classList.add('no'); if (correct) correct.classList.add('ok'); }
+  });
+  recordResult(act, r, t);
+  showFb(btn, r, t);
+}
+
+function checkSentOpts(btn) {
+  const act = btn.closest('.activity');
+  const groups = act.querySelectorAll('.mc-group');
+  let r = 0, t = groups.length;
+  groups.forEach(grp => {
+    grp.querySelectorAll('.sent-opt').forEach(o => o.classList.remove('ok','no'));
+    const sel = grp.querySelector('.sent-opt.sel');
+    const correct = grp.querySelector('.sent-opt[data-correct="true"]');
+    if (sel && sel.dataset.correct === 'true') { sel.classList.add('ok'); r++; }
+    else { if (sel) sel.classList.add('no'); if (correct) correct.classList.add('ok'); }
+  });
+  recordResult(act, r, t);
+  showFb(btn, r, t);
+}
+
+document.getElementById('finBtn').addEventListener('click', () => {
+  const g = document.getElementById('score').textContent;
+  const tot = document.getElementById('total').textContent;
+  alert('💾 Progress saved! Exp Points: ' + g + ' / ' + tot);
+});
+</script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='punc-10-minecraft';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-punc.js"></script>
+</body>
+</html>

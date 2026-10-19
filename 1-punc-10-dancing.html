@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Punctuation Practice - Dancing Edition</title>
+<style>
+:root{--blue:#d42da7;--dark:#5e1349;--green:#3a9d3a;--red:#d8473f;--soft:#fbf4fa;--chip:#fbeaf5;--chipb:#f2bcdb;--gold:#f2b705;}
+*{box-sizing:border-box;}
+body{font-family:"Comic Sans MS","Segoe UI",Arial,sans-serif;margin:0;background:var(--soft);color:#3d2337;font-size:18px;line-height:1.6;}
+header{background:var(--dark);color:#fff;padding:12px 18px;position:sticky;top:0;z-index:5;}
+.hrow{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+header h1{margin:0;font-size:20px;}
+header p{margin:2px 0 0;opacity:.88;font-size:13px;}
+main{max-width:900px;margin:0 auto;padding:16px 14px 90px;}
+.card{background:#fff;border-radius:16px;box-shadow:0 3px 10px rgba(0,0,0,.08);padding:16px 18px;margin:16px 0;border-top:7px solid var(--blue);}
+.card h2{margin:.1em 0;color:var(--dark);font-size:19px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.tag{display:inline-block;background:var(--chip);color:var(--blue);border-radius:20px;padding:2px 10px;font-size:13px;font-weight:bold;margin-bottom:4px;}
+.instr{margin:4px 0 10px;font-size:16px;color:#555;}
+.activity{margin:25px 0;padding:12px;background:#fdf9fc;border-radius:12px;}
+.activity h3{margin:0 0 10px;font-size:17px;color:var(--dark);}
+.red-group{border-top-color:#e53935;}
+.yellow-group{border-top-color:#ffb300;}
+.green-group{border-top-color:#43a047;}
+.blue-group{border-top-color:#1e88e5;}
+.group-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.btn{font-family:inherit;font-size:16px;font-weight:bold;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:8px 16px;cursor:pointer;margin-top:7px;}
+.btn.ghost{background:#fff;color:var(--blue);border:2px solid var(--chipb);}
+.btn:hover{opacity:0.9;}
+.btn.small{font-size:14px;padding:5px 12px;margin:2px;}
+.btn.reset{background:#f0f0f0;color:#555;border:2px solid #ccc;font-size:14px;padding:5px 12px;margin:2px;}
+.spk{font-size:14px;background:#fff;color:var(--blue);border:2px solid var(--chipb);border-radius:20px;padding:2px 9px;cursor:pointer;margin-left:4px;}
+.spk:active{background:var(--chip);}
+.fb{font-weight:bold;margin:7px 0 0;min-height:20px;}
+.fb.ok{color:var(--green);}
+.fb.no{color:var(--red);}
+.q{margin:10px 0;padding:6px 0;border-bottom:1px solid #eef2f6;}
+.q:last-of-type{border-bottom:none;}
+.qnum{font-weight:bold;color:var(--blue);margin-right:4px;}
+.pick-q{margin:12px 0;padding:10px;background:#fff;border-radius:10px;border:1px solid #e0e8f4;}
+.pick-q .sent{font-size:17px;margin:0 0 8px;display:flex;align-items:center;flex-wrap:wrap;gap:6px;}
+.pick-chips{display:flex;gap:8px;flex-wrap:wrap;}
+.pick-chip{font-family:inherit;font-size:20px;font-weight:bold;background:var(--chip);border:2px solid var(--chipb);color:#1d3a5f;border-radius:10px;padding:6px 16px;cursor:pointer;transition:transform .1s;}
+.pick-chip:hover{transform:scale(1.08);}
+.pick-chip.sel{background:var(--gold);border-color:#c98f00;color:#3a2c00;}
+.pick-chip.ok{background:#eafaea;border-color:var(--green);}
+.pick-chip.no{background:#fdeceb;border-color:var(--red);}
+.insert-sentence{font-size:18px;line-height:2.2;margin:8px 0;padding:10px;background:#fff;border-radius:10px;border:1px solid #e0e8f4;}
+.ins-blank{display:inline-block;min-width:36px;text-align:center;border-bottom:2px solid var(--blue);padding:0 4px;margin:0 2px;cursor:pointer;font-weight:bold;color:var(--blue);font-size:20px;}
+.ins-blank.filled{color:#23303d;border-bottom-color:#aaa;}
+.ins-blank.ok{color:var(--green);border-bottom-color:var(--green);}
+.ins-blank.no{color:var(--red);border-bottom-color:var(--red);}
+.punc-bank{display:flex;gap:8px;flex-wrap:wrap;padding:8px;background:#f0f4f9;border-radius:10px;border:2px dashed var(--chipb);margin:8px 0;}
+.insert-chip{font-family:inherit;font-size:22px;font-weight:bold;background:var(--chip);border:2px solid var(--chipb);color:#1d3a5f;border-radius:10px;padding:6px 14px;cursor:pointer;transition:transform .1s;}
+.insert-chip:hover:not(:disabled){transform:scale(1.08);}
+.insert-chip.sel{background:var(--gold);border-color:#c98f00;color:#3a2c00;}
+.insert-chip.used{opacity:0.35;cursor:default;}
+.insert-chip:disabled{opacity:0.35;cursor:default;}
+.retype-wrong{font-size:17px;color:#a00;background:#fff4f4;border-left:4px solid var(--red);padding:6px 10px;border-radius:6px;margin:6px 0;}
+.retype-input{font-family:inherit;font-size:16px;padding:7px 10px;border:2px solid var(--chipb);border-radius:8px;width:100%;margin:5px 0;}
+.retype-input.ok{border-color:var(--green);background:#eafaea;}
+.retype-input.no{border-color:var(--red);background:#fdeceb;}
+.retype-hint{font-size:13px;color:#666;font-style:italic;margin:2px 0 6px;}
+.punc-select{font-family:inherit;font-size:17px;padding:3px 6px;border:2px solid var(--chipb);border-radius:7px;background:#fff;cursor:pointer;margin:0 2px;}
+.punc-select.ok{border-color:var(--green);background:#eafaea;}
+.punc-select.no{border-color:var(--red);background:#fdeceb;}
+.drop-sent{font-size:17px;line-height:2;margin:8px 0;padding:8px 10px;background:#fff;border-radius:10px;border:1px solid #e0e8f4;}
+.multiple-choice{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0;}
+.mc-option{background:#fff;border:2px solid var(--chipb);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:15px;flex:1;min-width:100px;text-align:center;transition:all .2s;}
+.mc-option:hover{background:var(--chip);}
+.mc-option.sel{background:var(--gold);border-color:#c98f00;}
+.mc-option.ok{background:#eafaea;border-color:var(--green);}
+.mc-option.no{background:#fdeceb;border-color:var(--red);}
+.mc-group{margin:12px 0;padding:10px;background:#fff;border-radius:10px;border:1px solid #e0e8f4;}
+.mc-group p{margin:0 0 8px;font-weight:bold;}
+.type-chips{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0;}
+.type-chip{font-family:inherit;font-size:15px;background:var(--chip);border:2px solid var(--chipb);color:#1d3a5f;border-radius:12px;padding:8px 16px;cursor:pointer;font-weight:bold;}
+.type-chip:hover{background:#d6e8fa;}
+.type-chip.sel{background:var(--gold);border-color:#c98f00;color:#3a2c00;}
+.type-chip.ok{background:#eafaea;border-color:var(--green);}
+.type-chip.no{background:#fdeceb;border-color:var(--red);}
+.sent-opts{display:flex;flex-direction:column;gap:8px;margin:8px 0;}
+.sent-opt{background:#fff;border:2px solid var(--chipb);border-radius:10px;padding:9px 14px;cursor:pointer;font-size:15px;text-align:left;}
+.sent-opt:hover{background:var(--chip);}
+.sent-opt.sel{background:var(--gold);border-color:#c98f00;}
+.sent-opt.ok{background:#eafaea;border-color:var(--green);}
+.sent-opt.no{background:#fdeceb;border-color:var(--red);}
+#scorebar{position:fixed;bottom:0;left:0;right:0;background:var(--dark);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:9px 16px;font-weight:bold;box-shadow:0 -2px 8px rgba(0,0,0,.2);gap:8px;flex-wrap:wrap;}
+.front-menu-page{display:flex;min-height:100vh;align-items:center;justify-content:center;padding:20px;background:var(--soft);}
+.front-menu-box{background:#fff;border-radius:20px;box-shadow:0 6px 24px rgba(0,0,0,.10);padding:44px 36px;text-align:center;max-width:540px;width:100%;}
+.front-menu-box h1{margin:0 0 8px;color:var(--dark);font-size:26px;}
+.front-menu-box .sub{margin:0 0 32px;color:#666;font-size:16px;line-height:1.5;}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.menu-btn{padding:30px 16px;border:none;border-radius:14px;font-family:inherit;font-size:18px;font-weight:bold;color:#fff;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 12px rgba(0,0,0,.15);}
+.menu-btn:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,.25);}
+.menu-btn.red{background:#e53935;}
+.menu-btn.yellow{background:#ffb300;color:#333;}
+.menu-btn.green{background:#43a047;}
+.menu-btn.blue{background:#1e88e5;}
+.back-btn{font-family:inherit;font-size:14px;background:#f0f0f0;color:#555;border:none;border-radius:8px;padding:7px 15px;cursor:pointer;margin-bottom:14px;display:inline-block;}
+.back-btn:hover{background:#ddd;}
+.words-box{background:#f9f9fb;padding:12px 15px;border-radius:8px;margin-bottom:15px;}
+.words-box p{color:var(--dark);font-weight:bold;margin:0;}
+@media(max-width:480px){.menu-btn{font-size:15px;padding:22px 10px;}.type-chips{gap:6px;}.type-chip{font-size:13px;padding:6px 10px;}}
+</style>
+</head>
+<body>
+
+<div id="front-menu">
+<div class="front-menu-page">
+<div class="front-menu-box">
+  <h1>💃 Dance Punctuation Practice</h1>
+  <p class="sub">Capitals · End Punctuation · Commas · Dialogue<br>Select your studio ensemble to start.</p>
+  <div class="menu-grid">
+    <button class="menu-btn red"    onclick="showGroup('red')">🔴 Red Group</button>
+    <button class="menu-btn yellow" onclick="showGroup('yellow')">🟡 Yellow Group</button>
+    <button class="menu-btn green"  onclick="showGroup('green')">🟢 Green Group</button>
+    <button class="menu-btn blue"   onclick="showGroup('blue')">🔵 Blue Group</button>
+  </div>
+</div>
+</div>
+</div>
+
+<header id="main-header" style="display:none">
+<div class="hrow">
+  <div>
+    <h1>💃 Dance Punctuation Practice</h1>
+    <p>Capitals · End Punctuation · Choreography Commas · Stage Chat · Style Selection</p>
+  </div>
+  <button class="btn ghost" id="soundBtn" style="background:#fff;font-size:14px;padding:5px 10px">🔊 Sound: ON</button>
+</div>
+</header>
+
+<main id="main-content" style="display:none">
+
+<div class="card red-group" id="grp-red">
+<button class="back-btn" onclick="backToMenu()">← Back to Ensemble Selection</button>
+<div class="group-header">
+  <div><span class="tag">Studio Warmup</span><h2>🔴 Red Ensemble - Studio Basics</h2></div>
+</div>
+<div class="words-box"><p>📌 Focus: Starting capitals · Full stops · Question marks · Routine cues · Basic statements</p></div>
+
+<div class="activity">
+  <h3>1. Pick the Routine End Punctuation <button class="spk" onclick="speak('Activity one. Listen to each sentence. Tap the correct punctuation mark to go at the end.')">🔊 Listen</button></h3>
+  <p class="instr">Listen to the instructor. Tap the correct punctuation mark for the end.</p>
+
+  <div class="pick-q" data-ans=".">
+    <p class="sent"><button class="spk" onclick="speak('the music is playing')">🔊</button> The music is playing ___</p>
+    <div class="pick-chips"><button class="pick-chip">.</button><button class="pick-chip">?</button><button class="pick-chip">!</button></div>
+  </div>
+  <div class="pick-q" data-ans="?">
+    <p class="sent"><button class="spk" onclick="speak('where are my ballet shoes')">🔊</button> Where are my ballet shoes ___</p>
+    <div class="pick-chips"><button class="pick-chip">.</button><button class="pick-chip">?</button><button class="pick-chip">!</button></div>
+  </div>
+  <div class="pick-q" data-ans="!">
+    <p class="sent"><button class="spk" onclick="speak('hold that pose')">🔊</button> Hold that pose ___</p>
+    <div class="pick-chips"><button class="pick-chip">.</button><button class="pick-chip">?</button><button class="pick-chip">!</button></div>
+  </div>
+  <div class="pick-q" data-ans="!">
+    <p class="sent"><button class="spk" onclick="speak('watch your step')">🔊</button> Watch your step ___</p>
+    <div class="pick-chips"><button class="pick-chip">.</button><button class="pick-chip">?</button><button class="pick-chip">!</button></div>
+  </div>
+  <div class="pick-q" data-ans="?">
+    <p class="sent"><button class="spk" onclick="speak('can you hear the beat')">🔊</button> Can you hear the beat ___</p>
+    <div class="pick-chips"><button class="pick-chip">.</button><button class="pick-chip">?</button><button class="pick-chip">!</button></div>
+  </div>
+  <button class="btn small" onclick="checkPick(this)">Check</button><p class="fb"></p>
+</div>
+
+<div class="activity">
+  <h3>2. Fix the Choreography Sheet <button class="spk" onclick="speak('Activity two. These sentences have mistakes. Type them correctly. Remember to start with a capital letter and end with the correct punctuation mark.')">🔊 Listen</button></h3>
+  <p class="instr">These notes have errors. Type them correctly. Use a capital letter at the start and proper end spacing.</p>
+
+  <div class="q">
+    <span class="qnum">1)</span>
+    <button class="spk" onclick="speak('i love dancing')">🔊</button>
+    <div class="retype-wrong">i love dancing</div>
+    <input type="text" class="retype-input" data-ans="I love dancing." placeholder="Type the correct sentence here...">
+  </div>
+  <div class="q">
+    <span class="qnum">2)</span>
+    <button class="spk" onclick="speak('my partner is called mia')">🔊</button>
+    <div class="retype-wrong">my partner is called mia</div>
+    <input type="text" class="retype-input" data-ans="My partner is called Mia." placeholder="Type the correct sentence here...">
+  </div>
+  <div class="q">
+    <span class="qnum">3)</span>
+    <button class="spk" onclick="speak('the stage is very big')">🔊</button>
+    <div class="retype-wrong">the stage is very big</div>
+    <input type="text" class="retype-input" data-ans="The stage is very big." placeholder="Type the correct sentence here...">
+  </div>
+  <div class="q">
+    <span class="qnum">4)</span>
+    <button class="spk" onclick="speak('do we bow now')">🔊</button>
+    <div class="retype-wrong">do we bow now</div>
+    <input type="text" class="retype-input" data-ans="Do we bow now?" placeholder="Type the correct sentence here...">
+  </div>
+  <button class="btn small" onclick="checkRetype(this)">Check</button><p class="fb"></p>
+</div>
+
+</div>
+
+<div class="card yellow-group" id="grp-yellow">
+<button class="back-btn" onclick="backToMenu()">← Back to Ensemble Selection</button>
+<div class="group-header">
+  <div><span class="tag">Choreography Level</span><h2>🟡 Yellow Ensemble - Performance Lists</h2></div>
+</div>
+<div class="words-box"><p>📌 Focus: Capitals (style genres, days) · Shoe lists · Style descriptions</p></div>
+
+<div class="activity">
+  <h3>1. Which Dance Style Capitalises? <button class="spk" onclick="speak('Activity two. Look at each sentence. Choose the word that needs a capital letter.')">🔊 Listen</button></h3>
+  <p class="instr">Choose the day or genre name requiring a capital letter.</p>
+
+  <div class="mc-group">
+    <p><button class="spk" onclick="speak('every tuesday we perform jazz')">🔊</button> every <u>tuesday</u> we perform jazz</p>
+    <div class="multiple-choice">
+      <button class="mc-option" data-correct="false">every</button>
+      <button class="mc-option" data-correct="true">tuesday</button>
+      <button class="mc-option" data-correct="false">perform</button>
+    </div>
+  </div>
+  <div class="mc-group">
+    <p><button class="spk" onclick="speak('our next show is in december')">🔊</button> our next show is in <u>december</u></p>
+    <div class="multiple-choice">
+      <button class="mc-option" data-correct="false">show</button>
+      <button class="mc-option" data-correct="false">next</button>
+      <button class="mc-option" data-correct="true">december</button>
+    </div>
+  </div>
+  <div class="mc-group">
+    <p><button class="spk" onclick="speak('the new teacher is mr jones')">🔊</button> the new teacher is mr <u>jones</u></p>
+    <div class="multiple-choice">
+      <button class="mc-option" data-correct="false">teacher</button>
+      <button class="mc-option" data-correct="true">jones</button>
+      <button class="mc-option" data-correct="false">new</button>
+    </div>
+  </div>
+  <button class="btn small" onclick="checkMC(this)">Check</button><p class="fb"></p>
+</div>
+
+<div class="activity">
+  <h3>2. Costume Checklist - Which Sentence is Correct? <button class="spk" onclick="speak('Activity three. Choose the sentence that has the commas in the right places.')">🔊 Listen</button></h3>
+  <p class="instr">Choose the attire list sentence with correct comma usage.</p>
+
+  <div class="mc-group">
+    <p><button class="spk" onclick="speak('I need tap shoes, tights and a tutu.')">🔊</button> <strong>Costume Bag List:</strong></p>
+    <div class="sent-opts">
+      <button class="sent-opt" data-correct="false" onclick="selSentOpt(this)">I need tap shoes tights and a tutu.</button>
+      <button class="sent-opt" data-correct="true"  onclick="selSentOpt(this)">I need tap shoes, tights and a tutu.</button>
+      <button class="sent-opt" data-correct="false" onclick="selSentOpt(this)">I need tap shoes, tights, and, a tutu.</button>
+    </div>
+  </div>
+  <div class="mc-group">
+    <p><button class="spk" onclick="speak('Bring water, a towel and a snack.')">🔊</button> <strong>Rehearsal Bag List:</strong></p>
+    <div class="sent-opts">
+      <button class="sent-opt" data-correct="false" onclick="selSentOpt(this)">Bring water a towel and a snack.</button>
+      <button class="sent-opt" data-correct="true"  onclick="selSentOpt(this)">Bring water, a towel and a snack.</button>
+      <button class="sent-opt" data-correct="false" onclick="selSentOpt(this)">Bring water, a towel, and, a snack.</button>
+    </div>
+  </div>
+  <div class="mc-group">
+    <p><button class="spk" onclick="speak('We will stretch, jump and spin.')">🔊</button> <strong>Warmup Plan:</strong></p>
+    <div class="sent-opts">
+      <button class="sent-opt" data-correct="false" onclick="selSentOpt(this)">We will stretch jump and spin.</button>
+      <button class="sent-opt" data-correct="false" onclick="selSentOpt(this)">We will stretch, jump, and, spin.</button>
+      <button class="sent-opt" data-correct="true"  onclick="selSentOpt(this)">We will stretch, jump and spin.</button>
+    </div>
+  </div>
+  <button class="btn small" onclick="checkSentOpts(this)">Check</button><p class="fb"></p>
+</div>
+
+</div>
+
+<div class="card green-group" id="grp-green">
+<button class="back-btn" onclick="backToMenu()">← Back to Ensemble Selection</button>
+<div class="group-header">
+  <div><span class="tag">Stage Rehearsal</span><h2>🟢 Green Ensemble - Backstage Dialogue</h2></div>
+</div>
+<div class="words-box"><p>📌 Focus: Theatre venues · Move combos · Backstage dialogue quotes</p></div>
+
+<div class="activity">
+  <h3>1. Punctuate the Step Combination <button class="spk" onclick="speak('Activity one. This sentence has four empty spaces. Select a punctuation chip, then tap the correct blank to place it.')">🔊 Listen</button></h3>
+  <p class="instr">Place sequence commas and final markers using the bank.</p>
+  <div class="insert-sentence" id="ins-green">
+    We will leap<span class="ins-blank" data-ans="," data-id="g1">___</span>
+    turn<span class="ins-blank" data-ans="," data-id="g2">___</span>
+    slide<span class="ins-blank" data-ans="," data-id="g3">___</span>
+    and bow<span class="ins-blank" data-ans="." data-id="g4">___</span>
+  </div>
+  <div class="punc-bank" id="bank-green">
+    <button class="insert-chip" data-bank="green">,</button>
+    <button class="insert-chip" data-bank="green">,</button>
+    <button class="insert-chip" data-bank="green">,</button>
+    <button class="insert-chip" data-bank="green">.</button>
+    <button class="insert-chip" data-bank="green">!</button>
+    <button class="insert-chip" data-bank="green">?</button>
+  </div>
+  <button class="btn small" onclick="checkInsert(this)">Check</button>
+  <button class="btn reset" onclick="resetInsert(this)">Reset</button>
+  <p class="fb"></p>
+</div>
+
+<div class="activity">
+  <h3>2. Retype Backstage Feedback <button class="spk" onclick="speak('Activity two. These dialogue sentences are missing speech marks, capitals and punctuation. Type them correctly.')">🔊 Listen</button></h3>
+  <p class="instr">Format the spoken critique with quotation layout.</p>
+
+  <div class="q">
+    <span class="qnum">1)</span>
+    <button class="spk" onclick="speak('point your toes said anna')">🔊</button>
+    <div class="retype-wrong">point your toes said anna</div>
+    <input type="text" class="retype-input" data-ans='"Point your toes," said Anna.' placeholder='Type correctly with speech marks...'>
+  </div>
+  <div class="q">
+    <span class="qnum">2)</span>
+    <button class="spk" onclick="speak('watch the timing called the director')">🔊</button>
+    <div class="retype-wrong">watch the timing called the director</div>
+    <input type="text" class="retype-input" data-ans='"Watch the timing," called the director.' placeholder='Type correctly with speech marks...'>
+  </div>
+  <div class="q">
+    <span class="qnum">3)</span>
+    <button class="spk" onclick="speak('i love this routine whispered tom')">🔊</button>
+    <div class="retype-wrong">i love this routine whispered tom</div>
+    <input type="text" class="retype-input" data-ans='"I love this routine," whispered Tom.' placeholder='Type correctly with speech marks...'>
+  </div>
+  <button class="btn small" onclick="checkRetype(this)">Check</button><p class="fb"></p>
+</div>
+
+<div class="activity">
+  <h3>3. Stage Instructions - Commas <button class="spk" onclick="speak('Activity three. Use the dropdown menus to choose the correct punctuation.')">🔊 Listen</button></h3>
+  <p class="instr">Insert necessary commas following introductory backstage cues.</p>
+
+  <div class="drop-sent q" data-ans=",">
+    <button class="spk" onclick="speak('Before you enter the stage, make sure your microphone is on.')">🔊</button>
+    Before you enter the stage<select class="punc-select"><option value="">___</option><option value=",">,</option><option value=".">.</option></select> make sure your microphone is on.
+  </div>
+  <div class="drop-sent q" data-ans=",">
+    <button class="spk" onclick="speak('When the red light flashes, move to your starting positions.')">🔊</button>
+    When the red light flashes<select class="punc-select"><option value="">___</option><option value=",">,</option><option value=".">.</option></select> move to your starting positions.
+  </div>
+  <button class="btn small" onclick="checkDropdown(this)">Check</button><p class="fb"></p>
+</div>
+
+</div>
+
+<div class="card blue-group" id="grp-blue">
+<button class="back-btn" onclick="backToMenu()">← Back to Ensemble Selection</button>
+<div class="group-header">
+  <div><span class="tag">Grand Finale</span><h2>🔵 Blue Ensemble - Professional Showcase Reviews</h2></div>
+</div>
+<div class="words-box"><p>📌 Focus: Advanced punctuation · Full reviews · Complex sentences</p></div>
+
+<div class="activity">
+  <h3>1. Showcase Dropdowns - Commas after Openers <button class="spk" onclick="speak('Activity one. Insert necessary commas following long initial clauses.')">🔊 Listen</button></h3>
+  <p class="instr">Insert necessary commas following long initial clauses.</p>
+
+  <div class="drop-sent q" data-ans=",">
+    <button class="spk" onclick="speak('With breathtaking precision and flawless technique, the lead ballerina completed the final pirouette.')">🔊</button>
+    With breathtaking precision and flawless technique<select class="punc-select"><option value="">___</option><option value=",">,</option><option value=".">.</option></select> the lead ballerina completed the final pirouette.
+  </div>
+  <div class="drop-sent q" data-ans=",">
+    <button class="spk" onclick="speak('Despite the sudden change in the musical tempo, the ensemble remained perfectly synchronised.')">🔊</button>
+    Despite the sudden change in the musical tempo<select class="punc-select"><option value="">___</option><option value=",">,</option><option value=".">.</option></select> the ensemble remained perfectly synchronised.
+  </div>
+  <button class="btn small" onclick="checkDropdown(this)">Check</button><p class="fb"></p>
+</div>
+
+<div class="activity">
+  <h3>2. Reviewer's End Marks <button class="spk" onclick="speak('Activity two. Select the appropriate end punctuation for these complex reviewer comments.')">🔊 Listen</button></h3>
+  <p class="instr">Select the appropriate end punctuation for these complex reviewer comments.</p>
+
+  <div class="pick-q" data-ans="!">
+    <p class="sent"><button class="spk" onclick="speak('what an absolutely extraordinary display of athleticism and grace')">🔊</button> What an absolutely extraordinary display of athleticism and grace ___</p>
+    <div class="pick-chips"><button class="pick-chip">.</button><button class="pick-chip">?</button><button class="pick-chip">!</button></div>
+  </div>
+  <div class="pick-q" data-ans="?">
+    <p class="sent"><button class="spk" onclick="speak('could this be the most innovative choreography seen on a modern stage this decade')">🔊</button> Could this be the most innovative choreography seen on a modern stage this decade ___</p>
+    <div class="pick-chips"><button class="pick-chip">.</button><button class="pick-chip">?</button><button class="pick-chip">!</button></div>
+  </div>
+  <div class="pick-q" data-ans=".">
+    <p class="sent"><button class="spk" onclick="speak('the lighting design perfectly complemented the sombre mood of the second act')">🔊</button> The lighting design perfectly complemented the sombre mood of the second act ___</p>
+    <div class="pick-chips"><button class="pick-chip">.</button><button class="pick-chip">?</button><button class="pick-chip">!</button></div>
+  </div>
+  <button class="btn small" onclick="checkPick(this)">Check</button><p class="fb"></p>
+</div>
+
+<div class="activity">
+  <h3>3. Capitalisation in Reviews <button class="spk" onclick="speak('Activity three. Identify the specific noun that requires a capital letter in these formal reviews.')">🔊 Listen</button></h3>
+  <p class="instr">Identify the specific proper noun that requires a capital letter in these formal reviews.</p>
+
+  <div class="mc-group">
+    <p><button class="spk" onclick="speak('the critics from the herald praised the opening act.')">🔊</button> the critics from the <u>herald</u> praised the opening act.</p>
+    <div class="multiple-choice">
+      <button class="mc-option" data-correct="false">critics</button>
+      <button class="mc-option" data-correct="true">herald</button>
+      <button class="mc-option" data-correct="false">praised</button>
+    </div>
+  </div>
+  <div class="mc-group">
+    <p><button class="spk" onclick="speak('their performance of the nutcracker was truly magical.')">🔊</button> their performance of the <u>nutcracker</u> was truly magical.</p>
+    <div class="multiple-choice">
+      <button class="mc-option" data-correct="false">performance</button>
+      <button class="mc-option" data-correct="true">nutcracker</button>
+      <button class="mc-option" data-correct="false">magical</button>
+    </div>
+  </div>
+  <button class="btn small" onclick="checkMC(this)">Check</button><p class="fb"></p>
+</div>
+
+<div class="activity">
+  <h3>4. The Perfect Review Sentence <button class="spk" onclick="speak('Activity four. Choose the review sentence with flawless punctuation and comma placement.')">🔊 Listen</button></h3>
+  <p class="instr">Choose the review sentence with flawless punctuation and comma placement.</p>
+
+  <div class="mc-group">
+    <p><button class="spk" onclick="speak('The director, the choreographer and the dancers celebrated backstage.')">🔊</button> <strong>Review Excerpt:</strong></p>
+    <div class="sent-opts">
+      <button class="sent-opt" data-correct="false" onclick="selSentOpt(this)">The director, the choreographer and the dancers, celebrated backstage.</button>
+      <button class="sent-opt" data-correct="true"  onclick="selSentOpt(this)">The director, the choreographer and the dancers celebrated backstage.</button>
+      <button class="sent-opt" data-correct="false" onclick="selSentOpt(this)">The director the choreographer, and the dancers celebrated backstage.</button>
+    </div>
+  </div>
+  <div class="mc-group">
+    <p><button class="spk" onclick="speak('If you want to master the routine, you must practise daily.')">🔊</button> <strong>Advice Column:</strong></p>
+    <div class="sent-opts">
+      <button class="sent-opt" data-correct="true"  onclick="selSentOpt(this)">If you want to master the routine, you must practise daily.</button>
+      <button class="sent-opt" data-correct="false" onclick="selSentOpt(this)">If you want to master the routine you, must practise daily.</button>
+      <button class="sent-opt" data-correct="false" onclick="selSentOpt(this)">If you want, to master the routine you must practise daily.</button>
+    </div>
+  </div>
+  <button class="btn small" onclick="checkSentOpts(this)">Check</button><p class="fb"></p>
+</div>
+
+<div class="activity">
+  <h3>5. Punctuate the Grand Finale <button class="spk" onclick="speak('Activity five. Place sequence commas and final markers into this review paragraph.')">🔊 Listen</button></h3>
+  <p class="instr">Place sequence commas and final markers into this review paragraph.</p>
+  <div class="insert-sentence" id="ins-blue">
+    The curtain fell<span class="ins-blank" data-ans="," data-id="b1">___</span>
+    the audience erupted into cheers<span class="ins-blank" data-ans="," data-id="b2">___</span>
+    and the dancers smiled brightly<span class="ins-blank" data-ans="." data-id="b3">___</span>
+    What a night<span class="ins-blank" data-ans="!" data-id="b4">___</span>
+  </div>
+  <div class="punc-bank" id="bank-blue">
+    <button class="insert-chip" data-bank="blue">,</button>
+    <button class="insert-chip" data-bank="blue">,</button>
+    <button class="insert-chip" data-bank="blue">.</button>
+    <button class="insert-chip" data-bank="blue">!</button>
+    <button class="insert-chip" data-bank="blue">?</button>
+  </div>
+  <button class="btn small" onclick="checkInsert(this)">Check</button>
+  <button class="btn reset" onclick="resetInsert(this)">Reset</button>
+  <p class="fb"></p>
+</div>
+
+<div class="activity">
+  <h3>6. Edit the Director's Final Notes <button class="spk" onclick="speak('Activity six. Format these advanced review quotes with perfect quotation marks, capitals and punctuation.')">🔊 Listen</button></h3>
+  <p class="instr">Format these advanced review quotes with perfect quotation marks, capitals and punctuation.</p>
+
+  <div class="q">
+    <span class="qnum">1)</span>
+    <button class="spk" onclick="speak('this is a modern masterpiece wrote the reviewer')">🔊</button>
+    <div class="retype-wrong">this is a modern masterpiece wrote the reviewer</div>
+    <input type="text" class="retype-input" data-ans='"This is a modern masterpiece," wrote the reviewer.' placeholder='Type correctly with speech marks...'>
+  </div>
+  <div class="q">
+    <span class="qnum">2)</span>
+    <button class="spk" onclick="speak('the performance at the sydney opera house was breathtaking')">🔊</button>
+    <div class="retype-wrong">the performance at the sydney opera house was breathtaking</div>
+    <input type="text" class="retype-input" data-ans='The performance at the Sydney Opera House was breathtaking.' placeholder='Type correctly...'>
+  </div>
+  <button class="btn small" onclick="checkRetype(this)">Check</button><p class="fb"></p>
+</div>
+
+</div>
+</main>
+
+<div id="scorebar" style="display:none">
+  <span>⭐ Technique Score: <span id="score">0</span> / <span id="total">0</span></span>
+  <button class="btn" id="finBtn" style="background:var(--gold);color:#3a2c00;margin:0;">Conclude Performance &amp; Hear Score</button>
+</div>
+
+<script>
+function showGroup(color) {
+  document.getElementById('front-menu').style.display = 'none';
+  document.getElementById('main-header').style.display = 'block';
+  document.getElementById('main-content').style.display = 'block';
+  document.getElementById('scorebar').style.display = 'flex';
+  document.querySelectorAll('.card').forEach(c => c.style.display = 'none');
+  document.getElementById('grp-' + color).style.display = 'block';
+  window.scrollTo(0, 0);
+}
+function backToMenu() {
+  document.getElementById('front-menu').style.display = 'block';
+  document.getElementById('main-header').style.display = 'none';
+  document.getElementById('main-content').style.display = 'none';
+  document.getElementById('scorebar').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+
+let muted = false;
+function speak(text) {
+  if (muted || !('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = 0.88;
+  u.lang = 'en-AU';
+  const voices = speechSynthesis.getVoices();
+  const preferred = voices.find(v => v.name.includes('William')) || voices.find(v => v.lang.startsWith('en-AU'));
+  if (preferred) u.voice = preferred;
+  speechSynthesis.speak(u);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.card').forEach(c => c.style.display = 'none');
+});
+
+document.getElementById('soundBtn').addEventListener('click', function() {
+  muted = !muted;
+  if (muted) speechSynthesis.cancel();
+  this.textContent = muted ? '🔇 Sound: OFF' : '🔊 Sound: ON';
+});
+
+const actResults = new WeakMap();
+function recordResult(activity, r, t) {
+  actResults.set(activity, { r, t });
+  updateScore();
+}
+function updateScore() {
+  let g = 0, tot = 0;
+  document.querySelectorAll('.activity').forEach(a => {
+    if (actResults.has(a)) { const x = actResults.get(a); g += x.r; tot += x.t; }
+  });
+  document.getElementById('score').textContent = g;
+  document.getElementById('total').textContent = tot;
+}
+function showFb(btn, r, t) {
+  const fb = btn.nextElementSibling;
+  const win = r === t;
+  fb.className = 'fb ' + (win ? 'ok' : 'no');
+  fb.textContent = (win ? '⭐ ' : '') + r + ' / ' + t + ' beats matching' + (win ? ' - stunning rhythm!' : ' - practise the combo again!');
+  if (win) speak('Choreography validated!');
+}
+
+document.addEventListener('click', e => {
+  const opt = e.target.closest('.mc-option');
+  if (opt) {
+    const grp = opt.closest('.mc-group, .multiple-choice');
+    grp.querySelectorAll('.mc-option').forEach(o => o.classList.remove('sel'));
+    opt.classList.add('sel');
+  }
+});
+
+document.addEventListener('click', e => {
+  const chip = e.target.closest('.type-chip');
+  if (chip) {
+    const grp = chip.closest('[data-type-group]');
+    grp.querySelectorAll('.type-chip').forEach(c => c.classList.remove('sel'));
+    chip.classList.add('sel');
+  }
+});
+
+function selSentOpt(btn) {
+  const grp = btn.closest('.mc-group');
+  grp.querySelectorAll('.sent-opt').forEach(o => o.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+document.addEventListener('click', e => {
+  const chip = e.target.closest('.pick-chip');
+  if (chip) {
+    const grp = chip.closest('.pick-q');
+    grp.querySelectorAll('.pick-chip').forEach(c => c.classList.remove('sel'));
+    chip.classList.add('sel');
+  }
+});
+
+function checkPick(btn) {
+  const act = btn.closest('.activity');
+  const qs = act.querySelectorAll('.pick-q');
+  let r = 0, t = qs.length;
+  qs.forEach(q => {
+    q.querySelectorAll('.pick-chip').forEach(c => c.classList.remove('ok','no'));
+    const sel = q.querySelector('.pick-chip.sel');
+    if (sel && sel.textContent.trim() === q.dataset.ans) {
+      sel.classList.add('ok'); r++;
+    } else {
+      if (sel) sel.classList.add('no');
+      q.querySelectorAll('.pick-chip').forEach(c => {
+        if (c.textContent.trim() === q.dataset.ans) c.classList.add('ok');
+      });
+    }
+  });
+  recordResult(act, r, t);
+  showFb(btn, r, t);
+}
+
+let _insertSel = null;
+document.addEventListener('click', e => {
+  const chip = e.target.closest('.insert-chip');
+  const blank = e.target.closest('.ins-blank');
+  if (chip && !chip.disabled) {
+    const act = chip.closest('.activity');
+    act.querySelectorAll('.insert-chip').forEach(c => c.classList.remove('sel'));
+    if (_insertSel === chip) { _insertSel = null; } 
+    else { chip.classList.add('sel'); _insertSel = chip; }
+    return;
+  }
+  if (blank && _insertSel) {
+    blank.textContent = _insertSel.textContent;
+    blank.dataset.filled = _insertSel.textContent.trim();
+    blank.classList.add('filled');
+    _insertSel.disabled = true;
+    _insertSel.classList.remove('sel');
+    _insertSel.classList.add('used');
+    _insertSel = null;
+    return;
+  }
+});
+
+function checkInsert(btn) {
+  const act = btn.closest('.activity');
+  const blanks = act.querySelectorAll('.ins-blank');
+  let r = 0, t = blanks.length;
+  blanks.forEach(b => {
+    b.classList.remove('ok','no');
+    if ((b.dataset.filled || '') === b.dataset.ans) { b.classList.add('ok'); r++; }
+    else b.classList.add('no');
+  });
+  recordResult(act, r, t);
+  showFb(btn, r, t);
+}
+
+function resetInsert(btn) {
+  const act = btn.closest('.activity');
+  act.querySelectorAll('.ins-blank').forEach(b => {
+    b.textContent = '___'; b.dataset.filled = ''; b.classList.remove('filled','ok','no');
+  });
+  act.querySelectorAll('.insert-chip').forEach(c => {
+    c.disabled = false; c.classList.remove('used','sel','ok','no');
+  });
+  _insertSel = null;
+}
+
+function checkRetype(btn) {
+  const act = btn.closest('.activity');
+  const inputs = act.querySelectorAll('.retype-input');
+  let r = 0, t = inputs.length;
+  inputs.forEach(i => {
+    i.classList.remove('ok','no');
+    if (i.value.trim() === i.dataset.ans) { i.classList.add('ok'); r++; }
+    else i.classList.add('no');
+  });
+  recordResult(act, r, t);
+  showFb(btn, r, t);
+}
+
+function checkDropdown(btn) {
+  const act = btn.closest('.activity');
+  const selects = act.querySelectorAll('.punc-select');
+  let r = 0, t = selects.length;
+  selects.forEach(s => {
+    s.classList.remove('ok','no');
+    const parent = s.closest('[data-ans]');
+    if (s.value === parent.dataset.ans) { s.classList.add('ok'); r++; }
+    else s.classList.add('no');
+  });
+  recordResult(act, r, t);
+  showFb(btn, r, t);
+}
+
+function checkMC(btn) {
+  const act = btn.closest('.activity');
+  const groups = act.querySelectorAll('.mc-group');
+  let r = 0, t = groups.length;
+  groups.forEach(grp => {
+    grp.querySelectorAll('.mc-option').forEach(o => o.classList.remove('ok','no'));
+    const sel = grp.querySelector('.mc-option.sel');
+    const correct = grp.querySelector('.mc-option[data-correct="true"]');
+    if (sel && sel.dataset.correct === 'true') { sel.classList.add('ok'); r++; }
+    else { if (sel) sel.classList.add('no'); if (correct) correct.classList.add('ok'); }
+  });
+  recordResult(act, r, t);
+  showFb(btn, r, t);
+}
+
+function checkTypeChips(btn) {
+  const act = btn.closest('.activity');
+  const groups = act.querySelectorAll('.mc-group');
+  let r = 0, t = groups.length;
+  groups.forEach(grp => {
+    grp.querySelectorAll('.type-chip').forEach(c => c.classList.remove('ok','no'));
+    const sel = grp.querySelector('.type-chip.sel');
+    const correct = grp.querySelector('.type-chip[data-correct="true"]');
+    if (sel && sel.dataset.correct === 'true') { sel.classList.add('ok'); r++; }
+    else { if (sel) sel.classList.add('no'); if (correct) correct.classList.add('ok'); }
+  });
+  recordResult(act, r, t);
+  showFb(btn, r, t);
+}
+
+function checkSentOpts(btn) {
+  const act = btn.closest('.activity');
+  const groups = act.querySelectorAll('.mc-group');
+  let r = 0, t = groups.length;
+  groups.forEach(grp => {
+    grp.querySelectorAll('.sent-opt').forEach(o => o.classList.remove('ok','no'));
+    const sel = grp.querySelector('.sent-opt.sel');
+    const correct = grp.querySelector('.sent-opt[data-correct="true"]');
+    if (sel && sel.dataset.correct === 'true') { sel.classList.add('ok'); r++; }
+    else { if (sel) sel.classList.add('no'); if (correct) correct.classList.add('ok'); }
+  });
+  recordResult(act, r, t);
+  showFb(btn, r, t);
+}
+
+document.getElementById('finBtn').addEventListener('click', () => {
+  const g = document.getElementById('score').textContent;
+  const tot = document.getElementById('total').textContent;
+  alert('✨ Showcase concluded! Score: ' + g + ' / ' + tot);
+});
+</script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='punc-10-dancing';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-punc.js"></script>
+</body>
+</html>
