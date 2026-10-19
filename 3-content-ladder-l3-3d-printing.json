@@ -1,0 +1,78 @@
+{
+ "title": "Persuasive Sentence Ladder – 3D Printing",
+ "vars": {
+  "blue": "#0072C6",
+  "dark": "#1a3a4a",
+  "green": "#3a9d3a",
+  "red": "#d8473f",
+  "soft": "#f0f6fb",
+  "chip": "#e0f0ff",
+  "chipb": "#90c4e8",
+  "gold": "#f2b705"
+ },
+ "h1": "🖨️ Persuasive Sentence Ladder – 3D Printing",
+ "hp": "Copy it in your book or type it on screen, then expand and improve one persuasive sentence at a time.",
+ "tag": "Interactive Writing",
+ "h2": "Build a persuasive sentence about 3D printing from Level 1 to Level 3",
+ "intro": "Tap a level to reveal it, then copy the sentence into your book or into the box. Students can compare how each version becomes more convincing.",
+ "levels": [
+  {
+   "label": "Level 1: Opinion",
+   "say": "Level 1. Copy the opinion into your book or into the box.",
+   "text": "Schools should have 3D printers.",
+   "ans": "Schools should have 3D printers.",
+   "ph": "Copy Level 1 here"
+  },
+  {
+   "label": "Level 2: Add a reason",
+   "say": "Level 2. Copy the sentence, then add a reason.",
+   "text": "Schools should have 3D printers because students can create real objects.",
+   "ans": "Schools should have 3D printers because students can create real objects.",
+   "ph": "Copy Level 2 here"
+  },
+  {
+   "label": "Level 3: Add persuasive language",
+   "say": "Level 3. Copy the sentence, then add persuasive language.",
+   "text": "Schools should definitely have 3D printers because students can create real objects and learn important skills.",
+   "ans": "Schools should definitely have 3D printers because students can create real objects and learn important skills.",
+   "ph": "Copy Level 3 here"
+  },
+  {
+   "label": "Full Sentence: Fully persuasive sentence",
+   "say": "Copy the fully persuasive sentence into your book or into the box.",
+   "text": "Schools should definitely have 3D printers, not just computers, because students can create real objects, learn important skills, and bring their ideas to life.",
+   "ans": "Schools should definitely have 3D printers, not just computers, because students can create real objects, learn important skills, and bring their ideas to life.",
+   "ph": "Copy the full sentence here"
+  }
+ ],
+ "bh": "Challenge: Put the persuasive sentence back together",
+ "bsay": "Challenge. Put the words in order to make the persuasive sentence.",
+ "bsmall": "Tap the chips in order to build the fully expanded sentence.",
+ "chips": [
+  "Schools",
+  "should",
+  "definitely",
+  "have",
+  "3D",
+  "printers,",
+  "not",
+  "just",
+  "computers,",
+  "because",
+  "students",
+  "can",
+  "create",
+  "real",
+  "objects,",
+  "learn",
+  "important",
+  "skills,",
+  "and",
+  "bring",
+  "their",
+  "ideas",
+  "to",
+  "life."
+ ],
+ "ans": "Schools should definitely have 3D printers, not just computers, because students can create real objects, learn important skills, and bring their ideas to life."
+}

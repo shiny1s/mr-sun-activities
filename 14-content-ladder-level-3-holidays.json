@@ -1,0 +1,78 @@
+{
+ "title": "Persuasive Sentence Ladder – School Holidays",
+ "vars": {
+  "blue": "#2E75B6",
+  "dark": "#1F3864",
+  "green": "#3a9d3a",
+  "red": "#d8473f",
+  "soft": "#f4f7fb",
+  "chip": "#eaf2fb",
+  "chipb": "#bcd6f2",
+  "gold": "#f2b705"
+ },
+ "h1": "🏖️ Persuasive Sentence Ladder – School Holidays",
+ "hp": "Copy it in your book or type it on screen, then expand and improve one persuasive sentence at a time.",
+ "tag": "Interactive Writing",
+ "h2": "Build a persuasive sentence about school holidays from Level 1 to Level 3",
+ "intro": "Tap a level to reveal it, then copy the sentence into your book or into the box. Students can compare how each version becomes more convincing.",
+ "levels": [
+  {
+   "label": "Level 1: Opinion",
+   "say": "Level 1. Copy the opinion into your book or into the box.",
+   "text": "School holidays should be 3 weeks long.",
+   "ans": "School holidays should be 3 weeks long.",
+   "ph": "Copy Level 1 here"
+  },
+  {
+   "label": "Level 2: Add a reason",
+   "say": "Level 2. Copy the sentence, then add a reason.",
+   "text": "School holidays should be 3 weeks long because students need more time to rest.",
+   "ans": "School holidays should be 3 weeks long because students need more time to rest.",
+   "ph": "Copy Level 2 here"
+  },
+  {
+   "label": "Level 3: Add persuasive language",
+   "say": "Level 3. Copy the sentence, then add persuasive language.",
+   "text": "School holidays should definitely be 3 weeks long because students need more time to rest and recharge.",
+   "ans": "School holidays should definitely be 3 weeks long because students need more time to rest and recharge.",
+   "ph": "Copy Level 3 here"
+  },
+  {
+   "label": "Full Sentence: Fully persuasive sentence",
+   "say": "Copy the fully persuasive sentence into your book or into the box.",
+   "text": "School holidays should definitely be 3 weeks long, not 2, because students need more time to rest, recharge, and come back ready to learn.",
+   "ans": "School holidays should definitely be 3 weeks long, not 2, because students need more time to rest, recharge, and come back ready to learn.",
+   "ph": "Copy the full sentence here"
+  }
+ ],
+ "bh": "Challenge: Put the persuasive sentence back together",
+ "bsay": "Challenge. Put the words in order to make the persuasive sentence.",
+ "bsmall": "Tap the chips in order to build the fully expanded sentence.",
+ "chips": [
+  "School",
+  "holidays",
+  "should",
+  "definitely",
+  "be",
+  "3",
+  "weeks",
+  "long,",
+  "not",
+  "2,",
+  "because",
+  "students",
+  "need",
+  "more",
+  "time",
+  "to",
+  "rest,",
+  "recharge,",
+  "and",
+  "come",
+  "back",
+  "ready",
+  "to",
+  "learn."
+ ],
+ "ans": "School holidays should definitely be 3 weeks long, not 2, because students need more time to rest, recharge, and come back ready to learn."
+}

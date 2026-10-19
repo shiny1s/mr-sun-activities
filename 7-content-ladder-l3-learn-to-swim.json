@@ -1,0 +1,78 @@
+{
+ "title": "Persuasive Sentence Ladder – Learn to Swim",
+ "vars": {
+  "blue": "#0284c7",
+  "dark": "#0369a1",
+  "green": "#16a34a",
+  "red": "#dc2626",
+  "soft": "#e0f2fe",
+  "chip": "#bae6fd",
+  "chipb": "#7dd3fc",
+  "gold": "#fde047"
+ },
+ "h1": "🌊 Persuasive Sentence Ladder – Learn to Swim",
+ "hp": "Copy it in your book or type it on screen, then expand and improve one persuasive sentence at a time.",
+ "tag": "Interactive Writing",
+ "h2": "Build a persuasive sentence about swimming from Level 1 to Level 3",
+ "intro": "Tap a level to reveal it, then copy the sentence into your book or into the box. Students can compare how each version becomes more convincing.",
+ "levels": [
+  {
+   "label": "Level 1: Opinion",
+   "say": "Level 1. Copy the opinion into your book or into the box.",
+   "text": "All students should learn to swim.",
+   "ans": "All students should learn to swim.",
+   "ph": "Copy Level 1 here"
+  },
+  {
+   "label": "Level 2: Add a reason",
+   "say": "Level 2. Copy the sentence, then add a reason.",
+   "text": "All students should learn to swim because it keeps them safe at the beach.",
+   "ans": "All students should learn to swim because it keeps them safe at the beach.",
+   "ph": "Copy Level 2 here"
+  },
+  {
+   "label": "Level 3: Add persuasive language",
+   "say": "Level 3. Copy the sentence, then add persuasive language.",
+   "text": "Every student absolutely must learn to swim because it keeps them safe at the beach.",
+   "ans": "Every student absolutely must learn to swim because it keeps them safe at the beach.",
+   "ph": "Copy Level 3 here"
+  },
+  {
+   "label": "Full Sentence: Fully persuasive sentence",
+   "say": "Copy the fully persuasive sentence into your book or into the box.",
+   "text": "Every student absolutely must learn to swim, especially in Australia, because it keeps them safe at the beach and is a vital life skill.",
+   "ans": "Every student absolutely must learn to swim, especially in Australia, because it keeps them safe at the beach and is a vital life skill.",
+   "ph": "Copy the full sentence here"
+  }
+ ],
+ "bh": "Challenge: Put the persuasive sentence back together",
+ "bsay": "Challenge. Put the words in order to make the persuasive sentence. Pay attention to punctuation!",
+ "bsmall": "Tap the chips in order to build the fully expanded sentence.",
+ "chips": [
+  "Every",
+  "student",
+  "absolutely",
+  "must",
+  "learn",
+  "to",
+  "swim,",
+  "especially",
+  "in",
+  "Australia,",
+  "because",
+  "it",
+  "keeps",
+  "them",
+  "safe",
+  "at",
+  "the",
+  "beach",
+  "and",
+  "is",
+  "a",
+  "vital",
+  "life",
+  "skill."
+ ],
+ "ans": "Every student absolutely must learn to swim, especially in Australia, because it keeps them safe at the beach and is a vital life skill."
+}

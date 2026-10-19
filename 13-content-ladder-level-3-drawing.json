@@ -1,0 +1,70 @@
+{
+ "title": "Persuasive Sentence Ladder – Drawing",
+ "vars": {
+  "blue": "#2E75B6",
+  "dark": "#1F3864",
+  "green": "#3a9d3a",
+  "red": "#d8473f",
+  "soft": "#f4f7fb",
+  "chip": "#eaf2fb",
+  "chipb": "#bcd6f2",
+  "gold": "#f2b705"
+ },
+ "h1": "🎨 Persuasive Sentence Ladder – Drawing",
+ "hp": "Copy it in your book or type it on screen, then expand and improve one persuasive sentence at a time.",
+ "tag": "Interactive Writing",
+ "h2": "Build a persuasive sentence from Level 1 to Level 3",
+ "intro": "Tap a level to reveal it, then copy the sentence into your book or into the box. Students can compare how each version becomes more convincing.",
+ "levels": [
+  {
+   "label": "Level 1: Opinion",
+   "say": "Read aloud: Level 1. Copy the opinion into your book or into the box.",
+   "text": "We should draw.",
+   "ans": "We should draw.",
+   "ph": "Copy Level 1 here"
+  },
+  {
+   "label": "Level 2: Add a reason",
+   "say": "Read aloud: Level 2. Copy the sentence, then add a reason.",
+   "text": "We should draw because it is creative.",
+   "ans": "We should draw because it is creative.",
+   "ph": "Copy Level 2 here"
+  },
+  {
+   "label": "Level 3: Add persuasive language",
+   "say": "Read aloud: Level 3. Copy the sentence, then add persuasive language.",
+   "text": "We should carefully draw because it is creative and fun.",
+   "ans": "We should carefully draw because it is creative and fun.",
+   "ph": "Copy Level 3 here"
+  },
+  {
+   "label": "Full Sentence: Fully persuasive sentence",
+   "say": "Read aloud: Copy the fully persuasive sentence into your book or into the box.",
+   "text": "We should carefully draw because it is creative, fun, and helps us show our ideas clearly.",
+   "ans": "We should carefully draw because it is creative, fun, and helps us show our ideas clearly.",
+   "ph": "Copy the full sentence here"
+  }
+ ],
+ "bh": "Challenge: Put the persuasive sentence back together",
+ "bsay": "Read aloud: Challenge. Put the words in order to make the persuasive sentence.",
+ "bsmall": "Tap the chips in order to build the fully expanded sentence.",
+ "chips": [
+  "We",
+  "should",
+  "carefully",
+  "draw",
+  "because",
+  "it",
+  "is",
+  "creative,",
+  "fun,",
+  "and",
+  "helps",
+  "us",
+  "show",
+  "our",
+  "ideas",
+  "clearly."
+ ],
+ "ans": "We should carefully draw because it is creative, fun, and helps us show our ideas clearly."
+}

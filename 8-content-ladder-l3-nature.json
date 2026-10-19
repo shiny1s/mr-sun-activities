@@ -1,0 +1,83 @@
+{
+ "title": "Persuasive Sentence Ladder - School Nature Garden",
+ "vars": {
+  "blue": "#2e7d32",
+  "dark": "#1b5e20",
+  "green": "#3a9d3a",
+  "red": "#d8473f",
+  "soft": "#f1f8e9",
+  "chip": "#dcedc8",
+  "chipb": "#aed581",
+  "gold": "#ffca28"
+ },
+ "h1": "🌿 Persuasive Sentence Ladder - School Nature Garden",
+ "hp": "Copy it in your book or type it on screen, then expand and improve one persuasive sentence at a time.",
+ "tag": "Interactive Writing",
+ "h2": "Build a persuasive sentence about school gardens from Level 1 to Level 3",
+ "intro": "Tap a level to reveal it, then copy the sentence into your book or into the box. Students can compare how each version becomes more convincing.",
+ "levels": [
+  {
+   "label": "Level 1: Opinion",
+   "say": "Level 1. Copy the opinion into your book or into the box.",
+   "text": "We should plant a greener garden at our school.",
+   "ans": "We should plant a greener garden at our school.",
+   "ph": "Copy Level 1 here"
+  },
+  {
+   "label": "Level 2: Add a reason",
+   "say": "Level 2. Copy the sentence, then add a reason.",
+   "text": "We should plant a greener garden at our school because it will attract native animals and bugs.",
+   "ans": "We should plant a greener garden at our school because it will attract native animals and bugs.",
+   "ph": "Copy Level 2 here"
+  },
+  {
+   "label": "Level 3: Add persuasive language",
+   "say": "Level 3. Copy the sentence, then add persuasive language.",
+   "text": "We definitely must plant a greener garden at our school because it will attract fascinating native animals and helpful bugs.",
+   "ans": "We definitely must plant a greener garden at our school because it will attract fascinating native animals and helpful bugs.",
+   "ph": "Copy Level 3 here"
+  },
+  {
+   "label": "Full Sentence: Fully persuasive sentence",
+   "say": "Copy the fully persuasive sentence into your book or into the box.",
+   "text": "We definitely must plant a greener, native garden at our school, rather than just empty grass, because it will attract fascinating native animals and helpful bugs to our environment.",
+   "ans": "We definitely must plant a greener, native garden at our school, rather than just empty grass, because it will attract fascinating native animals and helpful bugs to our environment.",
+   "ph": "Copy the full sentence here"
+  }
+ ],
+ "bh": "Challenge: Put the persuasive sentence back together",
+ "bsay": "Challenge. Put the words in order to make the persuasive sentence.",
+ "bsmall": "Tap the chips in order to build the fully expanded sentence.",
+ "chips": [
+  "We",
+  "definitely",
+  "must",
+  "plant",
+  "a",
+  "greener,",
+  "native",
+  "garden",
+  "at",
+  "our",
+  "school,",
+  "rather",
+  "than",
+  "just",
+  "empty",
+  "grass,",
+  "because",
+  "it",
+  "will",
+  "attract",
+  "fascinating",
+  "native",
+  "animals",
+  "and",
+  "helpful",
+  "bugs",
+  "to",
+  "our",
+  "environment."
+ ],
+ "ans": "We definitely must plant a greener, native garden at our school, rather than just empty grass, because it will attract fascinating native animals and helpful bugs to our environment."
+}

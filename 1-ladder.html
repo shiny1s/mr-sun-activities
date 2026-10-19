@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sentence Ladder</title>
+<style>
+ :root{--blue:#2e75b6;--dark:#1f3864;--green:#3a9d3a;--red:#d8473f;--soft:#f4f7fb;--chip:#eaf2fb;--chipb:#bcd6f2;--gold:#ffca28}
+ *{box-sizing:border-box}
+ body{font-family:"Comic Sans MS","Segoe UI",Arial,sans-serif;margin:0;background:var(--soft);color:#23303d;font-size:19px;line-height:1.6}
+ header{background:var(--dark);color:#fff;padding:14px 28px;position:sticky;top:0;z-index:5}
+ .hrow{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+ h1{margin:0;font-size:24px} p{margin:4px 0 0}
+ .btn{font-family:inherit;font-size:17px;font-weight:bold;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:9px 16px;cursor:pointer}
+ .btn.ghost{background:#fff;color:var(--blue);border:2px solid var(--chipb)}
+ main{max-width:1240px;margin:0 auto;padding:18px 24px 110px}
+ .card{background:#fff;border-radius:16px;box-shadow:0 3px 10px rgba(0,0,0,.08);padding:18px 22px;margin:16px 0;border-top:7px solid var(--blue)}
+ .tag{display:inline-block;background:var(--chip);color:var(--dark);border-radius:20px;padding:2px 12px;font-size:14px;font-weight:bold}
+ .level{border:2px solid var(--chipb);border-radius:14px;padding:14px;margin:12px 0;background:#fcfdff}
+ .level h3{margin:0 0 8px;color:var(--dark);font-size:21px}
+ .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+ .sentence{flex:1;min-width:280px;background:#f8fbff;border:2px solid var(--chipb);border-radius:12px;padding:18px 24px;min-height:84px;font-size:20px;line-height:1.5;overflow-wrap:break-word}
+ #buildLine{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}
+ .sentence.ok{border-color:var(--green);background:#eafaea}.sentence.no{border-color:var(--red);background:#fdeceb}
+ .input{font-family:inherit;font-size:19px;padding:10px 12px;border:2px solid var(--chipb);border-radius:10px;flex:1;min-width:260px}
+ .input.ok{border-color:var(--green);background:#eafaea}.input.no{border-color:var(--red);background:#fdeceb}
+ .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;padding:12px;background:var(--soft);border-radius:10px;align-content:flex-start}
+ .chip{font-family:inherit;font-size:17px;background:var(--chip);border:2px solid var(--chipb);border-radius:12px;padding:5px 10px;cursor:pointer;user-select:none;white-space:nowrap;color:var(--dark);font-weight:bold}
+ .small{font-size:16px;opacity:.9}
+ .fb{font-size:16px;font-weight:bold;min-height:22px;margin-top:8px}.fb.ok{color:var(--green)}.fb.no{color:var(--red)}
+ #scorebar{position:fixed;bottom:0;left:0;right:0;background:var(--dark);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:10px 24px;font-weight:bold;box-shadow:0 -2px 8px rgba(0,0,0,.2);gap:8px;flex-wrap:wrap}
+ .hidden{display:none}
+ #mrsun-who{position:fixed;right:12px;bottom:64px;z-index:9000;background:#1f3864;color:#fff;padding:6px 12px;border-radius:14px;font:600 14px "Segoe UI",Arial,sans-serif;opacity:.92}
+ #mrsun-who a{margin-left:10px;color:#ffd24a;cursor:pointer;text-decoration:underline}
+</style></head><body>
+<header><div class="hrow"><div><h1 id="h1"></h1><p id="hp"></p></div><div><button class="btn ghost" id="soundBtn">🔊 Sound: ON</button></div></div></header>
+<main><div class="card" id="card"></div></main>
+<div id="scorebar"><span>⭐ First-try score: <span id="score">0</span> / <span id="total">0</span></span><button class="btn" id="finishBtn" style="background:var(--gold);color:#1f3864">Finish &amp; mark all</button></div>
+<script>
+window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};
+</script>
+<script src="tracker.js"></script>
+<script src="template-ladder.js"></script>
+</body></html>

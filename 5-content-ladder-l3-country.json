@@ -1,0 +1,73 @@
+{
+ "title": "Descriptive Sentence Ladder - PS5",
+ "vars": {
+  "blue": "#00439c",
+  "dark": "#101010",
+  "green": "#3a9d3a",
+  "red": "#d8473f",
+  "soft": "#f4f6f8",
+  "chip": "#e6f0fa",
+  "chipb": "#9bbfe6",
+  "gold": "#f2b705"
+ },
+ "h1": "🎮 Descriptive Sentence Ladder - PS5",
+ "hp": "Copy it in your book or type it on screen, then expand and improve one descriptive sentence at a time.",
+ "tag": "Interactive Writing",
+ "h2": "Build a descriptive sentence about the PS5 from Level 1 to Level 3",
+ "intro": "Tap a level to reveal it, then copy the sentence into your book or into the box. Students can compare how each version becomes more descriptive.",
+ "levels": [
+  {
+   "label": "Level 1: Base sentence",
+   "say": "Level 1. Copy the base sentence into your book or into the box.",
+   "text": "The PS5 is a gaming console.",
+   "ans": "The PS5 is a gaming console.",
+   "ph": "Copy Level 1 here"
+  },
+  {
+   "label": "Level 2: Add details",
+   "say": "Level 2. Copy the sentence, then add details about its speed.",
+   "text": "The PS5 is a powerful gaming console with a fast drive.",
+   "ans": "The PS5 is a powerful gaming console with a fast drive.",
+   "ph": "Copy Level 2 here"
+  },
+  {
+   "label": "Level 3: Add descriptive adjectives",
+   "say": "Level 3. Copy the sentence, then add descriptive adjectives about its look and speed.",
+   "text": "The sleek PS5 is a powerful gaming console with an incredibly fast drive.",
+   "ans": "The sleek PS5 is a powerful gaming console with an incredibly fast drive.",
+   "ph": "Copy Level 3 here"
+  },
+  {
+   "label": "Full Sentence: Fully descriptive sentence",
+   "say": "Copy the fully descriptive sentence into your book or into the box.",
+   "text": "The sleek, futuristic PS5 is a powerful gaming console with an incredibly fast drive that loads massive worlds instantly.",
+   "ans": "The sleek, futuristic PS5 is a powerful gaming console with an incredibly fast drive that loads massive worlds instantly.",
+   "ph": "Copy the full sentence here"
+  }
+ ],
+ "bh": "Challenge: Put the descriptive sentence back together",
+ "bsay": "Challenge. Put the words in order to make the descriptive sentence.",
+ "bsmall": "Tap the chips in order to build the fully expanded sentence.",
+ "chips": [
+  "The",
+  "sleek,",
+  "futuristic",
+  "PS5",
+  "is",
+  "a",
+  "powerful",
+  "gaming",
+  "console",
+  "with",
+  "an",
+  "incredibly",
+  "fast",
+  "drive",
+  "that",
+  "loads",
+  "massive",
+  "worlds",
+  "instantly."
+ ],
+ "ans": "The sleek, futuristic PS5 is a powerful gaming console with an incredibly fast drive that loads massive worlds instantly."
+}

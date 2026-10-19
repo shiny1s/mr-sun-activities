@@ -1,0 +1,83 @@
+{
+ "title": "Persuasive Sentence Ladder – Hello Kitty",
+ "vars": {
+  "blue": "#d63384",
+  "dark": "#7a0045",
+  "green": "#3a9d3a",
+  "red": "#d8473f",
+  "soft": "#fff0f7",
+  "chip": "#fce4f3",
+  "chipb": "#f0a8d0",
+  "gold": "#ffb7d5"
+ },
+ "h1": "🎀 Persuasive Sentence Ladder – Hello Kitty",
+ "hp": "Copy it in your book or type it on screen, then expand and improve one persuasive sentence at a time.",
+ "tag": "Interactive Writing",
+ "h2": "Build a persuasive sentence about Hello Kitty from Level 1 to Level 3",
+ "intro": "Tap a level to reveal it, then copy the sentence into your book or into the box. Students can compare how each version becomes more convincing.",
+ "levels": [
+  {
+   "label": "Level 1: Opinion",
+   "say": "Level 1. Copy the opinion into your book or into the box.",
+   "text": "Hello Kitty should have her own movie.",
+   "ans": "Hello Kitty should have her own movie.",
+   "ph": "Copy Level 1 here"
+  },
+  {
+   "label": "Level 2: Add a reason",
+   "say": "Level 2. Copy the sentence, then add a reason.",
+   "text": "Hello Kitty should have her own movie because she is loved by millions of fans.",
+   "ans": "Hello Kitty should have her own movie because she is loved by millions of fans.",
+   "ph": "Copy Level 2 here"
+  },
+  {
+   "label": "Level 3: Add persuasive language",
+   "say": "Level 3. Copy the sentence, then add persuasive language.",
+   "text": "Hello Kitty should definitely have her own movie because she is loved by millions of fans around the world.",
+   "ans": "Hello Kitty should definitely have her own movie because she is loved by millions of fans around the world.",
+   "ph": "Copy Level 3 here"
+  },
+  {
+   "label": "Full Sentence: Fully persuasive sentence",
+   "say": "Copy the fully persuasive sentence into your book or into the box.",
+   "text": "Hello Kitty should definitely have her own movie, not just a cartoon, because she is loved by millions of fans around the world and deserves a big screen story.",
+   "ans": "Hello Kitty should definitely have her own movie, not just a cartoon, because she is loved by millions of fans around the world and deserves a big screen story.",
+   "ph": "Copy the full sentence here"
+  }
+ ],
+ "bh": "Challenge: Put the persuasive sentence back together",
+ "bsay": "Challenge. Put the words in order to make the persuasive sentence.",
+ "bsmall": "Tap the chips in order to build the fully expanded sentence.",
+ "chips": [
+  "Hello",
+  "Kitty",
+  "should",
+  "definitely",
+  "have",
+  "her",
+  "own",
+  "movie,",
+  "not",
+  "just",
+  "a",
+  "cartoon,",
+  "because",
+  "she",
+  "is",
+  "loved",
+  "by",
+  "millions",
+  "of",
+  "fans",
+  "around",
+  "the",
+  "world",
+  "and",
+  "deserves",
+  "a",
+  "big",
+  "screen",
+  "story."
+ ],
+ "ans": "Hello Kitty should definitely have her own movie, not just a cartoon, because she is loved by millions of fans around the world and deserves a big screen story."
+}

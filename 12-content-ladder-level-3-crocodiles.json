@@ -1,0 +1,74 @@
+{
+ "title": "Persuasive Sentence Ladder – Crocodiles",
+ "vars": {
+  "blue": "#2E75B6",
+  "dark": "#1F3864",
+  "green": "#3a9d3a",
+  "red": "#d8473f",
+  "soft": "#f4f7fb",
+  "chip": "#eaf2fb",
+  "chipb": "#bcd6f2",
+  "gold": "#f2b705"
+ },
+ "h1": "🐊 Persuasive Sentence Ladder – Crocodiles",
+ "hp": "Copy it in your book or type it on screen, then expand and improve one persuasive sentence at a time.",
+ "tag": "Interactive Writing",
+ "h2": "Build a persuasive sentence about crocodiles from Level 1 to Level 3",
+ "intro": "Tap a level to reveal it, then copy the sentence into your book or into the box. Students can compare how each version becomes more convincing.",
+ "levels": [
+  {
+   "label": "Level 1: Opinion",
+   "say": "Level 1. Copy the opinion into your book or into the box.",
+   "text": "We should learn about crocodiles.",
+   "ans": "We should learn about crocodiles.",
+   "ph": "Copy Level 1 here"
+  },
+  {
+   "label": "Level 2: Add a reason",
+   "say": "Level 2. Copy the sentence, then add a reason.",
+   "text": "We should learn about crocodiles because they are amazing animals.",
+   "ans": "We should learn about crocodiles because they are amazing animals.",
+   "ph": "Copy Level 2 here"
+  },
+  {
+   "label": "Level 3: Add persuasive language",
+   "say": "Level 3. Copy the sentence, then add persuasive language.",
+   "text": "We should definitely learn about crocodiles because they are amazing, powerful animals.",
+   "ans": "We should definitely learn about crocodiles because they are amazing, powerful animals.",
+   "ph": "Copy Level 3 here"
+  },
+  {
+   "label": "Full Sentence: Fully persuasive sentence",
+   "say": "Copy the fully persuasive sentence into your book or into the box.",
+   "text": "We should definitely learn about crocodiles because they are amazing, powerful animals that play a crucial role in our ecosystem.",
+   "ans": "We should definitely learn about crocodiles because they are amazing, powerful animals that play a crucial role in our ecosystem.",
+   "ph": "Copy the full sentence here"
+  }
+ ],
+ "bh": "Challenge: Put the persuasive sentence back together",
+ "bsay": "Challenge. Put the words in order to make the persuasive sentence.",
+ "bsmall": "Tap the chips in order to build the fully expanded sentence.",
+ "chips": [
+  "We",
+  "should",
+  "definitely",
+  "learn",
+  "about",
+  "crocodiles",
+  "because",
+  "they",
+  "are",
+  "amazing,",
+  "powerful",
+  "animals",
+  "that",
+  "play",
+  "a",
+  "crucial",
+  "role",
+  "in",
+  "our",
+  "ecosystem."
+ ],
+ "ans": "We should definitely learn about crocodiles because they are amazing, powerful animals that play a crucial role in our ecosystem."
+}
