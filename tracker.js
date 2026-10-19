@@ -45,8 +45,8 @@
     return new Promise(function(resolve){
       var saved = sessionStorage.getItem('mrsun_student');
       if(saved){ try { student = JSON.parse(saved); addNav(); return resolve(student); } catch(e){} }
-      var ov = el('div', {id:'mrsun-pick', style:'position:fixed;inset:0;z-index:9999;background:#1F3864;display:flex;align-items:center;justify-content:center;font-family:Nunito,Comic Sans MS,Segoe UI,Arial,sans-serif'});
-      var box = el('div', {style:'background:#fff;border-radius:24px;padding:40px;max-width:520px;width:92%;text-align:center;box-shadow:0 12px 32px rgba(0,0,0,.3)'});
+      var ov = el('div', {id:'mrsun-pick', style:'position:fixed;inset:0;z-index:9999;background:#1F3864;display:flex;overflow:auto;font-family:Nunito,Comic Sans MS,Segoe UI,Arial,sans-serif'});
+      var box = el('div', {style:'background:#fff;border-radius:24px;padding:28px;margin:auto;max-width:520px;width:92%;text-align:center;box-shadow:0 12px 32px rgba(0,0,0,.3)'});
       ov.appendChild(box); document.body.appendChild(ov);
       function step1(msg){
         box.innerHTML = '<h1 style="margin:0 0 8px;color:#1F3864;font-size:30px">Who are you?</h1><p style="font-size:18px;margin:0 0 20px">Pick your name from the list.</p>'
@@ -55,7 +55,15 @@
           + '<button id="mrsun-next" style="margin-top:8px;font-size:20px;padding:12px 28px;border:0;border-radius:12px;background:#2E75B6;color:#fff;font-weight:800;cursor:pointer">Next</button>';
         var sel = box.querySelector('#mrsun-sel');
         load().then(function(list){
-          list.forEach(function(s){ sel.appendChild(el('option', {value:s.id}, esc(s.name))); });
+          var B={Carlos:1,Georgio:1,'Adam B':1,Sharbel:1,Issa:1,Elia:1,Peter:1,Arsen:1,Emeliano:1,'Adam M':1,Ali:1}, G={Sarah:1,Zainab:1,Liyana:1,Chelsea:1,Daniella:1,Eali:1,Mia:1,Kathy:1,Violet:1,Elina:1};
+          var grid = el('div', {}, ''); grid.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin:8px 0';
+          sel.style.display='none'; sel.parentNode.insertBefore(grid, sel);
+          list.slice().sort(function(a,b){ return a.name.localeCompare(b.name, 'en', {sensitivity:'base'}); }).forEach(function(s){
+            sel.appendChild(el('option', {value:s.id}, esc(s.name)));
+            var col = B[s.name] ? '#1d5fd1' : G[s.name] ? '#d8223f' : '#444';
+            var b = el('button', {type:'button'}, esc(s.name)); b.style.cssText='font-size:19px;font-weight:800;padding:10px 4px;border-radius:12px;border:3px solid '+col+';background:#fff;color:'+col+';cursor:pointer';
+            b.onclick=function(){ sel.value=s.id; [].forEach.call(grid.children,function(x){x.style.background='#fff';x.style.color=x.style.borderColor;}); b.style.background=col; b.style.color='#fff'; };
+            grid.appendChild(b); });
         }, function(){ box.querySelector('#mrsun-msg').textContent = 'Could not load the class list. Check the internet and refresh the page.'; });
         box.querySelector('#mrsun-next').onclick = function(){
           var id = sel.value; if(!id){ box.querySelector('#mrsun-msg').textContent = 'Pick your name first.'; return; }
