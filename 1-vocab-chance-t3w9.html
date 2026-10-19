@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chance &amp; Probability: Spinner Spin</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Helvetica Neue', Helvetica, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: #f4f4f9;
+      padding: 20px;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* ==========================================
+        FRONT MENU
+    ========================================== */
+    .front-menu {
+      background: white;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    .front-menu h1 { font-size: 2.2rem; color: #222; margin-top: 0; margin-bottom: 10px; }
+    .front-menu > p { font-size: 1.1rem; color: #666; margin-bottom: 35px; }
+
+    .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
+
+    .menu-button {
+      padding: 30px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    .menu-button:hover  { transform: translateY(-4px); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
+    .menu-button:active { transform: translateY(-2px); }
+
+    .red-btn         { background-color: #e53935; }
+    .red-btn:hover    { background-color: #c62828; }
+    .yellow-btn       { background-color: #ffb300; color: #333; }
+    .yellow-btn:hover { background-color: #ff9800; }
+    .green-btn        { background-color: #43a047; }
+    .green-btn:hover  { background-color: #2e7d32; }
+    .blue-btn         { background-color: #1e88e5; }
+    .blue-btn:hover   { background-color: #1565c0; }
+
+    /* ==========================================
+        GROUP VIEW SHELL
+    ========================================== */
+    #groupView { max-width: 900px; margin: 0 auto; }
+
+    .group-top-bar { height: 12px; border-radius: 8px 8px 0 0; }
+    .bar-red    { background: #e53935; }
+    .bar-yellow { background: #ffb300; }
+    .bar-green  { background: #43a047; }
+    .bar-blue   { background: #1e88e5; }
+
+    .group-header {
+      background: white;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .back-btn {
+      background: #f0f0f0;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      color: #444;
+      transition: background 0.2s;
+      font-family: inherit;
+    }
+    .back-btn:hover { background: #e0e0e0; }
+
+    .group-badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      color: white;
+    }
+    .badge-red    { background: #e53935; }
+    .badge-yellow { background: #ffb300; color: #333; }
+    .badge-green  { background: #43a047; }
+    .badge-blue   { background: #1e88e5; }
+
+    .speed-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.85rem;
+      color: #555;
+      font-weight: 500;
+    }
+    .speed-row select {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 0.85rem;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    /* -- Mode tabs -- */
+    .mode-tabs {
+      display: flex;
+      background: #f8f8f8;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    .mode-tab {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      background: transparent;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #555;
+      transition: all 0.15s;
+      font-family: inherit;
+      border-bottom: 4px solid transparent;
+      box-shadow: inset 0 -2px 0 rgba(0,0,0,0.05);
+    }
+    .mode-tab:hover { color: #111; background: rgba(0,0,0,0.05); }
+    .mode-tab.active { font-weight: 800; border-bottom-color: currentColor; background: white; }
+    .mode-tab.active.tab-red    { color: #c62828; background: #fff5f5; }
+    .mode-tab.active.tab-yellow { color: #856404; background: #fffdf0; }
+    .mode-tab.active.tab-green  { color: #1e4620; background: #f0fff4; }
+    .mode-tab.active.tab-blue   { color: #0d3b66; background: #f0f7ff; }
+
+    /* ==========================================
+        LEARN PANEL
+    ========================================== */
+    .learn-panel {
+      background: white;
+      padding: 24px;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .group-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #aaa;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .books-instruction {
+      background: #fff8e1;
+      border: 2px dashed #ffb300;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 1.5rem;
+      font-size: 15px;
+      color: #5d4037;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .books-instruction-icon { font-size: 22px; flex-shrink: 0; line-height: 1; }
+    .books-instruction-text { flex: 1; line-height: 1.5; }
+
+    .vocab-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 2rem;
+    }
+
+    .vocab-card {
+      padding: 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      border: 2px solid transparent;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      user-select: none;
+    }
+    .vocab-card:hover    { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .vocab-card.selected { border-color: #555; box-shadow: 0 0 0 3px rgba(0,0,0,0.07); }
+
+    .vocab-card.red-bg    { background: #FEE8E8; }
+    .vocab-card.yellow-bg { background: #FDF4E6; }
+    .vocab-card.green-bg  { background: #EDF7EF; }
+    .vocab-card.blue-bg   { background: #EEF4FD; }
+
+    .card-icon { font-size: 26px; margin-bottom: 6px; line-height: 1; }
+    .card-word { font-size: 15px; font-weight: 600; color: #222; }
+    .card-hint { font-size: 11px; color: #777; margin-top: 4px; }
+
+    /* -- Detail box -- */
+    .detail-box {
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 1.5rem 1.75rem;
+      border: 1px solid #e8e8e8;
+    }
+    .detail-box.hidden { display: none; }
+
+    .detail-word-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 1.25rem;
+    }
+
+    .detail-word { font-size: 26px; font-weight: 700; color: #111; }
+
+    .detail-section { margin-bottom: 1.25rem; }
+    .detail-section:last-child { margin-bottom: 0; }
+
+    .detail-label-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 0.45rem;
+    }
+    .detail-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #bbb;
+      font-weight: 700;
+    }
+
+    .sec-read-btn {
+      background: none;
+      border: 1px solid #ddd;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      font-size: 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      padding: 0;
+      flex-shrink: 0;
+      color: #888;
+    }
+    .sec-read-btn:hover    { background: #f0f0f0; border-color: #999; color: #333; }
+    .sec-read-btn.speaking { background: #333; border-color: #333; color: white; }
+
+    .detail-content { font-size: 15px; line-height: 1.75; color: #444; }
+
+    .example-box {
+      background: white;
+      border-left: 3px solid #378ADD;
+      padding: 9px 13px;
+      margin: 6px 0;
+      font-size: 14px;
+      color: #555;
+      border-radius: 0 6px 6px 0;
+      line-height: 1.6;
+      font-style: italic;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .fact-box {
+      background: white;
+      border-left: 3px solid #D69E2E;
+      padding: 9px 13px;
+      margin: 6px 0;
+      font-size: 14px;
+      color: #555;
+      border-radius: 0 6px 6px 0;
+      line-height: 1.6;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .tier-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .tier-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .tier-1 { background: #C6F6D5; color: #22543D; }
+    .tier-2 { background: #FEEBC8; color: #7B341E; }
+    .tier-3 { background: #E9D8FD; color: #44337A; }
+    .tier-why { font-size: 13px; color: #777; }
+
+    /* ==========================================
+        QUIZ PANEL
+    ========================================== */
+    .quiz-panel {
+      background: white;
+      padding: 24px;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .quiz-intro-text { font-size: 14px; color: #888; margin-bottom: 1.25rem; }
+
+    .quiz-progress { display: flex; gap: 7px; margin-bottom: 1.75rem; flex-wrap: wrap; align-items: center; }
+    .progress-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .progress-dot.unanswered { background: #e0e0e0; }
+    .progress-dot.answered { background: #b0bec5; }
+    .progress-dot.correct    { background: #43a047; transform: scale(1.15); }
+    .progress-dot.incorrect { background: #e53935; transform: scale(1.15); }
+
+    .quiz-card {
+      background: #fafafa;
+      border-radius: 14px;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 1.75rem;
+      border: 1.5px solid #ececec;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .quiz-q-number {
+      font-size: 11px;
+      font-weight: 700;
+      color: #bbb;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .quiz-q-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 1.25rem;
+    }
+    .quiz-q-text {
+      flex: 1;
+      font-size: 17px;
+      font-weight: 600;
+      color: #111;
+      line-height: 1.4;
+    }
+    .q-read-btn {
+      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1.5px solid #ddd;
+      background: white;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      margin-top: 2px;
+    }
+    .q-read-btn:hover { border-color: #aaa; background: #f5f5f5; }
+    .q-read-btn.speaking { background: #333; border-color: #333; color: white; }
+
+    .quiz-options-grid { display: flex; flex-direction: column; gap: 10px; }
+
+    .quiz-opt-row {
+      display: flex;
+      align-items: stretch;
+      border: 2px solid #e2e2e2;
+      border-radius: 10px;
+      background: white;
+      overflow: hidden;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+    }
+    .quiz-opt-row:not(.disabled):hover { border-color: #378ADD; box-shadow: 0 0 0 3px rgba(55,138,221,0.1); }
+    .quiz-opt-row.selected { border-color: #1e88e5; background: #e3f2fd; }
+    .quiz-opt-row.correct    { border-color: #43a047; background: #f0fff4; cursor: default; }
+    .quiz-opt-row.incorrect { border-color: #e53935; background: #fff5f5; cursor: default; }
+    .quiz-opt-row.dimmed    { border-color: #eee;    background: #fafafa; cursor: default; }
+
+    .opt-main {
+      flex: 1;
+      padding: 12px 15px;
+      font-size: 14px;
+      line-height: 1.55;
+      color: #444;
+      user-select: none;
+    }
+    .quiz-opt-row.correct  .opt-main { color: #1b5e20; font-weight: 500; }
+    .quiz-opt-row.incorrect .opt-main { color: #b71c1c; }
+    .quiz-opt-row.dimmed   .opt-main { color: #c8c8c8; }
+
+    .opt-speaker-zone {
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      border-left: 1.5px solid #ececec;
+      flex-shrink: 0;
+    }
+    .quiz-opt-row.correct    .opt-speaker-zone { border-left-color: #b2dfdb; }
+    .quiz-opt-row.incorrect .opt-speaker-zone { border-left-color: #ffccbc; }
+    .quiz-opt-row.dimmed    .opt-speaker-zone { border-left-color: #eee; }
+
+    .opt-read-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      padding: 5px;
+      border-radius: 6px;
+      color: #aaa;
+      transition: color 0.15s, background 0.15s;
+      line-height: 1;
+    }
+    .opt-read-btn:hover { color: #444; background: #f0f0f0; }
+    .quiz-opt-row.dimmed .opt-read-btn { color: #ddd; }
+    .opt-read-btn.speaking { color: #1e88e5; }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .card-btn {
+      padding: 8px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    .card-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .check-btn { background: #43a047; color: white; }
+    .check-btn:hover:not(:disabled) { background: #2e7d32; }
+    .retry-btn { background: #757575; color: white; }
+    .retry-btn:hover:not(:disabled) { background: #616161; }
+
+    .quiz-feedback {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.5;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .quiz-feedback.correct   { background: #e8f5e9; color: #1b5e20; }
+    .quiz-feedback.incorrect { background: #ffebee; color: #b71c1c; }
+
+    .bottom-nav-row {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      display: flex;
+      justify-content: center;
+    }
+    .bottom-nav-btn {
+      padding: 14px 28px;
+      font-size: 16px;
+      font-weight: 800;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .bottom-nav-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.25); }
+    .btn-to-quiz { background: #1e88e5; }
+    .btn-to-learn { background: #43a047; }
+
+    .hidden { display: none; }
+
+    @media (max-width: 600px) {
+      .menu-grid { grid-template-columns: 1fr 1fr; }
+      .menu-button { padding: 25px 15px; font-size: 1.1rem; }
+      .front-menu { padding: 30px 20px; }
+      .front-menu h1 { font-size: 1.8rem; }
+      .group-header { gap: 8px; }
+      body { padding: 10px; }
+    }
+  </style>
+    <style>/* wide layout: fill the embed. Colour chooser = row of 4 on wide screens, 2x2 otherwise (never 3+1) */
+    @media screen { .front-menu, .page, .global-controls, #groupView { max-width: none !important; } }
+    .menu-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    @media (min-width: 900px) { .menu-grid { grid-template-columns: repeat(4, 1fr) !important; } }
+    </style>
+</head>
+<body>
+
+<!-- == FRONT MENU == -->
+<div id="frontMenu" class="front-menu">
+  <h1>🎲 Chance &amp; Probability: Spinner Spin</h1>
+  <p>Choose your reading group to explore words about chance and likelihood</p>
+  <div class="menu-grid">
+    <button class="menu-button red-btn"    onclick="showGroup('red')">Red Group</button>
+    <button class="menu-button yellow-btn" onclick="showGroup('yellow')">Yellow Group</button>
+    <button class="menu-button green-btn"  onclick="showGroup('green')">Green Group</button>
+    <button class="menu-button blue-btn"   onclick="showGroup('blue')">Blue Group</button>
+  </div>
+</div>
+
+<!-- == GROUP VIEW == -->
+<div id="groupView" class="hidden">
+  <div class="group-top-bar" id="topBar"></div>
+
+  <div class="group-header">
+    <button class="back-btn" onclick="backToMenu()">← Back to groups</button>
+    <span class="group-badge" id="groupBadge"></span>
+    <div class="speed-row">
+      <label for="speedSelect">🗣️ Speed:</label>
+      <select id="speedSelect">
+        <option value="0.7">0.7× (very slow)</option>
+        <option value="0.85" selected>0.85× (slow)</option>
+        <option value="1.0">1.0× (normal)</option>
+        <option value="1.15">1.15× (quick)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="mode-tabs">
+    <button class="mode-tab active" id="learnTab" onclick="switchMode('learn')">📖 Learn vocabulary</button>
+    <button class="mode-tab"        id="quizTab"  onclick="switchMode('quiz')">🎯 Test yourself</button>
+  </div>
+
+  <!-- Learn panel -->
+  <div class="learn-panel" id="learnPanel">
+    <div class="group-label" id="groupLabel"></div>
+    <div class="books-instruction" id="booksInstruction">
+      <div class="books-instruction-icon">📓</div>
+      <div class="books-instruction-text" id="booksInstructionText"></div>
+    </div>
+    <div class="vocab-grid"  id="vocabGrid"></div>
+    <div class="detail-box hidden" id="detailBox"></div>
+
+    <div class="bottom-nav-row">
+      <button class="bottom-nav-btn btn-to-quiz" onclick="switchMode('quiz')">🎯 Test yourself →</button>
+    </div>
+  </div>
+
+  <!-- Quiz panel -->
+  <div class="quiz-panel hidden" id="quizPanel">
+    <p class="quiz-intro-text">Answer the questions below. Check or retry each question as you go!</p>
+    <div class="quiz-progress" id="quizProgress"></div>
+    <div id="quizContainer"></div>
+
+    <div class="bottom-nav-row">
+      <button class="bottom-nav-btn btn-to-learn" onclick="switchMode('learn')">📖 ← Back to Learn vocabulary</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// --- Vocabulary data (Chance & Probability) -----------------------------------
+
+const groupVocab = {
+  red: [
+    {
+      word: 'chance', icon: '🎲', hint: 'how likely something is',
+      definition: 'Chance is how likely it is that something will happen.',
+      simplifiedMeaning: 'Will it happen?',
+      example: 'There is a chance it will rain today.',
+      didYouKnow: 'When you roll a dice, every number has an equal chance.',
+      tier: 2, tierWhy: 'It is a word for possibility.',
+      distractors: {
+        close: 'A toy used to play indoor board games.',
+        unrelated: 'A fast red sports car driving past.',
+        similarWord: 'A dance performed at a party.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "chance" INCORRECTLY?',
+        opts: [
+          'We have a good chance of winning the game if we try hard.',
+          'There is a little chance of rain this afternoon.',
+          'I ate a sweet chance for my dessert after dinner.',
+          'Take a chance and guess the correct answer.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'sure', icon: '✅', hint: 'knowing for absolute truth',
+      definition: 'Sure means you are completely certain something will happen.',
+      simplifiedMeaning: '100% certain.',
+      example: 'I am sure the sun will come up tomorrow.',
+      didYouKnow: 'Some things are certain, like gravity pulling things down.',
+      tier: 1, tierWhy: 'It is a basic everyday feeling word.',
+      distractors: {
+        close: 'Feeling a little bit unsure or confused.',
+        unrelated: 'A warm bowl of vegetable soup.',
+        similarWord: 'Walking along the ocean shore.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "sure" INCORRECTLY?',
+        opts: [
+          'I am sure that 2 plus 2 equals 4.',
+          'Are you sure you locked the front door?',
+          'I put a bright blue sure on my writing desk.',
+          'We can be sure tomorrow is Saturday.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'equal', icon: '⚖️', hint: 'having the exact same chance',
+      definition: 'Equal means having the exact same size, amount, or chance as something else.',
+      simplifiedMeaning: 'The exact same.',
+      example: 'Both teams have an equal chance of winning.',
+      didYouKnow: 'A fair coin gives both sides an equal chance.',
+      tier: 2, tierWhy: 'A word for fairness and probability.',
+      distractors: {
+        close: 'Having more of one thing than another.',
+        unrelated: 'A loud musical instrument played in a band.',
+        similarWord: 'An eagle flying high in the sky.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "equal" INCORRECTLY?',
+        opts: [
+          'Two plus two is equal to four.',
+          'Both players had an equal turn on the spinner.',
+          'I wore a warm equal on my feet during winter.',
+          'The slices of pizza were cut into equal pieces.'
+        ],
+        correctIndex: 2
+      }
+    }
+  ],
+  yellow: [
+    {
+      word: 'likely', icon: '📈', hint: 'something that will probably happen',
+      definition: 'Likely means something has a high chance of happening.',
+      simplifiedMeaning: 'Probably going to happen.',
+      examples: ['It is likely to rain because those clouds are dark.', 'She is likely to win the spelling bee.'],
+      synonym: 'probable',
+      tier: 2, tierWhy: 'It is a common word for describing probabilities.',
+      distractors: {
+        close: 'Something that is impossible to ever happen.',
+        unrelated: 'A heavy hammer used for construction.',
+        similarWord: 'Licking an ice cream cone.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "likely" INCORRECTLY?',
+        opts: [
+          'It is likely that we will have outdoor sport today.',
+          'The clever puppy is likely to learn this trick quickly.',
+          'I poured a cold likely into my glass to drink.',
+          'It is very likely we will finish our books today.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'unlikely', icon: '📉', hint: 'probably will not happen',
+      definition: 'Unlikely means something has a very low chance of happening.',
+      simplifiedMeaning: 'Probably will not happen.',
+      examples: ['It is unlikely it will snow in summer.', 'It is unlikely we will see a dinosaur outside.'],
+      synonym: 'doubtful',
+      tier: 2, tierWhy: 'An everyday word for low probability.',
+      distractors: {
+        close: 'Something that is guaranteed to happen.',
+        unrelated: 'A loud siren on a fire truck.',
+        similarWord: 'Unlocking a secure back door.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "unlikely" INCORRECTLY?',
+        opts: [
+          'It is unlikely to rain during a clear blue sky.',
+          'Winning the big lottery is very unlikely.',
+          'I brushed my teeth with unlikely before bed.',
+          'It is unlikely we will finish this in five seconds.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'possible', icon: '🟨', hint: 'can happen under some conditions',
+      definition: 'Possible means something can happen, even if it is not guaranteed.',
+      simplifiedMeaning: 'Can happen.',
+      examples: ['It is possible to roll a six on a die.', 'Anything is possible if you practice hard.'],
+      synonym: 'achievable',
+      tier: 2, tierWhy: 'An essential everyday word for possibility.',
+      distractors: {
+        close: 'Something that is completely out of the question.',
+        unrelated: 'A silver spoon for eating soup.',
+        similarWord: 'A postcard sent in the mail.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "possible" INCORRECTLY?',
+        opts: [
+          'It is possible for us to finish this puzzle today.',
+          'We made it to the park as fast as possible.',
+          'I ate a sweet possible for dessert after dinner.',
+          'Is it possible to win a prize in this game?'
+        ],
+        correctIndex: 2
+      }
+    }
+  ],
+  green: [
+    {
+      word: 'random', icon: '🎲', hint: 'chosen without any pattern',
+      definition: 'Random means something happens by chance without any special order or pattern.',
+      simplifiedMeaning: 'Picked by pure chance.',
+      sentences: ['We picked a random name from the box.', 'The computer generated a random number.', 'The cards were shuffled into a random order.'],
+      synonym: 'chance', antonym: 'planned',
+      nonExamples: 'Following a strict daily schedule is not random.',
+      tier: 2, tierWhy: 'A common word used in games and probability experiments.',
+      distractors: {
+        close: 'Following a careful step-by-step pattern.',
+        unrelated: 'A large ocean liner sailing across the sea.',
+        similarWord: 'A ransom note left on a table.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "random" INCORRECTLY?',
+        opts: [
+          'We pulled a random winner out of the lucky draw box.',
+          'The computer picked a random card from the deck.',
+          'I ate a sweet random for my afternoon snack.',
+          'The order of names in the hat was completely random.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'impossible', icon: '❌', hint: 'cannot happen under any condition',
+      definition: 'Impossible means something has zero chance of happening.',
+      simplifiedMeaning: 'Cannot ever happen.',
+      sentences: ['It is impossible for a dog to fly.', 'Rolling a seven on a normal six-sided die is impossible.', 'Lifting a house with one hand is impossible.'],
+      synonym: 'unachievable', antonym: 'possible',
+      nonExamples: 'Walking to school is possible, not impossible.',
+      tier: 2, tierWhy: 'An important concept for extreme probability.',
+      distractors: {
+        close: 'Something that happens every single day.',
+        unrelated: 'A thick woollen blanket for winter.',
+        similarWord: 'Impolite behaviour in the classroom.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "impossible" INCORRECTLY?',
+        opts: [
+          'It is impossible to score 7 on a standard 6-sided die.',
+          'Humans cannot fly like birds because it is impossible.',
+          'I poured a cold impossible into my cup to drink.',
+          'Flying a pig across the moon is completely impossible.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'certain', icon: '✔️', hint: 'definitely going to happen',
+      definition: 'Certain means you know for a fact that something will definitely happen.',
+      simplifiedMeaning: '100% will happen.',
+      sentences: ['It is certain that night follows day.', 'If you drop a heavy rock, it is certain to fall.', 'We are certain to have fun on the excursion.'],
+      synonym: 'definite', antonym: 'uncertain',
+      nonExamples: 'Winning a lottery ticket is not certain.',
+      tier: 2, tierWhy: 'A key word for high probability.',
+      distractors: {
+        close: 'Something that has a small chance of failing.',
+        unrelated: 'A heavy metal lock for a door.',
+        similarWord: 'Curtains hanging on a bedroom window.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "certain" INCORRECTLY?',
+        opts: [
+          'I am certain that 5 plus 5 equals 10.',
+          'It is certain that winter comes after autumn.',
+          'I spread butter and certain on my toast for breakfast.',
+          'We are certain the sun will rise tomorrow morning.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'outcome', icon: '🏁', hint: 'the final result of an event',
+      definition: 'An outcome is the final result or what happens at the end of a trial or event.',
+      simplifiedMeaning: 'The final result.',
+      sentences: ['Heads or tails is an outcome of a coin flip.', 'We waited to hear the outcome of the game.', 'Every spin of the spinner has a different outcome.'],
+      synonym: 'result', antonym: 'beginning',
+      nonExamples: 'Starting a race is not the outcome.',
+      tier: 2, tierWhy: 'A core mathematical term for probability experiments.',
+      distractors: {
+        close: 'The starting instructions of an experiment.',
+        unrelated: 'A tall green tree growing in the park.',
+        similarWord: 'An outcrop of rock on a hill.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "outcome" INCORRECTLY?',
+        opts: [
+          'We predicted the outcome of the dice rolling experiment.',
+          'The outcome of the sports match was a close win.',
+          'I wore my warm outcome to keep dry in the rain.',
+          'What was the final outcome of your coin toss?'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'prediction', icon: '🔮', hint: 'guessing what will happen next',
+      definition: 'A prediction is a thoughtful guess about what might happen in the future based on clues.',
+      simplifiedMeaning: 'Guessing what comes next.',
+      sentences: ['My prediction is that red will win the spinner game.', 'The weather forecast is a prediction of rain.', 'Before we roll, make your prediction.'],
+      synonym: 'forecast', antonym: 'fact',
+      nonExamples: 'Knowing something that already happened is a record, not a prediction.',
+      tier: 2, tierWhy: 'An essential reasoning skill word for mathematics and science.',
+      distractors: {
+        close: 'A strict rule written in a history book.',
+        unrelated: 'A fluffy white cloud floating in the sky.',
+        similarWord: 'A prescription given by a doctor.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "prediction" INCORRECTLY?',
+        opts: [
+          'My prediction is that the coin will land on heads.',
+          'We wrote down our prediction before spinning the wheel.',
+          'I baked a prediction in the kitchen for an hour.',
+          'The scientist made a prediction about the weather.'
+        ],
+        correctIndex: 2
+      }
+    }
+  ],
+  blue: [
+    {
+      word: 'probability', icon: '📊', hint: 'the mathematical measure of likelihood',
+      definition: 'Probability is the mathematical study and measurement of how likely events are to happen.',
+      simplifiedMeaning: 'The math of chance.',
+      sentences: ['We calculated the probability of rolling a six.', 'Probability is expressed as a fraction or percentage.', 'The probability of rain today is fifty percent.', 'Learning probability helps us make smart predictions in games.', 'A coin toss has a probability of one half for heads.'],
+      synonym: 'likelihood', antonym: 'impossibility',
+      nonExamples: 'Stating a wild guess without any math is not calculating probability.',
+      connotation: 'Probability sounds scientific, precise, and mathematical.',
+      etymology: 'From Latin "probabilis", meaning provable or believable.',
+      tier: 2, tierWhy: 'A specialized academic vocabulary word for mathematics.',
+      distractors: {
+        close: 'A simple guess with no mathematical backing.',
+        unrelated: 'A large painted mural on a brick wall.',
+        similarWord: 'A probation period at a new job.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "probability" INCORRECTLY?',
+        opts: [
+          'We used fractions to figure out the probability in the game.',
+          'The probability of rolling a number on a 6-sided die can be measured.',
+          'I ate a bowl of probability with milk for breakfast.',
+          'Scientists calculate the probability of severe weather.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'experimental', icon: '🧪', hint: 'found by actually testing things out',
+      definition: 'Experimental probability is found by conducting physical trials and recording actual results.',
+      simplifiedMeaning: 'Found by testing.',
+      sentences: ['Our experimental results matched our predictions closely.', 'We rolled the dice fifty times to find the experimental probability.', 'Experimental data can sometimes differ from expected theory.', 'The experimental outcome showed heads more often than tails.', 'Record your experimental data in the table.'],
+      synonym: 'empirical', antonym: 'theoretical',
+      nonExamples: 'Reading a formula in a book without doing a test is not experimental.',
+      connotation: 'Experimental sounds hands-on, practical, and investigative.',
+      etymology: 'From Latin "experimentum", meaning a trial or test.',
+      tier: 2, tierWhy: 'An important scientific method and mathematical analysis word.',
+      distractors: {
+        close: 'A rule that is memorised from a textbook.',
+        unrelated: 'A juicy red apple picked from an orchard.',
+        similarWord: 'An export of goods sent overseas.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "experimental" INCORRECTLY?',
+        opts: [
+          'Our experimental coin tosses showed heads 28 out of 50 times.',
+          'We tested our ideas in an experimental probability activity.',
+          'I tied an experimental around my shoes to keep them tight.',
+          'The experimental data proved our theory was correct.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'combination', icon: '🔀', hint: 'different ways items can be grouped or chosen',
+      definition: 'A combination is a selection of items where the order does not matter.',
+      simplifiedMeaning: 'Ways to group things.',
+      sentences: ['There are many possible combinations of outfits you can wear.', 'We tested every combination of numbers on the lock.', 'Finding the right combination helps solve probability puzzles.', 'The menu offers a combination of different lunch items.', 'List every combination of heads and tails for two coin tosses.'],
+      synonym: 'mix', antonym: 'separation',
+      nonExamples: 'A single isolated item by itself is not a combination.',
+      connotation: 'Combination sounds connected, mixed, and versatile.',
+      etymology: 'From Latin "combinare", meaning to join two by two.',
+      tier: 2, tierWhy: 'A key mathematical vocabulary term for arrangements and choices.',
+      distractors: {
+        close: 'A single item standing alone by itself.',
+        unrelated: 'A heavy metal hammer used for construction.',
+        similarWord: 'A combustion engine in a car.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "combination" INCORRECTLY?',
+        opts: [
+          'We worked out every combination for the coloured spinners.',
+          'The correct combination opened the locked box.',
+          'I ate a sweet combination for my dinner tonight.',
+          'A combination of red and blue paint makes purple.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'sample size', icon: '📦', hint: 'the total number of items or trials tested',
+      definition: 'Sample size is the total number of observations, trials, or items tested in an experiment.',
+      simplifiedMeaning: 'How many tests you do.',
+      sentences: ['A larger sample size gives more reliable probability results.', 'We used a sample size of one hundred coin flips.', 'If your sample size is too small, your data might be misleading.', 'The science experiment required a sample size of fifty plants.', 'Increasing the sample size improves our statistical accuracy.'],
+      synonym: 'group of trials', antonym: 'single test',
+      nonExamples: 'Doing just one single test is not a proper sample size.',
+      connotation: 'Sample size sounds thorough, statistical, and data-driven.',
+      etymology: 'From Old French "sample" (example) and Latin "sectia" (size).',
+      tier: 2, tierWhy: 'An essential statistical and data analysis term.',
+      distractors: {
+        close: 'Doing just one quick trial and stopping.',
+        unrelated: 'A fluffy white cloud floating in the sky.',
+        similarWord: 'A simple sign posted on a wall.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "sample size" INCORRECTLY?',
+        opts: [
+          'Our sample size of fifty rolls gave us a clear picture of the dice.',
+          'A bigger sample size makes our probability math more accurate.',
+          'I poured warm sample size into a cup to drink.',
+          'We recorded data from a sample size of one hundred spins.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'outcome', icon: '🏁', hint: 'the final result of an event',
+      definition: 'An outcome is the final result or what happens at the end of a trial or event.',
+      simplifiedMeaning: 'The final result.',
+      sentences: ['Heads or tails is an outcome of a coin flip.', 'We waited to hear the outcome of the game.', 'Every spin of the spinner has a different outcome.'],
+      synonym: 'result', antonym: 'beginning',
+      nonExamples: 'Starting a race is not the outcome.',
+      tier: 2, tierWhy: 'A core mathematical term for probability experiments.',
+      distractors: {
+        close: 'The starting instructions of an experiment.',
+        unrelated: 'A tall green tree growing in the park.',
+        similarWord: 'An outcrop of rock on a hill.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "outcome" INCORRECTLY?',
+        opts: [
+          'We predicted the outcome of the dice rolling experiment.',
+          'The outcome of the sports match was a close win.',
+          'I wore my warm outcome to keep dry in the rain.',
+          'What was the final outcome of your coin toss?'
+        ],
+        correctIndex: 2
+      }
+    }
+  ]
+};
+
+const groupMeta = {
+  red:    { name: 'Red Group',    label: 'early readers - 3 words',    bg: 'red-bg',    barClass: 'bar-red',    badgeClass: 'badge-red',    tabClass: 'tab-red'    },
+  yellow: { name: 'Yellow Group', label: 'developing readers - 3 words', bg: 'yellow-bg', barClass: 'bar-yellow', badgeClass: 'badge-yellow', tabClass: 'tab-yellow' },
+  green:  { name: 'Green Group',  label: 'confident readers - 5 words',  bg: 'green-bg',  barClass: 'bar-green',  badgeClass: 'badge-green',  tabClass: 'tab-green'  },
+  blue:   { name: 'Blue Group',   label: 'fluent readers - 5 words',     bg: 'blue-bg',   barClass: 'bar-blue',   badgeClass: 'badge-blue',   tabClass: 'tab-blue'   }
+};
+
+const groupInstructions = {
+  red: "Copy the bold word, its icon, and the simplified meaning into your books. Draw a picture showing a game of chance like a coin or dice.",
+  yellow: "Copy each word, its definition, and write one example sentence of your own into your maths books.",
+  green: "Copy all vocabulary words, definitions, synonyms, and non-examples into your notebooks. Underline key terms.",
+  blue: "Copy the academic definitions, etymology word roots, and complete sentence examples into your working books."
+};
+
+const extraContentQuestions = {
+  green: [
+    {
+      word: 'random',
+      q: 'According to the non-examples in the Learn section, why is following a strict daily schedule NOT considered random?',
+      opts: [
+        { text: 'Because it follows a careful plan rather than pure chance.', type: 'correct' },
+        { text: 'Because it happens in the morning.', type: 'close' },
+        { text: 'Because schedules make you feel sleepy.', type: 'unrelated' },
+        { text: 'Because a schedule is written on paper.', type: 'similarWord' }
+      ],
+      correctText: 'Because it follows a careful plan rather than pure chance.'
+    },
+    {
+      word: 'prediction',
+      q: 'The Learn panel notes that knowing something that already happened is a record, not a...',
+      opts: [
+        { text: 'Prediction.', type: 'correct' },
+        { text: 'Outcome.', type: 'close' },
+        { text: 'Year.', type: 'unrelated' },
+        { text: 'Prescription.', type: 'similarWord' }
+      ],
+      correctText: 'Prediction.'
+    }
+  ],
+  blue: [
+    {
+      word: 'probability',
+      q: 'Based on the word origin (etymology) section for probability, what did Latin "probabilis" mean?',
+      opts: [
+        { text: 'Provable or believable.', type: 'correct' },
+        { text: 'Unfair or lopsided.', type: 'close' },
+        { text: 'Fast moving trial.', type: 'unrelated' },
+        { text: 'Probation period.', type: 'similarWord' }
+      ],
+      correctText: 'Provable or believable.'
+    },
+    {
+      word: 'sample size',
+      q: 'In the **sample size** section, what does having a larger sample size give you?',
+      opts: [
+        { text: 'More reliable probability results.', type: 'correct' },
+        { text: 'Fewer choices on the spinner.', type: 'close' },
+        { text: 'A heavy hammer for construction.', type: 'unrelated' },
+        { text: 'A simple sign on a wall.', type: 'similarWord' }
+      ],
+      correctText: 'More reliable probability results.'
+    }
+  ]
+};
+
+// --- State --------------------------------------------------------------------
+
+let currentGroup         = 'red';
+let currentMode          = 'learn';
+let currentQuizQuestions = []; 
+let selectedAnswers      = {};  
+let checkedQuestions     = {};  
+let voices               = [];
+let activeSpeakBtn       = null;
+
+// --- Speech -------------------------------------------------------------------
+
+function loadVoices() { voices = window.speechSynthesis.getVoices(); }
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+  loadVoices();
+}
+
+function getVoice() {
+  const auNatural = voices.find(v => v.lang === 'en-AU' && /natural/i.test(v.name));
+  const auStandard = voices.find(v => v.lang === 'en-AU');
+  const williamNatural = voices.find(v => v.name.toLowerCase().includes('william') && v.name.toLowerCase().includes('natural'));
+  const natural = voices.find(v => /natural/i.test(v.name) && v.lang.startsWith('en'));
+  const english = voices.find(v => v.lang.startsWith('en-'));
+  
+  return auNatural || auStandard || williamNatural || natural || english || null;
+}
+
+function speakText(text, btn) {
+  if (!('speechSynthesis' in window)) { alert('Read-aloud is not supported in this browser.'); return; }
+
+  if (activeSpeakBtn === btn) {
+    window.speechSynthesis.cancel();
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+  if (activeSpeakBtn) { activeSpeakBtn.classList.remove('speaking'); activeSpeakBtn = null; }
+
+  const ut  = new SpeechSynthesisUtterance(text);
+  const v    = getVoice();
+  const rate = parseFloat(document.getElementById('speedSelect').value) || 0.85;
+  if (v) ut.voice = v;
+  ut.rate = rate;
+
+  activeSpeakBtn = btn;
+  btn.classList.add('speaking');
+
+  ut.onend = ut.onerror = () => {
+    if (activeSpeakBtn === btn) { btn.classList.remove('speaking'); activeSpeakBtn = null; }
+  };
+
+  window.speechSynthesis.speak(ut);
+}
+
+function readSectionText(btn) { speakText(btn.dataset.text, btn); }
+
+function readOptionText(btn, e) {
+  e.stopPropagation();
+  speakText(btn.dataset.text, btn);
+}
+
+// --- Helpers -----------------------------------------------------------------
+
+function escAttr(str) {
+  return (str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+}
+
+function sectionReadBtn(text) {
+  return `<button class="sec-read-btn" data-text="${escAttr(text)}" onclick="readSectionText(this)" title="Read aloud">🔊</button>`;
+}
+
+function tierBadge(item) {
+  return `<div class="tier-row">
+    <span class="tier-badge tier-${item.tier}">Tier ${item.tier}</span>
+    <span class="tier-why">${item.tierWhy}</span>
+  </div>`;
+}
+
+// --- Navigation ---------------------------------------------------------------
+
+function showGroup(group) {
+  currentGroup = group;
+  window.speechSynthesis?.cancel();
+  activeSpeakBtn = null;
+
+  const meta = groupMeta[group];
+  document.getElementById('frontMenu').classList.add('hidden');
+  document.getElementById('groupView').classList.remove('hidden');
+
+  const bar = document.getElementById('topBar');
+  bar.className = 'group-top-bar ' + meta.barClass;
+
+  const badge = document.getElementById('groupBadge');
+  badge.textContent = meta.name;
+  badge.className   = 'group-badge ' + meta.badgeClass;
+
+  ['learnTab', 'quizTab'].forEach(id => {
+    const tab = document.getElementById(id);
+    tab.classList.remove('tab-red','tab-yellow','tab-green','tab-blue');
+    tab.classList.add(meta.tabClass);
+  });
+
+  switchMode('learn');
+}
+
+function backToMenu() {
+  window.speechSynthesis?.cancel();
+  activeSpeakBtn = null;
+  document.getElementById('groupView').classList.add('hidden');
+  document.getElementById('frontMenu').classList.remove('hidden');
+}
+
+function switchMode(mode) {
+  currentMode = mode;
+  window.speechSynthesis?.cancel();
+  activeSpeakBtn = null;
+
+  document.getElementById('learnTab').classList.toggle('active', mode === 'learn');
+  document.getElementById('quizTab') .classList.toggle('active', mode === 'quiz');
+  document.getElementById('learnPanel').classList.toggle('hidden', mode !== 'learn');
+  document.getElementById('quizPanel') .classList.toggle('hidden', mode !== 'quiz');
+
+  if (mode === 'learn') { renderGrid(); }
+  else                  { generateQuiz(); }
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// --- Learn mode ---------------------------------------------------------------
+
+function renderGrid() {
+  const meta  = groupMeta[currentGroup];
+  const words = groupVocab[currentGroup];
+
+  document.getElementById('groupLabel').textContent = `${meta.name} - ${meta.label}`;
+  document.getElementById('booksInstructionText').innerHTML = `<strong>Copy into books:</strong> ${groupInstructions[currentGroup]}`;
+
+  const grid = document.getElementById('vocabGrid');
+  grid.innerHTML = '';
+  words.forEach(item => {
+    const card = document.createElement('div');
+    card.className = `vocab-card ${meta.bg}`;
+    card.innerHTML = `
+      <div>
+        <div class="card-icon">${item.icon}</div>
+        <div class="card-word">${item.word}</div>
+      </div>
+      <div class="card-hint">${item.hint}</div>
+    `;
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.vocab-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      showDetail(item);
+    });
+    grid.appendChild(card);
+  });
+
+  document.getElementById('detailBox').classList.add('hidden');
+}
+
+function showDetail(item) {
+  const box = document.getElementById('detailBox');
+  
+  let html = `
+    <div class="detail-word-row">
+      <div class="detail-word">${item.icon} ${item.word}</div>
+      <div class="tier-section" style="margin-bottom: 0;">
+        ${tierBadge(item)}
+      </div>
+    </div>
+  `;
+
+  html += section('What it means (Full)', item.definition, item.definition);
+  html += section('Simplified Meaning', `<strong>${item.simplifiedMeaning}</strong>`, item.simplifiedMeaning);
+
+  if (currentGroup === 'red') {
+    html += exampleSection('Example', item.example)
+          + factSection('Did you know?', item.didYouKnow);
+
+  } else if (currentGroup === 'yellow') {
+    const allExamples = item.examples.join(' ');
+    html += multiExampleSection('Examples', item.examples, allExamples)
+          + section('Synonym (similar word)', item.synonym, `A synonym for ${item.word} is: ${item.synonym}`);
+
+  } else if (currentGroup === 'green') {
+    const allSentences = item.sentences.join(' ');
+    html += multiExampleSection('Example sentences', item.sentences, allSentences)
+          + section('Synonym (similar word)', item.synonym, `A synonym for ${item.word} is: ${item.synonym}`)
+          + section('Antonym (opposite)', item.antonym, `The antonym, or opposite, of ${item.word} is: ${item.antonym}`)
+          + section('Non-examples', item.nonExamples, item.nonExamples);
+
+  } else {
+    const allSentences = item.sentences.join(' ');
+    html += multiExampleSection('Example sentences', item.sentences, allSentences)
+          + section('Synonym (similar word)', item.synonym, `A synonym for ${item.word} is: ${item.synonym}`)
+          + section('Antonym (opposite)', item.antonym, `The antonym, or opposite, of ${item.word} is: ${item.antonym}`)
+          + section('Non-examples', item.nonExamples, item.nonExamples)
+          + section('Connotation', item.connotation, item.connotation)
+          + section('Word origin (etymology)', item.etymology, item.etymology);
+  }
+
+  box.innerHTML = html;
+  box.classList.remove('hidden');
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function section(label, contentHTML, readText) {
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(readText)}
+    </div>
+    <div class="detail-content">${contentHTML}</div>
+  </div>`;
+}
+
+function exampleSection(label, text) {
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(text)}
+    </div>
+    <div class="example-box">${text}</div>
+  </div>`;
+}
+
+function factSection(label, text) {
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(text)}
+    </div>
+    <div class="fact-box">${text}</div>
+  </div>`;
+}
+
+function multiExampleSection(label, items, readText) {
+  const boxes = items.map(s => `<div class="example-box">${s}</div>`).join('');
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(readText)}
+    </div>
+    ${boxes}
+  </div>`;
+}
+
+// --- Quiz mode (With Per-Question Check and Retry Buttons) --------------------
+
+function generateQuiz() {
+  selectedAnswers      = {};
+  checkedQuestions     = {};
+  currentQuizQuestions = [];
+  window.speechSynthesis?.cancel();
+  activeSpeakBtn = null;
+
+  const words = groupVocab[currentGroup];
+
+  // 1. Definition Lookup Questions
+  words.forEach(item => {
+    let optsArray = [];
+    if (currentGroup === 'red') {
+      optsArray = [
+        { text: item.simplifiedMeaning, type: 'correct' },
+        { text: item.distractors.close, type: 'close' },
+        { text: item.distractors.unrelated, type: 'unrelated' }
+      ];
+    } else {
+      optsArray = [
+        { text: item.definition, type: 'correct' },
+        { text: item.distractors.close, type: 'close' },
+        { text: item.distractors.unrelated, type: 'unrelated' },
+        { text: item.distractors.similarWord, type: 'similarWord' }
+      ];
+    }
+    
+    currentQuizQuestions.push({
+      type: 'meaning',
+      word: item.word,
+      questionText: currentGroup === 'red' ? `What is a <strong>${item.word}</strong>?` : `What does the word "${item.word}" mean?`,
+      options: shuffleArray([...optsArray]),
+      correctText: currentGroup === 'red' ? item.simplifiedMeaning : item.definition
+    });
+  });
+
+  // 2. Incorrect Sentence Detection Questions
+  words.forEach(item => {
+    const errorData = item.errorExample;
+    const optsArray = errorData.opts.map((text, idx) => {
+      return { text: text, isCorrectSlot: idx === errorData.correctIndex };
+    });
+
+    currentQuizQuestions.push({
+      type: 'error_detect',
+      word: item.word,
+      questionText: errorData.q,
+      options: shuffleArray([...optsArray]),
+      correctText: errorData.opts[errorData.correctIndex]
+    });
+  });
+
+  // 3. Content Questions for Green and Blue Groups
+  if ((currentGroup === 'green' || currentGroup === 'blue') && extraContentQuestions[currentGroup]) {
+    extraContentQuestions[currentGroup].forEach((extra) => {
+      currentQuizQuestions.push({
+        type: 'content_based',
+        word: extra.word || '',
+        questionText: extra.q,
+        options: shuffleArray([...extra.opts]),
+        correctText: extra.correctText
+      });
+    });
+  }
+
+  // Shuffle all questions completely
+  shuffleArray(currentQuizQuestions);
+
+  const progress = document.getElementById('quizProgress');
+  progress.innerHTML = currentQuizQuestions.map((_, i) => `<div class="progress-dot unanswered" id="dot-${i}"></div>`).join('');
+
+  renderQuizUI();
+}
+
+function renderQuizUI() {
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+
+  currentQuizQuestions.forEach((qObj, qIdx) => {
+    const card = document.createElement('div');
+    card.className = 'quiz-card';
+    card.id = `qcard-${qIdx}`;
+
+    let html = `
+      <div class="quiz-q-number">Question ${qIdx + 1} of ${currentQuizQuestions.length}</div>
+      <div class="quiz-q-row">
+        <div class="quiz-q-text">${qObj.questionText}</div>
+        <button class="q-read-btn" data-text="${escAttr(qObj.questionText.replace(/<[^>]*>/g, ''))}" onclick="readSectionText(this)" title="Read question">🔊</button>
+      </div>
+      <div class="quiz-options-grid" id="opts-grid-${qIdx}">
+    `;
+
+    qObj.options.forEach((opt, oIdx) => {
+      html += `
+        <div class="quiz-opt-row" 
+             id="optrow-${qIdx}-${oIdx}"
+             onclick="selectOption(${qIdx}, ${oIdx}, '${escAttr(opt.text)}')">
+          <div class="opt-main">${opt.text}</div>
+          <div class="opt-speaker-zone">
+            <button class="opt-read-btn" data-text="${escAttr(opt.text)}" onclick="readOptionText(this, event)" title="Read option">🔊</button>
+          </div>
+        </div>
+      `;
+    });
+
+    html += `
+      </div>
+      <div class="card-actions">
+        <button class="card-btn check-btn" id="check-btn-${qIdx}" onclick="checkCardAnswer(${qIdx})" disabled>Check Answer</button>
+        <button class="card-btn retry-btn hidden" id="retry-btn-${qIdx}" onclick="retryCard(${qIdx})">Retry</button>
+      </div>
+      <div id="feedback-${qIdx}"></div>
+    `;
+    card.innerHTML = html;
+    container.appendChild(card);
+  });
+}
+
+function selectOption(qIdx, oIdx) {
+  if (checkedQuestions[qIdx]) return;
+
+  const grid = document.getElementById(`opts-grid-${qIdx}`);
+  grid.querySelectorAll('.quiz-opt-row').forEach(row => row.classList.remove('selected'));
+
+  const selectedRow = document.getElementById(`optrow-${qIdx}-${oIdx}`);
+  selectedRow.classList.add('selected');
+
+  selectedAnswers[qIdx] = oIdx;
+  document.getElementById(`check-btn-${qIdx}`).disabled = false;
+
+  const dot = document.getElementById(`dot-${qIdx}`);
+  if (dot && dot.className.includes('unanswered')) {
+    dot.className = 'progress-dot answered';
+  }
+}
+
+function checkCardAnswer(qIdx) {
+  if (checkedQuestions[qIdx]) return;
+  window.speechSynthesis?.cancel();
+
+  const qObj = currentQuizQuestions[qIdx];
+  const chosenOptIdx = selectedAnswers[qIdx];
+  const chosenOpt = qObj.options[chosenOptIdx];
+  const isCorrect = chosenOpt.text === qObj.correctText;
+
+  checkedQuestions[qIdx] = true;
+  document.getElementById(`check-btn-${qIdx}`).classList.add('hidden');
+  document.getElementById(`retry-btn-${qIdx}`).classList.remove('hidden');
+
+  const grid = document.getElementById(`opts-grid-${qIdx}`);
+  grid.querySelectorAll('.quiz-opt-row').forEach((row, oIdx) => {
+    row.classList.add('disabled');
+    const rowOpt = qObj.options[oIdx];
+    
+    if (rowOpt.text === qObj.correctText) {
+      row.classList.add('correct');
+    } else if (oIdx === chosenOptIdx && !isCorrect) {
+      row.classList.add('incorrect');
+    } else {
+      row.classList.add('dimmed');
+    }
+  });
+
+  const fbContainer = document.getElementById(`feedback-${qIdx}`);
+  const fb = document.createElement('div');
+  fb.className = `quiz-feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+  fb.textContent = isCorrect ? '✓ Correct!' : '✗ Try again next time!';
+  fbContainer.appendChild(fb);
+
+  const dot = document.getElementById(`dot-${qIdx}`);
+  if (dot) {
+    dot.className = `progress-dot ${isCorrect ? 'correct' : 'incorrect'}`;
+  }
+}
+
+function retryCard(qIdx) {
+  window.speechSynthesis?.cancel();
+  
+  delete selectedAnswers[qIdx];
+  delete checkedQuestions[qIdx];
+
+  const qObj = currentQuizQuestions[qIdx];
+  shuffleArray(qObj.options);
+
+  const dot = document.getElementById(`dot-${qIdx}`);
+  if (dot) dot.className = 'progress-dot unanswered';
+
+  const card = document.getElementById(`qcard-${qIdx}`);
+  const grid = card.querySelector('.quiz-options-grid');
+  grid.innerHTML = '';
+
+  qObj.options.forEach((opt, oIdx) => {
+    const row = document.createElement('div');
+    row.className = 'quiz-opt-row';
+    row.id = `optrow-${qIdx}-${oIdx}`;
+    row.onclick = () => selectOption(qIdx, oIdx, escAttr(opt.text));
+    row.innerHTML = `
+      <div class="opt-main">${opt.text}</div>
+      <div class="opt-speaker-zone">
+        <button class="opt-read-btn" data-text="${escAttr(opt.text)}" onclick="readOptionText(this, event)" title="Read option">🔊</button>
+      </div>
+    `;
+    grid.appendChild(row);
+  });
+
+  document.getElementById(`check-btn-${qIdx}`).classList.remove('hidden');
+  document.getElementById(`check-btn-${qIdx}`).disabled = true;
+  document.getElementById(`retry-btn-${qIdx}`).classList.add('hidden');
+  document.getElementById(`feedback-${qIdx}`).innerHTML = '';
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+</script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='vocab-chance-t3w9';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-vocab.js"></script>
+</body>
+</html>

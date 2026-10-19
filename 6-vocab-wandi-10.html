@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wandi: Vocabulary Learning</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Helvetica Neue', Helvetica, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: #f4f4f9;
+      padding: 20px;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* ══════════════════════════════════════════
+       FRONT MENU
+    ══════════════════════════════════════════ */
+    .front-menu {
+      background: white;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    .front-menu h1 { font-size: 2.2rem; color: #222; margin-top: 0; margin-bottom: 10px; }
+    .front-menu > p { font-size: 1.1rem; color: #666; margin-bottom: 35px; }
+
+    .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
+
+    .menu-button {
+      padding: 30px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    .menu-button:hover  { transform: translateY(-4px); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
+    .menu-button:active { transform: translateY(-2px); }
+
+    .red-btn          { background-color: #e53935; }
+    .red-btn:hover    { background-color: #c62828; }
+    .yellow-btn       { background-color: #ffb300; color: #333; }
+    .yellow-btn:hover { background-color: #ff9800; }
+    .green-btn        { background-color: #43a047; }
+    .green-btn:hover  { background-color: #2e7d32; }
+    .blue-btn         { background-color: #1e88e5; }
+    .blue-btn:hover   { background-color: #1565c0; }
+
+    /* ══════════════════════════════════════════
+       GROUP VIEW SHELL
+    ══════════════════════════════════════════ */
+    #groupView { max-width: 900px; margin: 0 auto; }
+
+    .group-top-bar { height: 12px; border-radius: 8px 8px 0 0; }
+    .bar-red    { background: #e53935; }
+    .bar-yellow { background: #ffb300; }
+    .bar-green  { background: #43a047; }
+    .bar-blue   { background: #1e88e5; }
+
+    .group-header {
+      background: white;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .back-btn {
+      background: #f0f0f0;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      color: #444;
+      transition: background 0.2s;
+      font-family: inherit;
+    }
+    .back-btn:hover { background: #e0e0e0; }
+
+    .group-badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      color: white;
+    }
+    .badge-red    { background: #e53935; }
+    .badge-yellow { background: #ffb300; color: #333; }
+    .badge-green  { background: #43a047; }
+    .badge-blue   { background: #1e88e5; }
+
+    .speed-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.85rem;
+      color: #555;
+      font-weight: 500;
+    }
+    .speed-row select {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 0.85rem;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    /* ── Mode tabs ── */
+    .mode-tabs {
+      display: flex;
+      background: #f8f8f8;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    .mode-tab {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      color: #888;
+      transition: all 0.15s;
+      font-family: inherit;
+      border-bottom: 3px solid transparent;
+    }
+    .mode-tab:hover { color: #444; background: rgba(0,0,0,0.03); }
+    .mode-tab.active { font-weight: 700; border-bottom-color: currentColor; }
+    .mode-tab.active.tab-red    { color: #e53935; }
+    .mode-tab.active.tab-yellow { color: #c48800; }
+    .mode-tab.active.tab-green  { color: #2e7d32; }
+    .mode-tab.active.tab-blue   { color: #1565c0; }
+
+    /* ══════════════════════════════════════════
+       LEARN PANEL
+    ══════════════════════════════════════════ */
+    .learn-panel {
+      background: white;
+      padding: 24px;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .group-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #aaa;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .vocab-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 2rem;
+    }
+
+    .vocab-card {
+      padding: 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      border: 2px solid transparent;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      user-select: none;
+    }
+    .vocab-card:hover   { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .vocab-card.selected { border-color: #555; box-shadow: 0 0 0 3px rgba(0,0,0,0.07); }
+
+    .vocab-card.red-bg    { background: #FEE8E8; }
+    .vocab-card.yellow-bg { background: #FDF4E6; }
+    .vocab-card.green-bg  { background: #EDF7EF; }
+    .vocab-card.blue-bg   { background: #EEF4FD; }
+
+    .card-icon { font-size: 26px; margin-bottom: 6px; line-height: 1; }
+    .card-word { font-size: 15px; font-weight: 600; color: #222; }
+    .card-hint { font-size: 11px; color: #777; margin-top: 4px; }
+
+    /* ── Detail box ── */
+    .detail-box {
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 1.5rem 1.75rem;
+      border: 1px solid #e8e8e8;
+    }
+    .detail-box.hidden { display: none; }
+
+    .detail-word-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 1.25rem;
+    }
+
+    .detail-word { font-size: 26px; font-weight: 700; color: #111; }
+
+    .detail-section { margin-bottom: 1.25rem; }
+    .detail-section:last-child { margin-bottom: 0; }
+
+    .detail-label-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 0.45rem;
+    }
+    .detail-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #bbb;
+      font-weight: 700;
+    }
+
+    .sec-read-btn {
+      background: none;
+      border: 1px solid #ddd;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      font-size: 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      padding: 0;
+      flex-shrink: 0;
+      color: #888;
+    }
+    .sec-read-btn:hover   { background: #f0f0f0; border-color: #999; color: #333; }
+    .sec-read-btn.speaking { background: #333; border-color: #333; color: white; }
+
+    .detail-content { font-size: 15px; line-height: 1.75; color: #444; }
+
+    .example-box {
+      background: white;
+      border-left: 3px solid #378ADD;
+      padding: 9px 13px;
+      margin: 6px 0;
+      font-size: 14px;
+      color: #555;
+      border-radius: 0 6px 6px 0;
+      line-height: 1.6;
+      font-style: italic;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .fact-box {
+      background: white;
+      border-left: 3px solid #D69E2E;
+      padding: 9px 13px;
+      margin: 6px 0;
+      font-size: 14px;
+      color: #555;
+      border-radius: 0 6px 6px 0;
+      line-height: 1.6;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .tier-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .tier-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .tier-1 { background: #C6F6D5; color: #22543D; }
+    .tier-2 { background: #FEEBC8; color: #7B341E; }
+    .tier-3 { background: #E9D8FD; color: #44337A; }
+    .tier-why { font-size: 13px; color: #777; }
+
+    /* ══════════════════════════════════════════
+       QUIZ PANEL
+    ══════════════════════════════════════════ */
+    .quiz-panel {
+      background: white;
+      padding: 24px;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .quiz-intro-text { font-size: 14px; color: #888; margin-bottom: 1.25rem; }
+
+    .quiz-progress { display: flex; gap: 7px; margin-bottom: 1.75rem; flex-wrap: wrap; align-items: center; }
+    .progress-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .progress-dot.unanswered { background: #e0e0e0; }
+    .progress-dot.answered { background: #b0bec5; }
+    .progress-dot.correct   { background: #43a047; transform: scale(1.15); }
+    .progress-dot.incorrect { background: #e53935; transform: scale(1.15); }
+
+    .quiz-card {
+      background: #fafafa;
+      border-radius: 14px;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 1.75rem;
+      border: 1.5px solid #ececec;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .quiz-q-number {
+      font-size: 11px;
+      font-weight: 700;
+      color: #bbb;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .quiz-q-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 1.25rem;
+    }
+    .quiz-q-text {
+      flex: 1;
+      font-size: 17px;
+      font-weight: 600;
+      color: #111;
+      line-height: 1.4;
+    }
+    .q-read-btn {
+      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1.5px solid #ddd;
+      background: white;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      margin-top: 2px;
+    }
+    .q-read-btn:hover { border-color: #aaa; background: #f5f5f5; }
+    .q-read-btn.speaking { background: #333; border-color: #333; color: white; }
+
+    .quiz-options-grid { display: flex; flex-direction: column; gap: 10px; }
+
+    .quiz-opt-row {
+      display: flex;
+      align-items: stretch;
+      border: 2px solid #e2e2e2;
+      border-radius: 10px;
+      background: white;
+      overflow: hidden;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+    }
+    .quiz-opt-row:not(.disabled):hover { border-color: #378ADD; box-shadow: 0 0 0 3px rgba(55,138,221,0.1); }
+    .quiz-opt-row.selected { border-color: #1e88e5; background: #e3f2fd; }
+    .quiz-opt-row.correct   { border-color: #43a047; background: #f0fff4; cursor: default; }
+    .quiz-opt-row.incorrect { border-color: #e53935; background: #fff5f5; cursor: default; }
+    .quiz-opt-row.dimmed    { border-color: #eee;    background: #fafafa; cursor: default; }
+
+    .opt-main {
+      flex: 1;
+      padding: 12px 15px;
+      font-size: 14px;
+      line-height: 1.55;
+      color: #444;
+      user-select: none;
+    }
+    .quiz-opt-row.correct  .opt-main { color: #1b5e20; font-weight: 500; }
+    .quiz-opt-row.incorrect .opt-main { color: #b71c1c; }
+    .quiz-opt-row.dimmed   .opt-main { color: #c8c8c8; }
+
+    .opt-speaker-zone {
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      border-left: 1.5px solid #ececec;
+      flex-shrink: 0;
+    }
+    .quiz-opt-row.correct   .opt-speaker-zone { border-left-color: #b2dfdb; }
+    .quiz-opt-row.incorrect .opt-speaker-zone { border-left-color: #ffccbc; }
+    .quiz-opt-row.dimmed    .opt-speaker-zone { border-left-color: #eee; }
+
+    .opt-read-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      padding: 5px;
+      border-radius: 6px;
+      color: #aaa;
+      transition: color 0.15s, background 0.15s;
+      line-height: 1;
+    }
+    .opt-read-btn:hover { color: #444; background: #f0f0f0; }
+    .quiz-opt-row.dimmed .opt-read-btn { color: #ddd; }
+    .opt-read-btn.speaking { color: #1e88e5; }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .card-btn {
+      padding: 8px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    .card-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .check-btn { background: #43a047; color: white; }
+    .check-btn:hover:not(:disabled) { background: #2e7d32; }
+    .retry-btn { background: #757575; color: white; }
+    .retry-btn:hover:not(:disabled) { background: #616161; }
+
+    .quiz-feedback {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.5;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .quiz-feedback.correct   { background: #e8f5e9; color: #1b5e20; }
+    .quiz-feedback.incorrect { background: #ffebee; color: #b71c1c; }
+
+    .hidden { display: none; }
+
+    @media (max-width: 600px) {
+      .menu-grid { grid-template-columns: 1fr 1fr; }
+      .menu-button { padding: 25px 15px; font-size: 1.1rem; }
+      .front-menu { padding: 30px 20px; }
+      .front-menu h1 { font-size: 1.8rem; }
+      .group-header { gap: 8px; }
+      body { padding: 10px; }
+    }
+  </style>
+    <style>/* wide layout: fill the embed. Colour chooser = row of 4 on wide screens, 2x2 otherwise (never 3+1) */
+    @media screen { .front-menu, .page, .global-controls, #groupView { max-width: none !important; } }
+    .menu-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    @media (min-width: 900px) { .menu-grid { grid-template-columns: repeat(4, 1fr) !important; } }
+    </style>
+</head>
+<body>
+
+<!-- ══ FRONT MENU ══════════════════════════════════════ -->
+<div id="frontMenu" class="front-menu">
+  <h1>🐕 Wandi: Vocabulary Learning</h1>
+  <p>Choose your reading group</p>
+  <div class="menu-grid">
+    <button class="menu-button red-btn"    onclick="showGroup('red')">Red Group</button>
+    <button class="menu-button yellow-btn" onclick="showGroup('yellow')">Yellow Group</button>
+    <button class="menu-button green-btn"  onclick="showGroup('green')">Green Group</button>
+    <button class="menu-button blue-btn"   onclick="showGroup('blue')">Blue Group</button>
+  </div>
+</div>
+
+<!-- ══ GROUP VIEW ══════════════════════════════════════ -->
+<div id="groupView" class="hidden">
+  <div class="group-top-bar" id="topBar"></div>
+
+  <div class="group-header">
+    <button class="back-btn" onclick="backToMenu()">← Back to groups</button>
+    <span class="group-badge" id="groupBadge"></span>
+    <div class="speed-row">
+      <label for="speedSelect">🗣️ Speed:</label>
+      <select id="speedSelect">
+        <option value="0.7">0.7× (very slow)</option>
+        <option value="0.85" selected>0.85× (slow)</option>
+        <option value="1.0">1.0× (normal)</option>
+        <option value="1.15">1.15× (quick)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="mode-tabs">
+    <button class="mode-tab active" id="learnTab" onclick="switchMode('learn')">Learn vocabulary</button>
+    <button class="mode-tab"        id="quizTab"  onclick="switchMode('quiz')">Test yourself</button>
+  </div>
+
+  <!-- Learn panel -->
+  <div class="learn-panel" id="learnPanel">
+    <div class="group-label" id="groupLabel"></div>
+    <div class="vocab-grid"  id="vocabGrid"></div>
+    <div class="detail-box hidden" id="detailBox"></div>
+  </div>
+
+  <!-- Quiz panel -->
+  <div class="quiz-panel hidden" id="quizPanel">
+    <p class="quiz-intro-text">Answer the questions below. Check or retry each question as you go!</p>
+    <div class="quiz-progress" id="quizProgress"></div>
+    <div id="quizContainer"></div>
+  </div>
+</div>
+
+<script>
+// ─── Vocabulary data ──────────────────────────────────────────────────────────
+
+const groupVocab = {
+  red: [
+    {
+      word: 'dingo', icon: '🐕', hint: 'wild dog from Australia',
+      definition: 'A dingo is a wild dog that lives in Australia.',
+      simplifiedMeaning: 'Australian wild dog.',
+      example: 'Wandi is a dingo who lives in the Australian bush.',
+      didYouKnow: 'Dingoes cannot bark like pet dogs — they howl instead!',
+      tier: 3, tierWhy: 'It is a special science word for one type of animal.',
+      distractors: {
+        close: 'A friendly house pet dog.',
+        unrelated: 'A small bird.',
+        similarWord: 'A small boat.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "dingo" INCORRECTLY?',
+        opts: [
+          'The wild dingo howled in the bush.',
+          'Wandi is an alpine dingo puppy.',
+          'I kept a wild dingo inside my school backpack to eat my lunch sandwich.',
+          'Dingoes run fast to catch their food.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'wild', icon: '🌿', hint: 'not a pet; free in nature',
+      definition: 'Wild means living free in nature, not as a pet.',
+      simplifiedMeaning: 'Animal with no owner.',
+      example: 'Wandi is a wild animal who finds his own food.',
+      didYouKnow: 'Dingoes have been wild in Australia for more than 3,500 years.',
+      tier: 1, tierWhy: 'It is an everyday word that most people already know.',
+      distractors: {
+        close: 'Living in a cage at home.',
+        unrelated: 'Completely broken.',
+        similarWord: 'A very wide road.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "wild" INCORRECTLY?',
+        opts: [
+          'Wild birds fly free in the trees.',
+          'The wild goldfish lived in a glass bowl on my bedroom table.',
+          'Dingoes are wild animals that live in the bush.',
+          'Plants grow wild in the rainforest.'
+        ],
+        correctIndex: 1
+      }
+    },
+    {
+      word: 'hunt', icon: '🔍', hint: 'look for and catch food',
+      definition: 'To hunt means to look for and catch food.',
+      simplifiedMeaning: 'Catch food.',
+      example: 'Dingoes hunt rabbits and lizards to eat.',
+      didYouKnow: 'Dingoes often hunt at night when the desert is cooler.',
+      tier: 2, tierWhy: 'This word appears in many subjects, not just science.',
+      distractors: {
+        close: 'Buying food from a shop.',
+        unrelated: 'Building a bird nest.',
+        similarWord: 'A small wooden house.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "hunt" INCORRECTLY?',
+        opts: [
+          'Dingoes hunt for meat when they are hungry.',
+          'Eagles fly high to hunt for field mice.',
+          'The dingo decided to hunt a deep hole in the sand to sleep inside.',
+          'Cats like to hunt for rats on the farm.'
+        ],
+        correctIndex: 2
+      }
+    }
+  ],
+  yellow: [
+    {
+      word: 'habitat', icon: '🏜️', hint: 'where an animal lives',
+      definition: 'A habitat is the place where an animal lives and finds everything it needs.',
+      simplifiedMeaning: 'An animal or plant\'s natural home.',
+      examples: ['Dingoes live in a dry, sandy habitat called the outback.', "A fish's habitat is in the water, not on land."],
+      synonym: 'home',
+      tier: 3, tierWhy: 'It is a science word that names where animals live.',
+      distractors: {
+        close: 'A travel crate used to move animals between city zoos.',
+        unrelated: 'A regular daily routine that you do without thinking.',
+        similarWord: 'An old habit that is very hard to stop doing.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "habitat" INCORRECTLY?',
+        opts: [
+          'The vast blue ocean is a habitat for whales and fish.',
+          'I have a bad habitat of biting my nails when I am nervous.',
+          'Cutting down trees destroys the habitat of native birds.',
+          'The hot desert is a tough habitat, but dingoes live there.'
+        ],
+        correctIndex: 1
+      }
+    },
+    {
+      word: 'protect', icon: '🛡️', hint: 'keep something safe',
+      definition: 'To protect something means to keep it safe from harm.',
+      simplifiedMeaning: 'Block from danger.',
+      examples: ['People protect dingoes by making rules about hunting them.', 'We can protect animals by not damaging their habitat.'],
+      synonym: 'guard',
+      tier: 2, tierWhy: 'Used in science, health, and everyday life.',
+      distractors: {
+        close: 'Watching something closely without stopping any danger.',
+        unrelated: 'Trading an object with a friend to get a toy.',
+        similarWord: 'To protest loudly against a new rule outside.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "protect" INCORRECTLY?',
+        opts: [
+          'Dingo mothers hide pups in caves to protect them.',
+          'Wearing a clean helmet will protect your head on a bike.',
+          'The angry crowd gathered on the street to protect against the new rules.',
+          'Thick winter fur can protect wild animals from cold air.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'native', icon: '🌍', hint: 'originally from a place',
+      definition: 'Native means something originally comes from a certain place.',
+      simplifiedMeaning: 'A plant or animal from that place.',
+      examples: ['The dingo is a native animal of Australia.', 'Eucalyptus trees are native to Australia too.'],
+      synonym: 'local',
+      tier: 2, tierWhy: 'Used in science and social studies to describe where things originally come from.',
+      distractors: {
+        close: 'An animal brought over on a boat that now lives here.',
+        unrelated: 'An animal that has completely died out across the world.',
+        similarWord: 'A naive person who believes silly tricks easily.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "native" INCORRECTLY?',
+        opts: [
+          'Kangaroos are native animals that belong to Australia.',
+          'He was so native that he thought the moon was made of cheese.',
+          'The golden wattle is a beautiful native plant in our area.',
+          'Dingoes are a native species that has been here for thousands of years.'
+        ],
+        correctIndex: 1
+      }
+    }
+  ],
+  green: [
+    {
+      word: 'predator', icon: '🦅', hint: 'animal that hunts others',
+      definition: 'A predator is an animal that hunts and eats other animals.',
+      simplifiedMeaning: 'A meat-eating hunter animal.',
+      sentences: ['The dingo is a predator that hunts rabbits and small kangaroos.', 'Eagles and sharks are also predators.', 'Predators help keep animal numbers balanced in nature.'],
+      synonym: 'hunter', antonym: 'prey',
+      nonExamples: 'Rabbits, deer, and sheep are not predators — they eat plants, not other animals.',
+      tier: 3, tierWhy: 'A science word describing a specific role in the food chain.',
+      distractors: {
+        close: 'An animal that only eats dead meat left on the ground.',
+        unrelated: 'A fast plant-eating animal that runs away from trouble.',
+        similarWord: 'A mathematical predictor tool used to guess tomorrow\'s weather.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "predator" INCORRECTLY?',
+        opts: [
+          'The saltwater crocodile is a dangerous water predator.',
+          'The tiny woolly lamb is a fierce predator that hunts mountain lions.',
+          'Dingoes are top predators in the Australian bush environment.',
+          'Hawks use sharp vision to find prey because they are predators.'
+        ],
+        correctIndex: 1
+      }
+    },
+    {
+      word: 'species', icon: '🧬', hint: 'a type of animal or plant',
+      definition: 'A species is a group of animals that are the same type and can have babies together.',
+      simplifiedMeaning: 'Same type of animals that can mate.',
+      sentences: ['The dingo is a species of wild dog found only in Australia.', 'There are millions of different species living on Earth.', 'Scientists give each species its own special name.'],
+      synonym: 'type', antonym: 'individual (one animal alone)',
+      nonExamples: 'A poodle and a Labrador are not different species — they are both the same species, just different breeds.',
+      tier: 3, tierWhy: 'A biology word used to group and name living things.',
+      distractors: {
+        close: 'A big family of animals living in the same local park.',
+        unrelated: 'A dark storage room where food jars are kept on shelves.',
+        similarWord: 'Hot spices like pepper used to flavor hot food dishes.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "species" INCORRECTLY?',
+        opts: [
+          'The scientist discovered a new species of forest beetle.',
+          'Please shake more species like cinnamon onto my apple pie.',
+          'The blue whale is a protected marine species.',
+          'Every living plant species has a special two-part scientific name.'
+        ],
+        correctIndex: 1
+      }
+    },
+    {
+      word: 'endangered', icon: '⚠️', hint: 'at risk of disappearing forever',
+      definition: 'Endangered means an animal is in danger of disappearing forever.',
+      simplifiedMeaning: 'Very close to dying out completely.',
+      sentences: ['Dingoes are endangered in some parts of Australia.', 'Animals often become endangered when their homes are destroyed.', 'People work hard to save endangered animals from dying out.'],
+      synonym: 'threatened', antonym: 'safe',
+      nonExamples: 'Common animals like pigeons or cockroaches are not endangered — there are still very many of them.',
+      tier: 3, tierWhy: 'A special science word used in nature conservation.',
+      distractors: {
+        close: 'An animal that is annoyed by visitors looking at it.',
+        unrelated: 'An animal that is completely healthy and growing fast.',
+        similarWord: 'Two people who are happily engaged to be married soon.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "endangered" INCORRECTLY?',
+        opts: [
+          'The giant panda is an endangered creature that needs help.',
+          'They became endangered last night and will hold a big wedding next year.',
+          'Without real care, endangered animals will vanish from Earth.',
+          'Cutting down forests leaves many rare birds completely endangered.'
+        ],
+        correctIndex: 1
+      }
+    },
+    {
+      word: 'adapt', icon: '🔄', hint: 'change to fit your environment',
+      definition: 'To adapt means to change over time so you can survive in your environment.',
+      simplifiedMeaning: 'Changing to fit in.',
+      sentences: ['Dingoes have adapted to live in the hot, dry outback.', 'Some animals adapt by growing thicker fur in winter.', 'Animals that cannot adapt may die out over time.'],
+      synonym: 'adjust', antonym: 'stay the same',
+      nonExamples: "Putting on a jumper when it's cold is not adapting — real adaptation happens slowly across many generations.",
+      tier: 2, tierWhy: 'Used in science, PE, and everyday life when something changes to fit a new situation.',
+      distractors: {
+        close: 'Moving away to find an easier place to stay.',
+        unrelated: 'Making a loud growling sound at another dog in the pack.',
+        similarWord: 'To adopt a new baby animal from the rescue shelter.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "adapt" INCORRECTLY?',
+        opts: [
+          'Desert plants adapt by growing long roots to find water.',
+          'We went to the shelter to adapt a fluffy grey kitten.',
+          'Animals must adapt when their forest home becomes a dry desert.',
+          'Creatures adapt over thousands of years to fit their climate.'
+        ],
+        correctIndex: 1
+      }
+    },
+    {
+      word: 'survive', icon: '💪', hint: 'stay alive',
+      definition: 'To survive means to stay alive, especially when things are hard.',
+      simplifiedMeaning: 'To live.',
+      sentences: ['Dingoes survive in the desert by finding water and food.', 'Animals that are good hunters have a better chance of surviving.', 'Some animals can survive for weeks without food.'],
+      synonym: 'live on', antonym: 'die out',
+      nonExamples: 'Sitting at home watching TV is not surviving in the wild — survival means dealing with real dangers like hunger and heat.',
+      tier: 2, tierWhy: 'Used in science, history, and everyday speech.',
+      distractors: {
+        close: 'Growing bigger and winning all the fights in the bush.',
+        unrelated: 'Falling fast asleep on a branch during a sunny afternoon.',
+        similarWord: 'To survey an open field using scientific tools.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "survive" INCORRECTLY?',
+        opts: [
+          'Dingoes need water to survive the hot summer days.',
+          'No green plants can survive without light and clean water.',
+          'The workers will survive the land before building a new road.',
+          'Animals hide underground to survive a sudden bushfire.'
+        ],
+        correctIndex: 2
+      }
+    }
+  ],
+  blue: [
+    {
+      word: 'ecosystem', icon: '🌳', hint: 'all living things in one place',
+      definition: 'An ecosystem is all the plants, animals, and surroundings in one place, all connected and depending on each other.',
+      simplifiedMeaning: 'A place of living things and nature working together.',
+      sentences: ['Dingoes are an important part of the Australian ecosystem.', 'In an ecosystem, if one animal disappears, it can affect everything else.', 'The desert ecosystem includes sand, rocks, plants, insects, and animals.', 'Healthy ecosystems have lots of different plants and animals living in balance.', 'Humans can damage ecosystems by cutting down trees or polluting water.'],
+      synonym: 'natural community', antonym: 'A damaged or broken ecosystem is the opposite of a healthy one.',
+      nonExamples: 'A city or a farm is not a natural ecosystem — humans control most of what lives there.',
+      connotation: 'Ecosystem sounds scientific and important. It makes us think of balance — everything working together like a team.',
+      etymology: '"Eco" comes from the Greek word "oikos," which means home. "System" means things working together. So an ecosystem is like a home where all living things work as a team.',
+      tier: 3, tierWhy: 'A special science word used in biology and environmental studies.',
+      distractors: {
+        close: 'The dynamic seasonal weather system that makes cloud rain fall.',
+        unrelated: 'A plastic greenhouse nursery used for starting tomato seeds.',
+        similarWord: 'An electronic echo system used to bounce sound waves off walls.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "ecosystem" INCORRECTLY?',
+        opts: [
+          'A small rock pool contains an ecosystem of crabs and seaweed.',
+          'The giant concrete and steel office tower forms a natural forest ecosystem.',
+          'Losing a top predator can completely upset a bush ecosystem.',
+          'Every living creature performs a special role in its native ecosystem.'
+        ],
+        correctIndex: 1
+      }
+    },
+    {
+      word: 'conservation', icon: '♻️', hint: 'protecting nature',
+      definition: 'Conservation means working to protect animals, plants, and nature so they do not disappear.',
+      simplifiedMeaning: 'Nature protection.',
+      sentences: ['Conservation workers help protect dingoes and their habitat.', 'Building national parks is one way people practise conservation.', 'Conservation is important because once a species is gone, it is gone forever.', 'Some people do conservation work by planting native trees.', 'Dingo conservation is tricky because some farmers see dingoes as a danger to their animals.'],
+      synonym: 'protection', antonym: 'destruction',
+      nonExamples: 'Hunting animals for sport is not conservation — it can harm animal populations.',
+      connotation: 'Conservation sounds caring and responsible. It makes us think of people stepping up to look after nature.',
+      etymology: 'From the Latin word "conservare," meaning to keep safe. "Con-" means together and "servare" means to guard.',
+      tier: 3, tierWhy: 'A science and social studies word used when talking about protecting the natural world.',
+      distractors: {
+        close: 'Studying animal skulls inside a university science lab.',
+        unrelated: 'Clearing old native forests to build massive shopping centers.',
+        similarWord: 'A friendly conversation between two teachers at lunchtime.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "conservation" INCORRECTLY?',
+        opts: [
+          'National parks help with wild animal conservation projects.',
+          'I enjoyed a long, helpful conservation with my friend on the phone.',
+          'Wildlife conservation focuses on fixing broken habitats.',
+          'Saving water at home is a simple form of nature conservation.'
+        ],
+        correctIndex: 1
+      }
+    },
+    {
+      word: 'carnivore', icon: '🦷', hint: 'animal that eats only meat',
+      definition: 'A carnivore is an animal that eats only meat.',
+      simplifiedMeaning: 'A meat-eater.',
+      sentences: ['Dingoes are carnivores — they eat animals like rabbits and wallabies.', 'Lions, sharks, and crocodiles are also carnivores.', 'Carnivores usually have sharp teeth made for tearing meat.', 'Being a carnivore means you need to be a good hunter.', 'In a food chain, carnivores are usually near the top.'],
+      synonym: 'meat-eater', antonym: 'herbivore (an animal that eats only plants)',
+      nonExamples: 'Cows, horses, and rabbits are not carnivores — they eat grass and plants.',
+      connotation: 'Carnivore sounds powerful and fierce. It makes us think of predators and hunting.',
+      etymology: 'From Latin: "caro" means flesh or meat, and "vorare" means to eat. So carnivore literally means "meat-eater."',
+      tier: 3, tierWhy: 'A science word used in biology to describe what type of food an animal eats.',
+      distractors: {
+        close: 'An omnivore animal that eats both fresh leaves and bugs.',
+        unrelated: 'A gentle plant-eater that searches for sweet meadow flowers.',
+        similarWord: 'A fun school carnival filled with giant rides and games.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "carnivore" INCORRECTLY?',
+        opts: [
+          'The dingo is a quick land carnivore looking for prey.',
+          'Sharks are fierce ocean carnivores with sharp rows of teeth.',
+          'The slow koala is a fierce carnivore that only eats green leaves.',
+          'Wild cats are strict carnivores that rely completely on meat.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'territory', icon: '📍', hint: 'area an animal claims as its own',
+      definition: 'A territory is the area an animal claims as its own and defends from other animals.',
+      simplifiedMeaning: 'An animal\'s area.',
+      sentences: ['Dingo packs have a territory where they hunt and raise their pups.', 'Animals mark their territory by leaving smells or sounds as warnings.', "If another animal enters a dingo's territory, the dingo might chase it away.", 'Larger territories usually mean more food is available for the pack.', 'When habitats shrink, animals may fight over territory.'],
+      synonym: 'area', antonym: 'shared land',
+      nonExamples: "A school playground is not an animal territory. A pet dog's yard at home is not a true wild territory either.",
+      connotation: 'Territory sounds protective and fierce. It makes us think of animals defending what belongs to them.',
+      etymology: 'From the Latin word "terra," which means land or earth. Territory literally means a piece of land.',
+      tier: 2, tierWhy: "Used in science when talking about animal behaviour, but also in everyday language — like a country's territory.",
+      distractors: {
+        close: 'A long line path that animals follow when flying south.',
+        unrelated: 'The rank leadership order among animals inside a family.',
+        similarWord: 'A feeling of absolute terror when watching a scary movie.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "territory" INCORRECTLY?',
+        opts: [
+          'A pack of wild dingoes will guard their hunting territory.',
+          'The small blue bird defended its nesting territory from crows.',
+          'The loud thunderstorm filled my little dog with absolute territory.',
+          'Wolves mark their deep forest territory boundaries with scent markers.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'food chain', icon: '🔗', hint: 'who eats who in nature',
+      definition: 'A food chain shows the order of who eats what in nature, starting from plants all the way to top predators.',
+      simplifiedMeaning: 'A map of what animals eat.',
+      sentences: ['In a simple food chain, grass is eaten by a rabbit, and the rabbit is eaten by a dingo.', 'Food chains always start with the sun giving energy to plants.', 'Dingoes are near the top of the food chain in Australia.', 'If one part of the food chain disappears, the others are affected.', 'A food chain shows how energy moves from one living thing to the next.'],
+      synonym: 'feeding order', antonym: 'A broken food chain is the opposite of a working one.',
+      nonExamples: 'A shopping list of foods is not a food chain — a food chain is about animals eating animals or plants in nature.',
+      connotation: 'Food chain sounds orderly and connected, like a line where each part depends on the one before it.',
+      etymology: '"Food" is an old English word. "Chain" comes from the Old French word "chaîne," meaning a series of linked rings. A food chain links living things together, one after another.',
+      tier: 3, tierWhy: 'A science word used in biology to explain how energy flows through nature.',
+      distractors: {
+        close: 'The entire complex map web of links inside an ecosystem.',
+        unrelated: 'A large row block of local food shops selling groceries.',
+        similarWord: 'A sack of healthy food grain harvested from a wheat farm.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "food chain" INCORRECTLY?',
+        opts: [
+          'Green plants form the bottom base of a land food chain.',
+          'The farmer put three heavy bags of golden food chain into the truck.',
+          'An apex predator sits at the very top of its local food chain.',
+          'Breaking a natural food chain can cause insect populations to explode.'
+        ],
+        correctIndex: 1
+      }
+    }
+  ]
+};
+
+const groupMeta = {
+  red:    { name: 'Red Group',    label: 'early readers — 3 words',     bg: 'red-bg',    barClass: 'bar-red',    badgeClass: 'badge-red',    tabClass: 'tab-red'    },
+  yellow: { name: 'Yellow Group', label: 'developing readers — 3 words', bg: 'yellow-bg', barClass: 'bar-yellow', badgeClass: 'badge-yellow', tabClass: 'tab-yellow' },
+  green:  { name: 'Green Group',  label: 'confident readers — 5 words',  bg: 'green-bg',  barClass: 'bar-green',  badgeClass: 'badge-green',  tabClass: 'tab-green'  },
+  blue:   { name: 'Blue Group',   label: 'fluent readers — 5 words',     bg: 'blue-bg',   barClass: 'bar-blue',   badgeClass: 'badge-blue',   tabClass: 'tab-blue'   }
+};
+
+const extraContentQuestions = {
+  green: [
+    {
+      q: 'According to the non-examples in the Learn section, which animal is explicitly noted as NOT being a predator?',
+      opts: [
+        { text: 'Sheep', type: 'correct' },
+        { text: 'Eagle', type: 'close' },
+        { text: 'Shark', type: 'unrelated' },
+        { text: 'Predictor', type: 'similarWord' }
+      ],
+      correctText: 'Sheep'
+    },
+    {
+      q: 'The Learn panel notes that putting on a jumper when cold is NOT a real biological example of adapting. Why?',
+      opts: [
+        { text: 'Real adaptation happens slowly across many generations.', type: 'correct' },
+        { text: 'It only works for domestic farm animals.', type: 'close' },
+        { text: 'Jumpers do not provide insulation in nature.', type: 'unrelated' },
+        { text: 'It represents an adoption procedure.', type: 'similarWord' }
+      ],
+      correctText: 'Real adaptation happens slowly across many generations.'
+    }
+  ],
+  blue: [
+    {
+      q: 'Based on the word origin (etymology) section for **ecosystem**, what did the ancient Greek root word "oikos" originally mean?',
+      opts: [
+        { text: 'Home', type: 'correct' },
+        { text: 'Environment', type: 'close' },
+        { text: 'Nature', type: 'unrelated' },
+        { text: 'Echo', type: 'similarWord' }
+      ],
+      correctText: 'Home'
+    },
+    {
+      q: 'In the **conservation** section, why is protecting nature described as tricky regarding dingoes?',
+      opts: [
+        { text: 'Some farmers see wild dingoes as an active danger to their livestock animals.', type: 'correct' },
+        { text: 'Dingoes are completely extinct in Australia.', type: 'close' },
+        { text: 'Dingoes cannot safely howl when rain falls.', type: 'unrelated' },
+        { text: 'Conversations with farmers are always completely banned.', type: 'similarWord' }
+      ],
+      correctText: 'Some farmers see wild dingoes as an active danger to their livestock animals.'
+    }
+  ]
+};
+
+// ─── State ────────────────────────────────────────────────────────────────────
+
+let currentGroup        = 'red';
+let currentMode         = 'learn';
+let currentQuizQuestions = []; 
+let selectedAnswers     = {};  
+let checkedQuestions    = {};  
+let voices              = [];
+let activeSpeakBtn      = null;
+
+// ─── Speech ───────────────────────────────────────────────────────────────────
+
+function loadVoices() { voices = window.speechSynthesis.getVoices(); }
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+  loadVoices();
+}
+
+function getVoice() {
+  const william = voices.find(v => v.name.toLowerCase().includes('william'));
+  const natural = voices.find(v => /natural/i.test(v.name) && v.lang.startsWith('en'));
+  const english = voices.find(v => v.lang.startsWith('en-'));
+  return william || natural || english || null;
+}
+
+function speakText(text, btn) {
+  if (!('speechSynthesis' in window)) { alert('Read-aloud is not supported in this browser.'); return; }
+
+  if (activeSpeakBtn === btn) {
+    window.speechSynthesis.cancel();
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+  if (activeSpeakBtn) { activeSpeakBtn.classList.remove('speaking'); activeSpeakBtn = null; }
+
+  const ut  = new SpeechSynthesisUtterance(text);
+  const v    = getVoice();
+  const rate = parseFloat(document.getElementById('speedSelect').value) || 0.85;
+  if (v) ut.voice = v;
+  ut.rate = rate;
+
+  activeSpeakBtn = btn;
+  btn.classList.add('speaking');
+
+  ut.onend = ut.onerror = () => {
+    if (activeSpeakBtn === btn) { btn.classList.remove('speaking'); activeSpeakBtn = null; }
+  };
+
+  window.speechSynthesis.speak(ut);
+}
+
+function readSectionText(btn) { speakText(btn.dataset.text, btn); }
+
+function readOptionText(btn, e) {
+  e.stopPropagation();
+  speakText(btn.dataset.text, btn);
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function escAttr(str) {
+  return (str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+}
+
+function sectionReadBtn(text) {
+  return `<button class="sec-read-btn" data-text="${escAttr(text)}" onclick="readSectionText(this)" title="Read aloud">🔊</button>`;
+}
+
+function tierBadge(item) {
+  return `<div class="tier-row">
+    <span class="tier-badge tier-${item.tier}">Tier ${item.tier}</span>
+    <span class="tier-why">${item.tierWhy}</span>
+  </div>`;
+}
+
+// ─── Navigation ───────────────────────────────────────────────────────────────
+
+function showGroup(group) {
+  currentGroup = group;
+  window.speechSynthesis?.cancel();
+  activeSpeakBtn = null;
+
+  const meta = groupMeta[group];
+  document.getElementById('frontMenu').classList.add('hidden');
+  document.getElementById('groupView').classList.remove('hidden');
+
+  const bar = document.getElementById('topBar');
+  bar.className = 'group-top-bar ' + meta.barClass;
+
+  const badge = document.getElementById('groupBadge');
+  badge.textContent = meta.name;
+  badge.className   = 'group-badge ' + meta.badgeClass;
+
+  ['learnTab', 'quizTab'].forEach(id => {
+    const tab = document.getElementById(id);
+    tab.classList.remove('tab-red','tab-yellow','tab-green','tab-blue');
+    tab.classList.add(meta.tabClass);
+  });
+
+  switchMode('learn');
+}
+
+function backToMenu() {
+  window.speechSynthesis?.cancel();
+  activeSpeakBtn = null;
+  document.getElementById('groupView').classList.add('hidden');
+  document.getElementById('frontMenu').classList.remove('hidden');
+}
+
+function switchMode(mode) {
+  currentMode = mode;
+  window.speechSynthesis?.cancel();
+  activeSpeakBtn = null;
+
+  document.getElementById('learnTab').classList.toggle('active', mode === 'learn');
+  document.getElementById('quizTab') .classList.toggle('active', mode === 'quiz');
+  document.getElementById('learnPanel').classList.toggle('hidden', mode !== 'learn');
+  document.getElementById('quizPanel') .classList.toggle('hidden', mode !== 'quiz');
+
+  if (mode === 'learn') { renderGrid(); }
+  else                  { generateQuiz(); }
+}
+
+// ─── Learn mode ───────────────────────────────────────────────────────────────
+
+function renderGrid() {
+  const meta  = groupMeta[currentGroup];
+  const words = groupVocab[currentGroup];
+
+  document.getElementById('groupLabel').textContent = `${meta.name} — ${meta.label}`;
+
+  const grid = document.getElementById('vocabGrid');
+  grid.innerHTML = '';
+  words.forEach(item => {
+    const card = document.createElement('div');
+    card.className = `vocab-card ${meta.bg}`;
+    card.innerHTML = `
+      <div>
+        <div class="card-icon">${item.icon}</div>
+        <div class="card-word">${item.word}</div>
+      </div>
+      <div class="card-hint">${item.hint}</div>
+    `;
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.vocab-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      showDetail(item);
+    });
+    grid.appendChild(card);
+  });
+
+  document.getElementById('detailBox').classList.add('hidden');
+}
+
+function showDetail(item) {
+  const box = document.getElementById('detailBox');
+  
+  let html = `
+    <div class="detail-word-row">
+      <div class="detail-word">${item.icon} ${item.word}</div>
+      <div class="tier-section" style="margin-bottom: 0;">
+        ${tierBadge(item)}
+      </div>
+    </div>
+  `;
+
+  html += section('What it means (Full)', item.definition, item.definition);
+  html += section('Simplified Meaning', `<strong>${item.simplifiedMeaning}</strong>`, item.simplifiedMeaning);
+
+  if (currentGroup === 'red') {
+    html += exampleSection('Example', item.example)
+          + factSection('Did you know?', item.didYouKnow);
+
+  } else if (currentGroup === 'yellow') {
+    const allExamples = item.examples.join(' ');
+    html += multiExampleSection('Examples', item.examples, allExamples)
+          + section('Synonym (similar word)', item.synonym, `A synonym for ${item.word} is: ${item.synonym}`);
+
+  } else if (currentGroup === 'green') {
+    const allSentences = item.sentences.join(' ');
+    html += multiExampleSection('Example sentences', item.sentences, allSentences)
+          + section('Synonym (similar word)', item.synonym, `A synonym for ${item.word} is: ${item.synonym}`)
+          + section('Antonym (opposite)', item.antonym, `The antonym, or opposite, of ${item.word} is: ${item.antonym}`)
+          + section('Non-examples', item.nonExamples, item.nonExamples);
+
+  } else {
+    const allSentences = item.sentences.join(' ');
+    html += multiExampleSection('Example sentences', item.sentences, allSentences)
+          + section('Synonym (similar word)', item.synonym, `A synonym for ${item.word} is: ${item.synonym}`)
+          + section('Antonym (opposite)', item.antonym, `The antonym, or opposite, of ${item.word} is: ${item.antonym}`)
+          + section('Non-examples', item.nonExamples, item.nonExamples)
+          + section('Connotation', item.connotation, item.connotation)
+          + section('Word origin (etymology)', item.etymology, item.etymology);
+  }
+
+  box.innerHTML = html;
+  box.classList.remove('hidden');
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function section(label, contentHTML, readText) {
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(readText)}
+    </div>
+    <div class="detail-content">${contentHTML}</div>
+  </div>`;
+}
+
+function exampleSection(label, text) {
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(text)}
+    </div>
+    <div class="example-box">${text}</div>
+  </div>`;
+}
+
+function factSection(label, text) {
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(text)}
+    </div>
+    <div class="fact-box">${text}</div>
+  </div>`;
+}
+
+function multiExampleSection(label, items, readText) {
+  const boxes = items.map(s => `<div class="example-box">${s}</div>`).join('');
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(readText)}
+    </div>
+    ${boxes}
+  </div>`;
+}
+
+// ─── Quiz mode (With Per-Question Check and Retry Buttons) ────────────────────
+
+function generateQuiz() {
+  selectedAnswers     = {};
+  checkedQuestions    = {};
+  currentQuizQuestions = [];
+  window.speechSynthesis?.cancel();
+  activeSpeakBtn = null;
+
+  const words = groupVocab[currentGroup];
+
+  // 1. Definition Lookup Questions (Red has 3 choices, others have 4)
+  words.forEach(item => {
+    let optsArray = [];
+    if (currentGroup === 'red') {
+      optsArray = [
+        { text: item.simplifiedMeaning, type: 'correct' },
+        { text: item.distractors.close, type: 'close' },
+        { text: item.distractors.unrelated, type: 'unrelated' }
+      ];
+    } else {
+      optsArray = [
+        { text: item.definition, type: 'correct' },
+        { text: item.distractors.close, type: 'close' },
+        { text: item.distractors.unrelated, type: 'unrelated' },
+        { text: item.distractors.similarWord, type: 'similarWord' }
+      ];
+    }
+    
+    currentQuizQuestions.push({
+      type: 'meaning',
+      word: item.word,
+      questionText: currentGroup === 'red' ? `What is a <strong>${item.word}</strong>?` : `What does the word "${item.word}" mean?`,
+      options: shuffleArray([...optsArray]),
+      correctText: currentGroup === 'red' ? item.simplifiedMeaning : item.definition
+    });
+  });
+
+  // 2. Incorrect Sentence Detection Questions (4 simplified choices for all groups)
+  words.forEach(item => {
+    const errorData = item.errorExample;
+    const optsArray = errorData.opts.map((text, idx) => {
+      return { text: text, isCorrectSlot: idx === errorData.correctIndex };
+    });
+
+    currentQuizQuestions.push({
+      type: 'error_detect',
+      word: item.word,
+      questionText: errorData.q,
+      options: shuffleArray([...optsArray]),
+      correctText: errorData.opts[errorData.correctIndex]
+    });
+  });
+
+  // 3. Content Questions for Green and Blue Groups
+  if ((currentGroup === 'green' || currentGroup === 'blue') && extraContentQuestions[currentGroup]) {
+    extraContentQuestions[currentGroup].forEach((extra) => {
+      currentQuizQuestions.push({
+        type: 'content_based',
+        word: extra.word || '',
+        questionText: extra.q,
+        options: shuffleArray([...extra.opts]),
+        correctText: extra.correctText
+      });
+    });
+  }
+
+  // Shuffle all questions completely
+  shuffleArray(currentQuizQuestions);
+
+  const progress = document.getElementById('quizProgress');
+  progress.innerHTML = currentQuizQuestions.map((_, i) => `<div class="progress-dot unanswered" id="dot-${i}"></div>`).join('');
+
+  renderQuizUI();
+}
+
+function renderQuizUI() {
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+
+  currentQuizQuestions.forEach((qObj, qIdx) => {
+    const card = document.createElement('div');
+    card.className = 'quiz-card';
+    card.id = `qcard-${qIdx}`;
+
+    let html = `
+      <div class="quiz-q-number">Question ${qIdx + 1} of ${currentQuizQuestions.length}</div>
+      <div class="quiz-q-row">
+        <div class="quiz-q-text">${qObj.questionText}</div>
+        <button class="q-read-btn" data-text="${escAttr(qObj.questionText.replace(/<[^>]*>/g, ''))}" onclick="readSectionText(this)" title="Read question">🔊</button>
+      </div>
+      <div class="quiz-options-grid" id="opts-grid-${qIdx}">
+    `;
+
+    qObj.options.forEach((opt, oIdx) => {
+      html += `
+        <div class="quiz-opt-row" 
+             id="optrow-${qIdx}-${oIdx}"
+             onclick="selectOption(${qIdx}, ${oIdx}, '${escAttr(opt.text)}')">
+          <div class="opt-main">${opt.text}</div>
+          <div class="opt-speaker-zone">
+            <button class="opt-read-btn" data-text="${escAttr(opt.text)}" onclick="readOptionText(this, event)" title="Read option">🔊</button>
+          </div>
+        </div>
+      `;
+    });
+
+    html += `
+      </div>
+      <div class="card-actions">
+        <button class="card-btn check-btn" id="check-btn-${qIdx}" onclick="checkCardAnswer(${qIdx})" disabled>Check Answer</button>
+        <button class="card-btn retry-btn hidden" id="retry-btn-${qIdx}" onclick="retryCard(${qIdx})">Retry</button>
+      </div>
+      <div id="feedback-${qIdx}"></div>
+    `;
+    card.innerHTML = html;
+    container.appendChild(card);
+  });
+}
+
+function selectOption(qIdx, oIdx) {
+  if (checkedQuestions[qIdx]) return;
+
+  const grid = document.getElementById(`opts-grid-${qIdx}`);
+  grid.querySelectorAll('.quiz-opt-row').forEach(row => row.classList.remove('selected'));
+
+  const selectedRow = document.getElementById(`optrow-${qIdx}-${oIdx}`);
+  selectedRow.classList.add('selected');
+
+  selectedAnswers[qIdx] = oIdx;
+  document.getElementById(`check-btn-${qIdx}`).disabled = false;
+
+  const dot = document.getElementById(`dot-${qIdx}`);
+  if (dot && dot.className.includes('unanswered')) {
+    dot.className = 'progress-dot answered';
+  }
+}
+
+function checkCardAnswer(qIdx) {
+  if (checkedQuestions[qIdx]) return;
+  window.speechSynthesis?.cancel();
+
+  const qObj = currentQuizQuestions[qIdx];
+  const chosenOptIdx = selectedAnswers[qIdx];
+  const chosenOpt = qObj.options[chosenOptIdx];
+  const isCorrect = chosenOpt.text === qObj.correctText;
+
+  checkedQuestions[qIdx] = true;
+  document.getElementById(`check-btn-${qIdx}`).classList.add('hidden');
+  document.getElementById(`retry-btn-${qIdx}`).classList.remove('hidden');
+
+  const grid = document.getElementById(`opts-grid-${qIdx}`);
+  grid.querySelectorAll('.quiz-opt-row').forEach((row, oIdx) => {
+    row.classList.add('disabled');
+    const rowOpt = qObj.options[oIdx];
+    
+    if (rowOpt.text === qObj.correctText) {
+      row.classList.add('correct');
+    } else if (oIdx === chosenOptIdx && !isCorrect) {
+      row.classList.add('incorrect');
+    } else {
+      row.classList.add('dimmed');
+    }
+  });
+
+  const fbContainer = document.getElementById(`feedback-${qIdx}`);
+  const fb = document.createElement('div');
+  fb.className = `quiz-feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+  fb.textContent = isCorrect ? '✓ Correct!' : '✗ Try again next time!';
+  fbContainer.appendChild(fb);
+
+  const dot = document.getElementById(`dot-${qIdx}`);
+  if (dot) {
+    dot.className = `progress-dot ${isCorrect ? 'correct' : 'incorrect'}`;
+  }
+}
+
+function retryCard(qIdx) {
+  window.speechSynthesis?.cancel();
+  
+  delete selectedAnswers[qIdx];
+  delete checkedQuestions[qIdx];
+
+  const qObj = currentQuizQuestions[qIdx];
+  shuffleArray(qObj.options);
+
+  const dot = document.getElementById(`dot-${qIdx}`);
+  if (dot) dot.className = 'progress-dot unanswered';
+
+  const card = document.getElementById(`qcard-${qIdx}`);
+  const grid = card.querySelector('.quiz-options-grid');
+  grid.innerHTML = '';
+
+  qObj.options.forEach((opt, oIdx) => {
+    const row = document.createElement('div');
+    row.className = 'quiz-opt-row';
+    row.id = `optrow-${qIdx}-${oIdx}`;
+    row.onclick = () => selectOption(qIdx, oIdx, escAttr(opt.text));
+    row.innerHTML = `
+      <div class="opt-main">${opt.text}</div>
+      <div class="opt-speaker-zone">
+        <button class="opt-read-btn" data-text="${escAttr(opt.text)}" onclick="readOptionText(this, event)" title="Read option">🔊</button>
+      </div>
+    `;
+    grid.appendChild(row);
+  });
+
+  document.getElementById(`check-btn-${qIdx}`).classList.remove('hidden');
+  document.getElementById(`check-btn-${qIdx}`).disabled = true;
+  document.getElementById(`retry-btn-${qIdx}`).classList.add('hidden');
+  document.getElementById(`feedback-${qIdx}`).innerHTML = '';
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+</script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='vocab-wandi-10';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-vocab.js"></script>
+</body>
+</html>

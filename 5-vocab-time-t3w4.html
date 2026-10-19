@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time &amp; Duration: Tick Tock</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Helvetica Neue', Helvetica, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: #f4f4f9;
+      padding: 20px;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* ==========================================
+       FRONT MENU
+    ========================================== */
+    .front-menu {
+      background: white;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    .front-menu h1 { font-size: 2.2rem; color: #222; margin-top: 0; margin-bottom: 10px; }
+    .front-menu > p { font-size: 1.1rem; color: #666; margin-bottom: 35px; }
+
+    .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
+
+    .menu-button {
+      padding: 30px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    .menu-button:hover  { transform: translateY(-4px); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
+    .menu-button:active { transform: translateY(-2px); }
+
+    .red-btn          { background-color: #e53935; }
+    .red-btn:hover    { background-color: #c62828; }
+    .yellow-btn       { background-color: #ffb300; color: #333; }
+    .yellow-btn:hover { background-color: #ff9800; }
+    .green-btn        { background-color: #43a047; }
+    .green-btn:hover  { background-color: #2e7d32; }
+    .blue-btn         { background-color: #1e88e5; }
+    .blue-btn:hover   { background-color: #1565c0; }
+
+    /* ==========================================
+       GROUP VIEW SHELL
+    ========================================== */
+    #groupView { max-width: 900px; margin: 0 auto; }
+
+    .group-top-bar { height: 12px; border-radius: 8px 8px 0 0; }
+    .bar-red    { background: #e53935; }
+    .bar-yellow { background: #ffb300; }
+    .bar-green  { background: #43a047; }
+    .bar-blue   { background: #1e88e5; }
+
+    .group-header {
+      background: white;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .back-btn {
+      background: #f0f0f0;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      color: #444;
+      transition: background 0.2s;
+      font-family: inherit;
+    }
+    .back-btn:hover { background: #e0e0e0; }
+
+    .group-badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      color: white;
+    }
+    .badge-red    { background: #e53935; }
+    .badge-yellow { background: #ffb300; color: #333; }
+    .badge-green  { background: #43a047; }
+    .badge-blue   { background: #1e88e5; }
+
+    .speed-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.85rem;
+      color: #555;
+      font-weight: 500;
+    }
+    .speed-row select {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 0.85rem;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    /* -- Mode tabs -- */
+    .mode-tabs {
+      display: flex;
+      background: #f8f8f8;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    .mode-tab {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      color: #888;
+      transition: all 0.15s;
+      font-family: inherit;
+      border-bottom: 3px solid transparent;
+    }
+    .mode-tab:hover { color: #444; background: rgba(0,0,0,0.03); }
+    .mode-tab.active { font-weight: 700; border-bottom-color: currentColor; }
+    .mode-tab.active.tab-red    { color: #e53935; }
+    .mode-tab.active.tab-yellow { color: #c48800; }
+    .mode-tab.active.tab-green  { color: #2e7d32; }
+    .mode-tab.active.tab-blue   { color: #1565c0; }
+
+    /* ==========================================
+       LEARN PANEL
+    ========================================== */
+    .learn-panel {
+      background: white;
+      padding: 24px;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .group-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #aaa;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .vocab-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 2rem;
+    }
+
+    .vocab-card {
+      padding: 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      border: 2px solid transparent;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      user-select: none;
+    }
+    .vocab-card:hover    { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .vocab-card.selected { border-color: #555; box-shadow: 0 0 0 3px rgba(0,0,0,0.07); }
+
+    .vocab-card.red-bg    { background: #FEE8E8; }
+    .vocab-card.yellow-bg { background: #FDF4E6; }
+    .vocab-card.green-bg  { background: #EDF7EF; }
+    .vocab-card.blue-bg   { background: #EEF4FD; }
+
+    .card-icon { font-size: 26px; margin-bottom: 6px; line-height: 1; }
+    .card-word { font-size: 15px; font-weight: 600; color: #222; }
+    .card-hint { font-size: 11px; color: #777; margin-top: 4px; }
+
+    /* -- Detail box -- */
+    .detail-box {
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 1.5rem 1.75rem;
+      border: 1px solid #e8e8e8;
+    }
+    .detail-box.hidden { display: none; }
+
+    .detail-word-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 1.25rem;
+    }
+
+    .detail-word { font-size: 26px; font-weight: 700; color: #111; }
+
+    .detail-section { margin-bottom: 1.25rem; }
+    .detail-section:last-child { margin-bottom: 0; }
+
+    .detail-label-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 0.45rem;
+    }
+    .detail-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #bbb;
+      font-weight: 700;
+    }
+
+    .sec-read-btn {
+      background: none;
+      border: 1px solid #ddd;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      font-size: 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      padding: 0;
+      flex-shrink: 0;
+      color: #888;
+    }
+    .sec-read-btn:hover    { background: #f0f0f0; border-color: #999; color: #333; }
+    .sec-read-btn.speaking { background: #333; border-color: #333; color: white; }
+
+    .detail-content { font-size: 15px; line-height: 1.75; color: #444; }
+
+    .example-box {
+      background: white;
+      border-left: 3px solid #378ADD;
+      padding: 9px 13px;
+      margin: 6px 0;
+      font-size: 14px;
+      color: #555;
+      border-radius: 0 6px 6px 0;
+      line-height: 1.6;
+      font-style: italic;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .fact-box {
+      background: white;
+      border-left: 3px solid #D69E2E;
+      padding: 9px 13px;
+      margin: 6px 0;
+      font-size: 14px;
+      color: #555;
+      border-radius: 0 6px 6px 0;
+      line-height: 1.6;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .tier-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .tier-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .tier-1 { background: #C6F6D5; color: #22543D; }
+    .tier-2 { background: #FEEBC8; color: #7B341E; }
+    .tier-3 { background: #E9D8FD; color: #44337A; }
+    .tier-why { font-size: 13px; color: #777; }
+
+    /* ==========================================
+       QUIZ PANEL
+    ========================================== */
+    .quiz-panel {
+      background: white;
+      padding: 24px;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .quiz-intro-text { font-size: 14px; color: #888; margin-bottom: 1.25rem; }
+
+    .quiz-progress { display: flex; gap: 7px; margin-bottom: 1.75rem; flex-wrap: wrap; align-items: center; }
+    .progress-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .progress-dot.unanswered { background: #e0e0e0; }
+    .progress-dot.answered { background: #b0bec5; }
+    .progress-dot.correct   { background: #43a047; transform: scale(1.15); }
+    .progress-dot.incorrect { background: #e53935; transform: scale(1.15); }
+
+    .quiz-card {
+      background: #fafafa;
+      border-radius: 14px;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 1.75rem;
+      border: 1.5px solid #ececec;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .quiz-q-number {
+      font-size: 11px;
+      font-weight: 700;
+      color: #bbb;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .quiz-q-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 1.25rem;
+    }
+    .quiz-q-text {
+      flex: 1;
+      font-size: 17px;
+      font-weight: 600;
+      color: #111;
+      line-height: 1.4;
+    }
+    .q-read-btn {
+      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1.5px solid #ddd;
+      background: white;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      margin-top: 2px;
+    }
+    .q-read-btn:hover { border-color: #aaa; background: #f5f5f5; }
+    .q-read-btn.speaking { background: #333; border-color: #333; color: white; }
+
+    .quiz-options-grid { display: flex; flex-direction: column; gap: 10px; }
+
+    .quiz-opt-row {
+      display: flex;
+      align-items: stretch;
+      border: 2px solid #e2e2e2;
+      border-radius: 10px;
+      background: white;
+      overflow: hidden;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+    }
+    .quiz-opt-row:not(.disabled):hover { border-color: #378ADD; box-shadow: 0 0 0 3px rgba(55,138,221,0.1); }
+    .quiz-opt-row.selected { border-color: #1e88e5; background: #e3f2fd; }
+    .quiz-opt-row.correct   { border-color: #43a047; background: #f0fff4; cursor: default; }
+    .quiz-opt-row.incorrect { border-color: #e53935; background: #fff5f5; cursor: default; }
+    .quiz-opt-row.dimmed    { border-color: #eee;    background: #fafafa; cursor: default; }
+
+    .opt-main {
+      flex: 1;
+      padding: 12px 15px;
+      font-size: 14px;
+      line-height: 1.55;
+      color: #444;
+      user-select: none;
+    }
+    .quiz-opt-row.correct  .opt-main { color: #1b5e20; font-weight: 500; }
+    .quiz-opt-row.incorrect .opt-main { color: #b71c1c; }
+    .quiz-opt-row.dimmed   .opt-main { color: #c8c8c8; }
+
+    .opt-speaker-zone {
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      border-left: 1.5px solid #ececec;
+      flex-shrink: 0;
+    }
+    .quiz-opt-row.correct   .opt-speaker-zone { border-left-color: #b2dfdb; }
+    .quiz-opt-row.incorrect .opt-speaker-zone { border-left-color: #ffccbc; }
+    .quiz-opt-row.dimmed    .opt-speaker-zone { border-left-color: #eee; }
+
+    .opt-read-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      padding: 5px;
+      border-radius: 6px;
+      color: #aaa;
+      transition: color 0.15s, background 0.15s;
+      line-height: 1;
+    }
+    .opt-read-btn:hover { color: #444; background: #f0f0f0; }
+    .quiz-opt-row.dimmed .opt-read-btn { color: #ddd; }
+    .opt-read-btn.speaking { color: #1e88e5; }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .card-btn {
+      padding: 8px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    .card-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .check-btn { background: #43a047; color: white; }
+    .check-btn:hover:not(:disabled) { background: #2e7d32; }
+    .retry-btn { background: #757575; color: white; }
+    .retry-btn:hover:not(:disabled) { background: #616161; }
+
+    .quiz-feedback {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.5;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .quiz-feedback.correct   { background: #e8f5e9; color: #1b5e20; }
+    .quiz-feedback.incorrect { background: #ffebee; color: #b71c1c; }
+
+    .hidden { display: none; }
+
+    @media (max-width: 600px) {
+      .menu-grid { grid-template-columns: 1fr 1fr; }
+      .menu-button { padding: 25px 15px; font-size: 1.1rem; }
+      .front-menu { padding: 30px 20px; }
+      .front-menu h1 { font-size: 1.8rem; }
+      .group-header { gap: 8px; }
+      body { padding: 10px; }
+    }
+  </style>
+    <style>/* wide layout: fill the embed. Colour chooser = row of 4 on wide screens, 2x2 otherwise (never 3+1) */
+    @media screen { .front-menu, .page, .global-controls, #groupView { max-width: none !important; } }
+    .menu-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    @media (min-width: 900px) { .menu-grid { grid-template-columns: repeat(4, 1fr) !important; } }
+    </style>
+</head>
+<body>
+
+<!-- == FRONT MENU == -->
+<div id="frontMenu" class="front-menu">
+  <h1>⏳ Time &amp; Duration: Tick Tock</h1>
+  <p>Choose your reading group to explore words about time</p>
+  <div class="menu-grid">
+    <button class="menu-button red-btn"    onclick="showGroup('red')">Red Group</button>
+    <button class="menu-button yellow-btn" onclick="showGroup('yellow')">Yellow Group</button>
+    <button class="menu-button green-btn"  onclick="showGroup('green')">Green Group</button>
+    <button class="menu-button blue-btn"   onclick="showGroup('blue')">Blue Group</button>
+  </div>
+</div>
+
+<!-- == GROUP VIEW == -->
+<div id="groupView" class="hidden">
+  <div class="group-top-bar" id="topBar"></div>
+
+  <div class="group-header">
+    <button class="back-btn" onclick="backToMenu()">← Back to groups</button>
+    <span class="group-badge" id="groupBadge"></span>
+    <div class="speed-row">
+      <label for="speedSelect">🗣️ Speed:</label>
+      <select id="speedSelect">
+        <option value="0.7">0.7× (very slow)</option>
+        <option value="0.85" selected>0.85× (slow)</option>
+        <option value="1.0">1.0× (normal)</option>
+        <option value="1.15">1.15× (quick)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="mode-tabs">
+    <button class="mode-tab active" id="learnTab" onclick="switchMode('learn')">Learn vocabulary</button>
+    <button class="mode-tab"        id="quizTab"  onclick="switchMode('quiz')">Test yourself</button>
+  </div>
+
+  <!-- Learn panel -->
+  <div class="learn-panel" id="learnPanel">
+    <div class="group-label" id="groupLabel"></div>
+    <div class="vocab-grid"  id="vocabGrid"></div>
+    <div class="detail-box hidden" id="detailBox"></div>
+  </div>
+
+  <!-- Quiz panel -->
+  <div class="quiz-panel hidden" id="quizPanel">
+    <p class="quiz-intro-text">Answer the questions below. Check or retry each question as you go!</p>
+    <div class="quiz-progress" id="quizProgress"></div>
+    <div id="quizContainer"></div>
+  </div>
+</div>
+
+<script>
+// --- Vocabulary data ----------------------------------------------------------
+
+const groupVocab = {
+  red: [
+    {
+      word: 'clock', icon: '🕰️', hint: 'tells the time',
+      definition: 'A clock is a tool that shows us the time.',
+      simplifiedMeaning: 'Shows the time.',
+      example: 'I look at the clock to see when it is lunch.',
+      didYouKnow: 'Some clocks make a ticking sound.',
+      tier: 1, tierWhy: 'It is a common everyday object.',
+      distractors: {
+        close: 'A toy used to play games.',
+        unrelated: 'A fast red sports car.',
+        similarWord: 'A lock for a front door.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "clock" INCORRECTLY?',
+        opts: [
+          'The clock on the wall says it is time to go home.',
+          'I checked my clock to see if I was late.',
+          'I wore a clock on my feet to run faster in the race.',
+          'Our classroom clock has big numbers on it.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'day', icon: '☀️', hint: 'when the sun is up',
+      definition: 'Day is the time when the sun is up and it is light.',
+      simplifiedMeaning: 'When it is light.',
+      example: 'We play outside during the day.',
+      didYouKnow: 'The sun gives us light and warmth during the day.',
+      tier: 1, tierWhy: 'It is a basic everyday word.',
+      distractors: {
+        close: 'When it is completely dark outside.',
+        unrelated: 'A warm bowl of soup.',
+        similarWord: 'A tray used for carrying food.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "day" INCORRECTLY?',
+        opts: [
+          'We have lots of fun at school during the day.',
+          'The bright sun shines outside in the day.',
+          'I ate a big slice of day for my lunch.',
+          'It is easier to read a book in the day.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'night', icon: '🌙', hint: 'when it is dark',
+      definition: 'Night is the time when the sun goes down and it is dark.',
+      simplifiedMeaning: 'When it is dark.',
+      example: 'I go to sleep at night.',
+      didYouKnow: 'You can often see the moon and stars at night.',
+      tier: 1, tierWhy: 'This is a simple word found in everyday life.',
+      distractors: {
+        close: 'When the sun is shining brightly.',
+        unrelated: 'A soft feather pillow.',
+        similarWord: 'A knight riding on a horse.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "night" INCORRECTLY?',
+        opts: [
+          'We turn on the lights when it gets dark at night.',
+          'I brushed my teeth in the night before going to bed.',
+          'I rode my night all the way to the park.',
+          'The stars look very pretty in the night sky.'
+        ],
+        correctIndex: 2
+      }
+    }
+  ],
+  yellow: [
+    {
+      word: 'minute', icon: '⏱️', hint: 'a short amount of time',
+      definition: 'A minute is a short amount of time equal to 60 seconds.',
+      simplifiedMeaning: '60 seconds.',
+      examples: ['It takes a minute to tie my shoes.', 'I will be ready to leave in one minute.'],
+      synonym: 'short time',
+      tier: 1, tierWhy: 'It is a common word for measuring small amounts of time.',
+      distractors: {
+        close: 'A very long journey lasting days.',
+        unrelated: 'A heavy hammer used for building.',
+        similarWord: 'A menu at a restaurant.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "minute" INCORRECTLY?',
+        opts: [
+          'We had to wait one minute for the traffic light to change.',
+          'I poured a minute into my cup and drank it.',
+          'There are 60 seconds in a single minute.',
+          'The teacher asked us to be quiet for one minute.'
+        ],
+        correctIndex: 1
+      }
+    },
+    {
+      word: 'hour', icon: '⏳', hint: 'a longer amount of time',
+      definition: 'An hour is a longer amount of time equal to 60 minutes.',
+      simplifiedMeaning: '60 minutes.',
+      examples: ['Our sports game goes for one hour.', 'There are 24 hours in one whole day.'],
+      synonym: '60 minutes',
+      tier: 1, tierWhy: 'It is an everyday word to describe parts of the day.',
+      distractors: {
+        close: 'A single fast tick of a clock.',
+        unrelated: 'A loud siren on a fire engine.',
+        similarWord: 'Our house where we live.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "hour" INCORRECTLY?',
+        opts: [
+          'The long car ride lasted for an hour.',
+          'I put my warm hour on my head to stop the cold wind.',
+          'We read our books for half an hour today.',
+          'It takes exactly one hour to bake this cake.'
+        ],
+        correctIndex: 1
+      }
+    },
+    {
+      word: 'week', icon: '📅', hint: 'seven days together',
+      definition: 'A week is a group of seven days in a row.',
+      simplifiedMeaning: 'Seven days.',
+      examples: ['We go to school for five days a week.', 'A weekend is the best part of the week.'],
+      synonym: 'seven days',
+      tier: 1, tierWhy: 'An important everyday word for planning and calendars.',
+      distractors: {
+        close: 'Just one single day by itself.',
+        unrelated: 'A silver spoon used for eating soup.',
+        similarWord: 'Feeling weak when you are sick.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "week" INCORRECTLY?',
+        opts: [
+          'There are seven days in a full week.',
+          'Next week we are going on a school trip.',
+          'I watered the week so it would grow taller petals.',
+          'It rained every single day this week.'
+        ],
+        correctIndex: 2
+      }
+    }
+  ],
+  green: [
+    {
+      word: 'morning', icon: '🌅', hint: 'the start of the day',
+      definition: 'Morning is the early part of the day before the middle of the day.',
+      simplifiedMeaning: 'Early part of the day.',
+      sentences: ['I eat cereal for breakfast in the morning.', 'The birds sing loudly every morning.', 'We have reading group in the morning.'],
+      synonym: 'dawn', antonym: 'evening',
+      nonExamples: 'Eating dinner happens at night, not in the morning.',
+      tier: 1, tierWhy: 'A common word used to talk about daily routines.',
+      distractors: {
+        close: 'The time just before you go to sleep.',
+        unrelated: 'A large ocean liner sailing across the sea.',
+        similarWord: 'Mourning for a sad event.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "morning" INCORRECTLY?',
+        opts: [
+          'The sun rises brightly early in the morning.',
+          'I ate a sweet bowl of morning for dessert.',
+          'We always brush our teeth in the morning.',
+          'Morning is a great time to go for a run.'
+        ],
+        correctIndex: 1
+      }
+    },
+    {
+      word: 'afternoon', icon: '🌤️', hint: 'the middle of the day',
+      definition: 'Afternoon is the time of day between lunch and evening.',
+      simplifiedMeaning: 'After lunch time.',
+      sentences: ['We play in the park in the afternoon.', 'School finishes in the afternoon.', 'The sun is very warm in the summer afternoon.'],
+      synonym: 'mid-day', antonym: 'night',
+      nonExamples: 'Sleeping in bed usually happens at night, not the afternoon.',
+      tier: 1, tierWhy: 'An everyday word used to describe part of the day.',
+      distractors: {
+        close: 'The time right when you wake up from sleeping.',
+        unrelated: 'A thick woollen blanket for winter nights.',
+        similarWord: 'A baboon swinging in the trees.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "afternoon" INCORRECTLY?',
+        opts: [
+          'We have our final lessons of the day in the afternoon.',
+          'The shadows grow longer during the late afternoon.',
+          'I drank a cold glass of afternoon after playing sport.',
+          'Every afternoon the school bell rings to send us home.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'second', icon: '⏱️', hint: 'a very quick tick',
+      definition: 'A second is a very fast tick of a clock, and it is the smallest regular block of time.',
+      simplifiedMeaning: 'A very fast tick.',
+      sentences: ['It only takes one second to blink your eyes.', 'There are 60 seconds in one minute.', 'The fastest runner won the race by one second.'],
+      synonym: 'tick', antonym: 'hour',
+      nonExamples: 'A whole movie takes a long time, not a second.',
+      tier: 1, tierWhy: 'A basic word for measuring exact time.',
+      distractors: {
+        close: 'A long holiday that lasts for weeks.',
+        unrelated: 'A heavy metal lock for securing a door.',
+        similarWord: 'Coming second place in a running race.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "second" INCORRECTLY?',
+        opts: [
+          'I will be finished in just one second.',
+          'The stopwatch counted every second of the race.',
+          'I tied a second around my shoe to keep it tight.',
+          'There are sixty seconds in a single minute.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'month', icon: '🗓️', hint: 'about four weeks',
+      definition: 'A month is a block of time that is about four weeks long.',
+      simplifiedMeaning: 'About four weeks.',
+      sentences: ['My birthday is in the month of May.', 'There are 12 months in one year.', 'December is a hot summer month in Australia.'],
+      synonym: 'four weeks', antonym: 'second',
+      nonExamples: 'A quick trip to the shops takes an hour, not a month.',
+      tier: 1, tierWhy: 'A common everyday calendar word.',
+      distractors: {
+        close: 'A single day on the calendar.',
+        unrelated: 'A large tree growing in a local park.',
+        similarWord: 'A moth flying near a light.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "month" INCORRECTLY?',
+        opts: [
+          'February is the shortest month of the year.',
+          'It takes a whole month for the moon to change its shape.',
+          'I baked a month in the oven for an hour.',
+          'We have a school holiday in the month of July.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'year', icon: '🌍', hint: 'a very long time',
+      definition: 'A year is the time it takes for the Earth to travel all the way around the sun.',
+      simplifiedMeaning: '12 months.',
+      sentences: ['I turn one year older on my birthday.', 'A leap year has one extra day.', 'It takes a whole year to finish this grade at school.'],
+      synonym: '12 months', antonym: 'day',
+      nonExamples: 'A quick nap takes an hour, not a whole year.',
+      tier: 1, tierWhy: 'A common word used to describe age and long amounts of time.',
+      distractors: {
+        close: 'A short time like a minute.',
+        unrelated: 'A fluffy white cloud floating in the sky.',
+        similarWord: 'An ear used for hearing sounds.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "year" INCORRECTLY?',
+        opts: [
+          'We celebrate New Year with big fireworks.',
+          'There are twelve months in one full year.',
+          'I wore a year on my head to block the sun.',
+          'Last year I was in a different classroom.'
+        ],
+        correctIndex: 2
+      }
+    }
+  ],
+  blue: [
+    {
+      word: 'duration', icon: '📏', hint: 'how long something takes',
+      definition: 'Duration is the total amount of time that an event lasts from start to finish.',
+      simplifiedMeaning: 'How long something takes.',
+      sentences: ['The duration of the movie was two hours.', 'We measured the duration of the race with a stopwatch.', 'The flight to the Gold Coast has a short duration.', 'You must pay attention for the full duration of the lesson.', 'The duration of the storm was much longer than we expected.'],
+      synonym: 'length', antonym: 'instant',
+      nonExamples: 'A single tick of a clock does not have a long duration.',
+      connotation: 'Duration sounds exact and measurable. It implies tracking time carefully.',
+      etymology: 'From the Latin word "durare", meaning to last or endure.',
+      tier: 2, tierWhy: 'An academic word used across subjects to measure time.',
+      distractors: {
+        close: 'The exact time of day shown on a clock.',
+        unrelated: 'A large painted mural on a brick wall.',
+        similarWord: 'A donation of money given to a charity.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "duration" INCORRECTLY?',
+        opts: [
+          'We must remain seated for the duration of the bus ride.',
+          'I ate a huge bowl of duration for dinner tonight.',
+          'The teacher timed the duration of the reading test.',
+          'A long flight has a duration of many hours.'
+        ],
+        correctIndex: 1
+      }
+    },
+    {
+      word: 'analogue', icon: '🕐', hint: 'a clock with moving hands',
+      definition: 'An analogue clock has a round face with moving hands pointing to numbers to show the time.',
+      simplifiedMeaning: 'A clock with moving hands.',
+      sentences: ['Our classroom has an analogue clock on the wall.', 'It takes practice to read an analogue clock quickly.', 'The long hand on the analogue clock shows the minutes.', 'An analogue watch has moving parts inside it.', 'Many train stations use a large analogue clock.'],
+      synonym: 'dial clock', antonym: 'digital',
+      nonExamples: 'A clock on a mobile phone showing only numbers is not analogue.',
+      connotation: 'Analogue sounds traditional and mechanical. It implies moving parts.',
+      etymology: 'From the Greek word "analogos", meaning proportionate.',
+      tier: 3, tierWhy: 'A domain-specific word used in mathematics to describe a specific tool.',
+      distractors: {
+        close: 'A digital screen that just shows red numbers.',
+        unrelated: 'A juicy red apple picked from an orchard.',
+        similarWord: 'A catalogue book for shopping.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "analogue" INCORRECTLY?',
+        opts: [
+          'We practice reading the hands on the analogue clock.',
+          'An analogue watch uses small gears to move the hands.',
+          'The tree grew beautiful analogue in the spring.',
+          'The large analogue clock on the tower chimed at noon.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'digital', icon: '📱', hint: 'a clock with numbers only',
+      definition: 'A digital clock shows the time using only numbers on a screen without any moving hands.',
+      simplifiedMeaning: 'A clock with only numbers.',
+      sentences: ['My digital watch beeps when an hour passes.', 'The oven has a digital clock showing red numbers.', 'Most phones display a digital time format.', 'A digital timer is easy to read during a race.', 'The digital screen shows the exact hour and minute.'],
+      synonym: 'electronic clock', antonym: 'analogue',
+      nonExamples: 'A grandfather clock with a swinging pendulum is not digital.',
+      connotation: 'Digital sounds modern and exact. It implies electronic screens.',
+      etymology: 'From the Latin word "digitus", meaning finger or toe, used for counting.',
+      tier: 2, tierWhy: 'A domain-specific technology word describing how information is shown.',
+      distractors: {
+        close: 'A clock with moving hands pointing at numbers.',
+        unrelated: 'A complicated recipe for baking a cake.',
+        similarWord: 'A digger truck used for moving dirt.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "digital" INCORRECTLY?',
+        opts: [
+          'The digital timer showed exactly five minutes left.',
+          'It is very easy to read a digital clock.',
+          'I poured digital into my cup and drank it quickly.',
+          'Most computers have a digital clock in the corner.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'schedule', icon: '📋', hint: 'a plan of when things happen',
+      definition: 'A schedule is a planned list of events showing exactly when each task is meant to happen.',
+      simplifiedMeaning: 'A plan of times.',
+      sentences: ['The train arrived perfectly on schedule.', 'We follow a daily schedule in our classroom.', 'A busy schedule can make the day feel very fast.', 'Check the timetable schedule to see when the bus leaves.', 'My weekend schedule includes playing sport and doing homework.'],
+      synonym: 'timetable', antonym: 'unplanned',
+      nonExamples: 'Doing things randomly without checking the time is not a schedule.',
+      connotation: 'Schedule sounds organised and prepared. It implies having a clear plan.',
+      etymology: 'From the Latin word "schedula", meaning a small piece of paper.',
+      tier: 2, tierWhy: 'A high-utility word used frequently in planning, work, and education.',
+      distractors: {
+        close: 'A completely random event with no warning.',
+        unrelated: 'A soft green field of tall grass.',
+        similarWord: 'A module block of learning.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "schedule" INCORRECTLY?',
+        opts: [
+          'We have to stick to the schedule if we want to finish on time.',
+          'The train timetable helps us follow the schedule.',
+          'The schedule tasted like sweet strawberry ice cream.',
+          'Our daily schedule shows when it is time for lunch.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'midnight', icon: '🌃', hint: 'exact middle of the night',
+      definition: 'Midnight is the exact middle of the night, equal to 12:00 in the night time.',
+      simplifiedMeaning: '12:00 at night.',
+      sentences: ['Fireworks light up the sky at midnight on New Year\'s Eve.', 'Cinderella had to leave the ball before midnight.', 'It is usually very dark and quiet at midnight.', 'My pet cat likes to explore outside near midnight.', 'Most children are fast asleep long before midnight.'],
+      synonym: 'middle of the night', antonym: 'midday',
+      nonExamples: 'Eating lunch happens at midday, not midnight.',
+      connotation: 'Midnight sounds quiet and mysterious. It implies the exact turning point into a new day.',
+      etymology: 'From Old English "midniht", combining mid and night.',
+      tier: 2, tierWhy: 'A specific time reference word often found in literature and storytelling.',
+      distractors: {
+        close: 'The exact middle of the day when the sun is highest.',
+        unrelated: 'Watching a funny movie on the television.',
+        similarWord: 'A mid-flight meal eaten on an aeroplane.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "midnight" INCORRECTLY?',
+        opts: [
+          'The clock struck twelve times when it reached midnight.',
+          'I planted a midnight in the garden and watered it.',
+          'We stayed up until midnight to welcome the New Year.',
+          'It is very dark outside when midnight arrives.'
+        ],
+        correctIndex: 1
+      }
+    }
+  ]
+};
+
+const groupMeta = {
+  red:    { name: 'Red Group',    label: 'early readers - 3 words',     bg: 'red-bg',    barClass: 'bar-red',    badgeClass: 'badge-red',    tabClass: 'tab-red'    },
+  yellow: { name: 'Yellow Group', label: 'developing readers - 3 words', bg: 'yellow-bg', barClass: 'bar-yellow', badgeClass: 'badge-yellow', tabClass: 'tab-yellow' },
+  green:  { name: 'Green Group',  label: 'confident readers - 5 words',  bg: 'green-bg',  barClass: 'bar-green',  badgeClass: 'badge-green',  tabClass: 'tab-green'  },
+  blue:   { name: 'Blue Group',   label: 'fluent readers - 5 words',     bg: 'blue-bg',   barClass: 'bar-blue',   badgeClass: 'badge-blue',   tabClass: 'tab-blue'   }
+};
+
+const extraContentQuestions = {
+  green: [
+    {
+      q: 'According to the non-examples in the Learn section, why is a quick nap NOT considered a year?',
+      opts: [
+        { text: 'Because a nap only takes a short time, not 12 whole months.', type: 'correct' },
+        { text: 'Because you take a nap in the afternoon.', type: 'close' },
+        { text: 'Because a nap makes you feel very sleepy.', type: 'unrelated' },
+        { text: 'Because a nap is a short rest for an ear.', type: 'similarWord' }
+      ],
+      correctText: 'Because a nap only takes a short time, not 12 whole months.'
+    },
+    {
+      q: 'The Learn panel notes that eating dinner happens at night, not in the...',
+      opts: [
+        { text: 'Morning.', type: 'correct' },
+        { text: 'Afternoon.', type: 'close' },
+        { text: 'Year.', type: 'unrelated' },
+        { text: 'Mourning.', type: 'similarWord' }
+      ],
+      correctText: 'Morning.'
+    }
+  ],
+  blue: [
+    {
+      q: 'Based on the word origin (etymology) section for **digital**, what did the Latin word "digitus" originally mean?',
+      opts: [
+        { text: 'Finger or toe, used for counting.', type: 'correct' },
+        { text: 'A screen with red numbers on it.', type: 'close' },
+        { text: 'A small clock that you wear on your wrist.', type: 'unrelated' },
+        { text: 'A digger machine used to move dirt.', type: 'similarWord' }
+      ],
+      correctText: 'Finger or toe, used for counting.'
+    },
+    {
+      q: 'In the **schedule** section, where does the Latin root "schedula" translate to?',
+      opts: [
+        { text: 'A small piece of paper.', type: 'correct' },
+        { text: 'A planned list of times.', type: 'close' },
+        { text: 'A fast moving train.', type: 'unrelated' },
+        { text: 'A module of school work.', type: 'similarWord' }
+      ],
+      correctText: 'A small piece of paper.'
+    }
+  ]
+};
+
+// --- State --------------------------------------------------------------------
+
+let currentGroup        = 'red';
+let currentMode         = 'learn';
+let currentQuizQuestions = []; 
+let selectedAnswers     = {};  
+let checkedQuestions    = {};  
+let voices              = [];
+let activeSpeakBtn      = null;
+
+// --- Speech -------------------------------------------------------------------
+
+function loadVoices() { voices = window.speechSynthesis.getVoices(); }
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+  loadVoices();
+}
+
+function getVoice() {
+  const auNatural = voices.find(v => v.lang === 'en-AU' && /natural/i.test(v.name));
+  const auStandard = voices.find(v => v.lang === 'en-AU');
+  const williamNatural = voices.find(v => v.name.toLowerCase().includes('william') && v.name.toLowerCase().includes('natural'));
+  const natural = voices.find(v => /natural/i.test(v.name) && v.lang.startsWith('en'));
+  const english = voices.find(v => v.lang.startsWith('en-'));
+  
+  return auNatural || auStandard || williamNatural || natural || english || null;
+}
+
+function speakText(text, btn) {
+  if (!('speechSynthesis' in window)) { alert('Read-aloud is not supported in this browser.'); return; }
+
+  if (activeSpeakBtn === btn) {
+    window.speechSynthesis.cancel();
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+  if (activeSpeakBtn) { activeSpeakBtn.classList.remove('speaking'); activeSpeakBtn = null; }
+
+  const ut  = new SpeechSynthesisUtterance(text);
+  const v    = getVoice();
+  const rate = parseFloat(document.getElementById('speedSelect').value) || 0.85;
+  if (v) ut.voice = v;
+  ut.rate = rate;
+
+  activeSpeakBtn = btn;
+  btn.classList.add('speaking');
+
+  ut.onend = ut.onerror = () => {
+    if (activeSpeakBtn === btn) { btn.classList.remove('speaking'); activeSpeakBtn = null; }
+  };
+
+  window.speechSynthesis.speak(ut);
+}
+
+function readSectionText(btn) { speakText(btn.dataset.text, btn); }
+
+function readOptionText(btn, e) {
+  e.stopPropagation();
+  speakText(btn.dataset.text, btn);
+}
+
+// --- Helpers -----------------------------------------------------------------
+
+function escAttr(str) {
+  return (str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+}
+
+function sectionReadBtn(text) {
+  return `<button class="sec-read-btn" data-text="${escAttr(text)}" onclick="readSectionText(this)" title="Read aloud">🔊</button>`;
+}
+
+function tierBadge(item) {
+  return `<div class="tier-row">
+    <span class="tier-badge tier-${item.tier}">Tier ${item.tier}</span>
+    <span class="tier-why">${item.tierWhy}</span>
+  </div>`;
+}
+
+// --- Navigation ---------------------------------------------------------------
+
+function showGroup(group) {
+  currentGroup = group;
+  window.speechSynthesis?.cancel();
+  activeSpeakBtn = null;
+
+  const meta = groupMeta[group];
+  document.getElementById('frontMenu').classList.add('hidden');
+  document.getElementById('groupView').classList.remove('hidden');
+
+  const bar = document.getElementById('topBar');
+  bar.className = 'group-top-bar ' + meta.barClass;
+
+  const badge = document.getElementById('groupBadge');
+  badge.textContent = meta.name;
+  badge.className   = 'group-badge ' + meta.badgeClass;
+
+  ['learnTab', 'quizTab'].forEach(id => {
+    const tab = document.getElementById(id);
+    tab.classList.remove('tab-red','tab-yellow','tab-green','tab-blue');
+    tab.classList.add(meta.tabClass);
+  });
+
+  switchMode('learn');
+}
+
+function backToMenu() {
+  window.speechSynthesis?.cancel();
+  activeSpeakBtn = null;
+  document.getElementById('groupView').classList.add('hidden');
+  document.getElementById('frontMenu').classList.remove('hidden');
+}
+
+function switchMode(mode) {
+  currentMode = mode;
+  window.speechSynthesis?.cancel();
+  activeSpeakBtn = null;
+
+  document.getElementById('learnTab').classList.toggle('active', mode === 'learn');
+  document.getElementById('quizTab') .classList.toggle('active', mode === 'quiz');
+  document.getElementById('learnPanel').classList.toggle('hidden', mode !== 'learn');
+  document.getElementById('quizPanel') .classList.toggle('hidden', mode !== 'quiz');
+
+  if (mode === 'learn') { renderGrid(); }
+  else                  { generateQuiz(); }
+}
+
+// --- Learn mode ---------------------------------------------------------------
+
+function renderGrid() {
+  const meta  = groupMeta[currentGroup];
+  const words = groupVocab[currentGroup];
+
+  document.getElementById('groupLabel').textContent = `${meta.name} - ${meta.label}`;
+
+  const grid = document.getElementById('vocabGrid');
+  grid.innerHTML = '';
+  words.forEach(item => {
+    const card = document.createElement('div');
+    card.className = `vocab-card ${meta.bg}`;
+    card.innerHTML = `
+      <div>
+        <div class="card-icon">${item.icon}</div>
+        <div class="card-word">${item.word}</div>
+      </div>
+      <div class="card-hint">${item.hint}</div>
+    `;
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.vocab-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      showDetail(item);
+    });
+    grid.appendChild(card);
+  });
+
+  document.getElementById('detailBox').classList.add('hidden');
+}
+
+function showDetail(item) {
+  const box = document.getElementById('detailBox');
+  
+  let html = `
+    <div class="detail-word-row">
+      <div class="detail-word">${item.icon} ${item.word}</div>
+      <div class="tier-section" style="margin-bottom: 0;">
+        ${tierBadge(item)}
+      </div>
+    </div>
+  `;
+
+  html += section('What it means (Full)', item.definition, item.definition);
+  html += section('Simplified Meaning', `<strong>${item.simplifiedMeaning}</strong>`, item.simplifiedMeaning);
+
+  if (currentGroup === 'red') {
+    html += exampleSection('Example', item.example)
+          + factSection('Did you know?', item.didYouKnow);
+
+  } else if (currentGroup === 'yellow') {
+    const allExamples = item.examples.join(' ');
+    html += multiExampleSection('Examples', item.examples, allExamples)
+          + section('Synonym (similar word)', item.synonym, `A synonym for ${item.word} is: ${item.synonym}`);
+
+  } else if (currentGroup === 'green') {
+    const allSentences = item.sentences.join(' ');
+    html += multiExampleSection('Example sentences', item.sentences, allSentences)
+          + section('Synonym (similar word)', item.synonym, `A synonym for ${item.word} is: ${item.synonym}`)
+          + section('Antonym (opposite)', item.antonym, `The antonym, or opposite, of ${item.word} is: ${item.antonym}`)
+          + section('Non-examples', item.nonExamples, item.nonExamples);
+
+  } else {
+    const allSentences = item.sentences.join(' ');
+    html += multiExampleSection('Example sentences', item.sentences, allSentences)
+          + section('Synonym (similar word)', item.synonym, `A synonym for ${item.word} is: ${item.synonym}`)
+          + section('Antonym (opposite)', item.antonym, `The antonym, or opposite, of ${item.word} is: ${item.antonym}`)
+          + section('Non-examples', item.nonExamples, item.nonExamples)
+          + section('Connotation', item.connotation, item.connotation)
+          + section('Word origin (etymology)', item.etymology, item.etymology);
+  }
+
+  box.innerHTML = html;
+  box.classList.remove('hidden');
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function section(label, contentHTML, readText) {
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(readText)}
+    </div>
+    <div class="detail-content">${contentHTML}</div>
+  </div>`;
+}
+
+function exampleSection(label, text) {
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(text)}
+    </div>
+    <div class="example-box">${text}</div>
+  </div>`;
+}
+
+function factSection(label, text) {
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(text)}
+    </div>
+    <div class="fact-box">${text}</div>
+  </div>`;
+}
+
+function multiExampleSection(label, items, readText) {
+  const boxes = items.map(s => `<div class="example-box">${s}</div>`).join('');
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(readText)}
+    </div>
+    ${boxes}
+  </div>`;
+}
+
+// --- Quiz mode (With Per-Question Check and Retry Buttons) --------------------
+
+function generateQuiz() {
+  selectedAnswers     = {};
+  checkedQuestions    = {};
+  currentQuizQuestions = [];
+  window.speechSynthesis?.cancel();
+  activeSpeakBtn = null;
+
+  const words = groupVocab[currentGroup];
+
+  // 1. Definition Lookup Questions (Red has 3 choices, others have 4)
+  words.forEach(item => {
+    let optsArray = [];
+    if (currentGroup === 'red') {
+      optsArray = [
+        { text: item.simplifiedMeaning, type: 'correct' },
+        { text: item.distractors.close, type: 'close' },
+        { text: item.distractors.unrelated, type: 'unrelated' }
+      ];
+    } else {
+      optsArray = [
+        { text: item.definition, type: 'correct' },
+        { text: item.distractors.close, type: 'close' },
+        { text: item.distractors.unrelated, type: 'unrelated' },
+        { text: item.distractors.similarWord, type: 'similarWord' }
+      ];
+    }
+    
+    currentQuizQuestions.push({
+      type: 'meaning',
+      word: item.word,
+      questionText: currentGroup === 'red' ? `What is a <strong>${item.word}</strong>?` : `What does the word "${item.word}" mean?`,
+      options: shuffleArray([...optsArray]),
+      correctText: currentGroup === 'red' ? item.simplifiedMeaning : item.definition
+    });
+  });
+
+  // 2. Incorrect Sentence Detection Questions (4 simplified choices for all groups)
+  words.forEach(item => {
+    const errorData = item.errorExample;
+    const optsArray = errorData.opts.map((text, idx) => {
+      return { text: text, isCorrectSlot: idx === errorData.correctIndex };
+    });
+
+    currentQuizQuestions.push({
+      type: 'error_detect',
+      word: item.word,
+      questionText: errorData.q,
+      options: shuffleArray([...optsArray]),
+      correctText: errorData.opts[errorData.correctIndex]
+    });
+  });
+
+  // 3. Content Questions for Green and Blue Groups
+  if ((currentGroup === 'green' || currentGroup === 'blue') && extraContentQuestions[currentGroup]) {
+    extraContentQuestions[currentGroup].forEach((extra) => {
+      currentQuizQuestions.push({
+        type: 'content_based',
+        word: extra.word || '',
+        questionText: extra.q,
+        options: shuffleArray([...extra.opts]),
+        correctText: extra.correctText
+      });
+    });
+  }
+
+  // Shuffle all questions completely
+  shuffleArray(currentQuizQuestions);
+
+  const progress = document.getElementById('quizProgress');
+  progress.innerHTML = currentQuizQuestions.map((_, i) => `<div class="progress-dot unanswered" id="dot-${i}"></div>`).join('');
+
+  renderQuizUI();
+}
+
+function renderQuizUI() {
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+
+  currentQuizQuestions.forEach((qObj, qIdx) => {
+    const card = document.createElement('div');
+    card.className = 'quiz-card';
+    card.id = `qcard-${qIdx}`;
+
+    let html = `
+      <div class="quiz-q-number">Question ${qIdx + 1} of ${currentQuizQuestions.length}</div>
+      <div class="quiz-q-row">
+        <div class="quiz-q-text">${qObj.questionText}</div>
+        <button class="q-read-btn" data-text="${escAttr(qObj.questionText.replace(/<[^>]*>/g, ''))}" onclick="readSectionText(this)" title="Read question">🔊</button>
+      </div>
+      <div class="quiz-options-grid" id="opts-grid-${qIdx}">
+    `;
+
+    qObj.options.forEach((opt, oIdx) => {
+      html += `
+        <div class="quiz-opt-row" 
+             id="optrow-${qIdx}-${oIdx}"
+             onclick="selectOption(${qIdx}, ${oIdx}, '${escAttr(opt.text)}')">
+          <div class="opt-main">${opt.text}</div>
+          <div class="opt-speaker-zone">
+            <button class="opt-read-btn" data-text="${escAttr(opt.text)}" onclick="readOptionText(this, event)" title="Read option">🔊</button>
+          </div>
+        </div>
+      `;
+    });
+
+    html += `
+      </div>
+      <div class="card-actions">
+        <button class="card-btn check-btn" id="check-btn-${qIdx}" onclick="checkCardAnswer(${qIdx})" disabled>Check Answer</button>
+        <button class="card-btn retry-btn hidden" id="retry-btn-${qIdx}" onclick="retryCard(${qIdx})">Retry</button>
+      </div>
+      <div id="feedback-${qIdx}"></div>
+    `;
+    card.innerHTML = html;
+    container.appendChild(card);
+  });
+}
+
+function selectOption(qIdx, oIdx) {
+  if (checkedQuestions[qIdx]) return;
+
+  const grid = document.getElementById(`opts-grid-${qIdx}`);
+  grid.querySelectorAll('.quiz-opt-row').forEach(row => row.classList.remove('selected'));
+
+  const selectedRow = document.getElementById(`optrow-${qIdx}-${oIdx}`);
+  selectedRow.classList.add('selected');
+
+  selectedAnswers[qIdx] = oIdx;
+  document.getElementById(`check-btn-${qIdx}`).disabled = false;
+
+  const dot = document.getElementById(`dot-${qIdx}`);
+  if (dot && dot.className.includes('unanswered')) {
+    dot.className = 'progress-dot answered';
+  }
+}
+
+function checkCardAnswer(qIdx) {
+  if (checkedQuestions[qIdx]) return;
+  window.speechSynthesis?.cancel();
+
+  const qObj = currentQuizQuestions[qIdx];
+  const chosenOptIdx = selectedAnswers[qIdx];
+  const chosenOpt = qObj.options[chosenOptIdx];
+  const isCorrect = chosenOpt.text === qObj.correctText;
+
+  checkedQuestions[qIdx] = true;
+  document.getElementById(`check-btn-${qIdx}`).classList.add('hidden');
+  document.getElementById(`retry-btn-${qIdx}`).classList.remove('hidden');
+
+  const grid = document.getElementById(`opts-grid-${qIdx}`);
+  grid.querySelectorAll('.quiz-opt-row').forEach((row, oIdx) => {
+    row.classList.add('disabled');
+    const rowOpt = qObj.options[oIdx];
+    
+    if (rowOpt.text === qObj.correctText) {
+      row.classList.add('correct');
+    } else if (oIdx === chosenOptIdx && !isCorrect) {
+      row.classList.add('incorrect');
+    } else {
+      row.classList.add('dimmed');
+    }
+  });
+
+  const fbContainer = document.getElementById(`feedback-${qIdx}`);
+  const fb = document.createElement('div');
+  fb.className = `quiz-feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+  fb.textContent = isCorrect ? '✓ Correct!' : '✗ Try again next time!';
+  fbContainer.appendChild(fb);
+
+  const dot = document.getElementById(`dot-${qIdx}`);
+  if (dot) {
+    dot.className = `progress-dot ${isCorrect ? 'correct' : 'incorrect'}`;
+  }
+}
+
+function retryCard(qIdx) {
+  window.speechSynthesis?.cancel();
+  
+  delete selectedAnswers[qIdx];
+  delete checkedQuestions[qIdx];
+
+  const qObj = currentQuizQuestions[qIdx];
+  shuffleArray(qObj.options);
+
+  const dot = document.getElementById(`dot-${qIdx}`);
+  if (dot) dot.className = 'progress-dot unanswered';
+
+  const card = document.getElementById(`qcard-${qIdx}`);
+  const grid = card.querySelector('.quiz-options-grid');
+  grid.innerHTML = '';
+
+  qObj.options.forEach((opt, oIdx) => {
+    const row = document.createElement('div');
+    row.className = 'quiz-opt-row';
+    row.id = `optrow-${qIdx}-${oIdx}`;
+    row.onclick = () => selectOption(qIdx, oIdx, escAttr(opt.text));
+    row.innerHTML = `
+      <div class="opt-main">${opt.text}</div>
+      <div class="opt-speaker-zone">
+        <button class="opt-read-btn" data-text="${escAttr(opt.text)}" onclick="readOptionText(this, event)" title="Read option">🔊</button>
+      </div>
+    `;
+    grid.appendChild(row);
+  });
+
+  document.getElementById(`check-btn-${qIdx}`).classList.remove('hidden');
+  document.getElementById(`check-btn-${qIdx}`).disabled = true;
+  document.getElementById(`retry-btn-${qIdx}`).classList.add('hidden');
+  document.getElementById(`feedback-${qIdx}`).innerHTML = '';
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+</script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='vocab-time-t3w4';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-vocab.js"></script>
+</body>
+</html>

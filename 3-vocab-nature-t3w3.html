@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Garden Friends: Birds, Bees &amp; Butterflies</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Helvetica Neue', Helvetica, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: #f4f4f9;
+      padding: 20px;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* ==========================================
+       FRONT MENU
+    ========================================== */
+    .front-menu {
+      background: white;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    .front-menu h1 { font-size: 2.2rem; color: #222; margin-top: 0; margin-bottom: 10px; }
+    .front-menu > p { font-size: 1.1rem; color: #666; margin-bottom: 35px; }
+
+    .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
+
+    .menu-button {
+      padding: 30px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    .menu-button:hover  { transform: translateY(-4px); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
+    .menu-button:active { transform: translateY(-2px); }
+
+    .red-btn          { background-color: #e53935; }
+    .red-btn:hover    { background-color: #c62828; }
+    .yellow-btn       { background-color: #ffb300; color: #333; }
+    .yellow-btn:hover { background-color: #ff9800; }
+    .green-btn        { background-color: #43a047; }
+    .green-btn:hover  { background-color: #2e7d32; }
+    .blue-btn         { background-color: #1e88e5; }
+    .blue-btn:hover   { background-color: #1565c0; }
+
+    /* ==========================================
+       GROUP VIEW SHELL
+    ========================================== */
+    #groupView { max-width: 900px; margin: 0 auto; }
+
+    .group-top-bar { height: 12px; border-radius: 8px 8px 0 0; }
+    .bar-red    { background: #e53935; }
+    .bar-yellow { background: #ffb300; }
+    .bar-green  { background: #43a047; }
+    .bar-blue   { background: #1e88e5; }
+
+    .group-header {
+      background: white;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .back-btn {
+      background: #f0f0f0;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      color: #444;
+      transition: background 0.2s;
+      font-family: inherit;
+    }
+    .back-btn:hover { background: #e0e0e0; }
+
+    .group-badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      color: white;
+    }
+    .badge-red    { background: #e53935; }
+    .badge-yellow { background: #ffb300; color: #333; }
+    .badge-green  { background: #43a047; }
+    .badge-blue   { background: #1e88e5; }
+
+    .speed-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.85rem;
+      color: #555;
+      font-weight: 500;
+    }
+    .speed-row select {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 0.85rem;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    /* -- Mode tabs -- */
+    .mode-tabs {
+      display: flex;
+      background: #f8f8f8;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    .mode-tab {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      color: #888;
+      transition: all 0.15s;
+      font-family: inherit;
+      border-bottom: 3px solid transparent;
+    }
+    .mode-tab:hover { color: #444; background: rgba(0,0,0,0.03); }
+    .mode-tab.active { font-weight: 700; border-bottom-color: currentColor; }
+    .mode-tab.active.tab-red    { color: #e53935; }
+    .mode-tab.active.tab-yellow { color: #c48800; }
+    .mode-tab.active.tab-green  { color: #2e7d32; }
+    .mode-tab.active.tab-blue   { color: #1565c0; }
+
+    /* ==========================================
+       LEARN PANEL
+    ========================================== */
+    .learn-panel {
+      background: white;
+      padding: 24px;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .group-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #aaa;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .vocab-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 2rem;
+    }
+
+    .vocab-card {
+      padding: 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      border: 2px solid transparent;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      user-select: none;
+    }
+    .vocab-card:hover    { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .vocab-card.selected { border-color: #555; box-shadow: 0 0 0 3px rgba(0,0,0,0.07); }
+
+    .vocab-card.red-bg    { background: #FEE8E8; }
+    .vocab-card.yellow-bg { background: #FDF4E6; }
+    .vocab-card.green-bg  { background: #EDF7EF; }
+    .vocab-card.blue-bg   { background: #EEF4FD; }
+
+    .card-icon { font-size: 26px; margin-bottom: 6px; line-height: 1; }
+    .card-word { font-size: 15px; font-weight: 600; color: #222; }
+    .card-hint { font-size: 11px; color: #777; margin-top: 4px; }
+
+    /* -- Detail box -- */
+    .detail-box {
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 1.5rem 1.75rem;
+      border: 1px solid #e8e8e8;
+    }
+    .detail-box.hidden { display: none; }
+
+    .detail-word-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 1.25rem;
+    }
+
+    .detail-word { font-size: 26px; font-weight: 700; color: #111; }
+
+    .detail-section { margin-bottom: 1.25rem; }
+    .detail-section:last-child { margin-bottom: 0; }
+
+    .detail-label-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 0.45rem;
+    }
+    .detail-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #bbb;
+      font-weight: 700;
+    }
+
+    .sec-read-btn {
+      background: none;
+      border: 1px solid #ddd;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      font-size: 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      padding: 0;
+      flex-shrink: 0;
+      color: #888;
+    }
+    .sec-read-btn:hover    { background: #f0f0f0; border-color: #999; color: #333; }
+    .sec-read-btn.speaking { background: #333; border-color: #333; color: white; }
+
+    .detail-content { font-size: 15px; line-height: 1.75; color: #444; }
+
+    .example-box {
+      background: white;
+      border-left: 3px solid #378ADD;
+      padding: 9px 13px;
+      margin: 6px 0;
+      font-size: 14px;
+      color: #555;
+      border-radius: 0 6px 6px 0;
+      line-height: 1.6;
+      font-style: italic;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .fact-box {
+      background: white;
+      border-left: 3px solid #D69E2E;
+      padding: 9px 13px;
+      margin: 6px 0;
+      font-size: 14px;
+      color: #555;
+      border-radius: 0 6px 6px 0;
+      line-height: 1.6;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .tier-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .tier-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .tier-1 { background: #C6F6D5; color: #22543D; }
+    .tier-2 { background: #FEEBC8; color: #7B341E; }
+    .tier-3 { background: #E9D8FD; color: #44337A; }
+    .tier-why { font-size: 13px; color: #777; }
+
+    /* ==========================================
+       QUIZ PANEL
+    ========================================== */
+    .quiz-panel {
+      background: white;
+      padding: 24px;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .quiz-intro-text { font-size: 14px; color: #888; margin-bottom: 1.25rem; }
+
+    .quiz-progress { display: flex; gap: 7px; margin-bottom: 1.75rem; flex-wrap: wrap; align-items: center; }
+    .progress-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .progress-dot.unanswered { background: #e0e0e0; }
+    .progress-dot.answered { background: #b0bec5; }
+    .progress-dot.correct   { background: #43a047; transform: scale(1.15); }
+    .progress-dot.incorrect { background: #e53935; transform: scale(1.15); }
+
+    .quiz-card {
+      background: #fafafa;
+      border-radius: 14px;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 1.75rem;
+      border: 1.5px solid #ececec;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .quiz-q-number {
+      font-size: 11px;
+      font-weight: 700;
+      color: #bbb;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .quiz-q-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 1.25rem;
+    }
+    .quiz-q-text {
+      flex: 1;
+      font-size: 17px;
+      font-weight: 600;
+      color: #111;
+      line-height: 1.4;
+    }
+    .q-read-btn {
+      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1.5px solid #ddd;
+      background: white;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      margin-top: 2px;
+    }
+    .q-read-btn:hover { border-color: #aaa; background: #f5f5f5; }
+    .q-read-btn.speaking { background: #333; border-color: #333; color: white; }
+
+    .quiz-options-grid { display: flex; flex-direction: column; gap: 10px; }
+
+    .quiz-opt-row {
+      display: flex;
+      align-items: stretch;
+      border: 2px solid #e2e2e2;
+      border-radius: 10px;
+      background: white;
+      overflow: hidden;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+    }
+    .quiz-opt-row:not(.disabled):hover { border-color: #378ADD; box-shadow: 0 0 0 3px rgba(55,138,221,0.1); }
+    .quiz-opt-row.selected { border-color: #1e88e5; background: #e3f2fd; }
+    .quiz-opt-row.correct   { border-color: #43a047; background: #f0fff4; cursor: default; }
+    .quiz-opt-row.incorrect { border-color: #e53935; background: #fff5f5; cursor: default; }
+    .quiz-opt-row.dimmed    { border-color: #eee;    background: #fafafa; cursor: default; }
+
+    .opt-main {
+      flex: 1;
+      padding: 12px 15px;
+      font-size: 14px;
+      line-height: 1.55;
+      color: #444;
+      user-select: none;
+    }
+    .quiz-opt-row.correct  .opt-main { color: #1b5e20; font-weight: 500; }
+    .quiz-opt-row.incorrect .opt-main { color: #b71c1c; }
+    .quiz-opt-row.dimmed   .opt-main { color: #c8c8c8; }
+
+    .opt-speaker-zone {
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      border-left: 1.5px solid #ececec;
+      flex-shrink: 0;
+    }
+    .quiz-opt-row.correct   .opt-speaker-zone { border-left-color: #b2dfdb; }
+    .quiz-opt-row.incorrect .opt-speaker-zone { border-left-color: #ffccbc; }
+    .quiz-opt-row.dimmed    .opt-speaker-zone { border-left-color: #eee; }
+
+    .opt-read-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      padding: 5px;
+      border-radius: 6px;
+      color: #aaa;
+      transition: color 0.15s, background 0.15s;
+      line-height: 1;
+    }
+    .opt-read-btn:hover { color: #444; background: #f0f0f0; }
+    .quiz-opt-row.dimmed .opt-read-btn { color: #ddd; }
+    .opt-read-btn.speaking { color: #1e88e5; }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .card-btn {
+      padding: 8px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    .card-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .check-btn { background: #43a047; color: white; }
+    .check-btn:hover:not(:disabled) { background: #2e7d32; }
+    .retry-btn { background: #757575; color: white; }
+    .retry-btn:hover:not(:disabled) { background: #616161; }
+
+    .quiz-feedback {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.5;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .quiz-feedback.correct   { background: #e8f5e9; color: #1b5e20; }
+    .quiz-feedback.incorrect { background: #ffebee; color: #b71c1c; }
+
+    .hidden { display: none; }
+
+    @media (max-width: 600px) {
+      .menu-grid { grid-template-columns: 1fr 1fr; }
+      .menu-button { padding: 25px 15px; font-size: 1.1rem; }
+      .front-menu { padding: 30px 20px; }
+      .front-menu h1 { font-size: 1.8rem; }
+      .group-header { gap: 8px; }
+      body { padding: 10px; }
+    }
+  </style>
+    <style>/* wide layout: fill the embed. Colour chooser = row of 4 on wide screens, 2x2 otherwise (never 3+1) */
+    @media screen { .front-menu, .page, .global-controls, #groupView { max-width: none !important; } }
+    .menu-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    @media (min-width: 900px) { .menu-grid { grid-template-columns: repeat(4, 1fr) !important; } }
+    </style>
+</head>
+<body>
+
+<!-- == FRONT MENU == -->
+<div id="frontMenu" class="front-menu">
+  <h1>🌱 Garden Friends: Birds, Bees &amp; Butterflies</h1>
+  <p>Choose your reading group to explore garden wildlife vocabulary</p>
+  <div class="menu-grid">
+    <button class="menu-button red-btn"    onclick="showGroup('red')">Red Group</button>
+    <button class="menu-button yellow-btn" onclick="showGroup('yellow')">Yellow Group</button>
+    <button class="menu-button green-btn"  onclick="showGroup('green')">Green Group</button>
+    <button class="menu-button blue-btn"   onclick="showGroup('blue')">Blue Group</button>
+  </div>
+</div>
+
+<!-- == GROUP VIEW == -->
+<div id="groupView" class="hidden">
+  <div class="group-top-bar" id="topBar"></div>
+
+  <div class="group-header">
+    <button class="back-btn" onclick="backToMenu()">← Back to groups</button>
+    <span class="group-badge" id="groupBadge"></span>
+    <div class="speed-row">
+      <label for="speedSelect">🗣️ Speed:</label>
+      <select id="speedSelect">
+        <option value="0.7">0.7× (very slow)</option>
+        <option value="0.85" selected>0.85× (slow)</option>
+        <option value="1.0">1.0× (normal)</option>
+        <option value="1.15">1.15× (quick)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="mode-tabs">
+    <button class="mode-tab active" id="learnTab" onclick="switchMode('learn')">Learn vocabulary</button>
+    <button class="mode-tab"        id="quizTab"  onclick="switchMode('quiz')">Test yourself</button>
+  </div>
+
+  <!-- Learn panel -->
+  <div class="learn-panel" id="learnPanel">
+    <div class="group-label" id="groupLabel"></div>
+    <div class="vocab-grid"  id="vocabGrid"></div>
+    <div class="detail-box hidden" id="detailBox"></div>
+  </div>
+
+  <!-- Quiz panel -->
+  <div class="quiz-panel hidden" id="quizPanel">
+    <p class="quiz-intro-text">Answer the questions below. Check or retry each question as you go!</p>
+    <div class="quiz-progress" id="quizProgress"></div>
+    <div id="quizContainer"></div>
+  </div>
+</div>
+
+<script>
+// --- Vocabulary data ----------------------------------------------------------
+
+const groupVocab = {
+  red: [
+    {
+      word: 'garden', icon: '🏡', hint: 'where plants grow',
+      definition: 'A garden is a piece of ground where flowers, trees, and other plants are grown.',
+      simplifiedMeaning: 'A place for plants.',
+      example: 'We planted bright flowers in our backyard garden.',
+      didYouKnow: 'A garden gives birds and insects a safe place to find food.',
+      tier: 1, tierWhy: 'It is an everyday word for a familiar outdoor space.',
+      distractors: {
+        close: 'A large indoor shopping centre.',
+        unrelated: 'A fast red sports car.',
+        similarWord: 'A garage for parking vehicles.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "garden" INCORRECTLY?',
+        opts: [
+          'We saw a butterfly flying around the garden.',
+          'I watered the plants in the garden this morning.',
+          'I cooked a delicious bowl of garden for dinner.',
+          'Our school garden has colourful native shrubs.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'flower', icon: '🌸', hint: 'colourful blossom on a plant',
+      definition: 'A flower is the colourful part of a plant that produces seeds.',
+      simplifiedMeaning: 'A colourful blossom.',
+      example: 'A honeybee landed on the pink flower to sip nectar.',
+      didYouKnow: 'Bright petals help attract bees and butterflies.',
+      tier: 1, tierWhy: 'It is a common word that most people already know.',
+      distractors: {
+        close: 'A thick brown branch on a tree.',
+        unrelated: 'A winter woollen jumper.',
+        similarWord: 'A tower built with blocks.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "flower" INCORRECTLY?',
+        opts: [
+          'The yellow flower opened up in the warm sun.',
+          'Bees visit every flower to collect pollen.',
+          'I rode my bicycle along the flower to school.',
+          'We planted a new flower in the garden bed.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'seed', icon: '🌱', hint: 'grows into a new plant',
+      definition: 'A seed is the small hard part of a plant from which a new plant can grow.',
+      simplifiedMeaning: 'What grows into a plant.',
+      example: 'Many native birds visit the garden to eat seeds.',
+      didYouKnow: 'Some plants produce seeds after bees visit their flowers.',
+      tier: 1, tierWhy: 'This is a simple plant word found in everyday life.',
+      distractors: {
+        close: 'A large rock sitting in the dirt.',
+        unrelated: 'A soft feather pillow.',
+        similarWord: 'A weed growing in the grass.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "seed" INCORRECTLY?',
+        opts: [
+          'We put seed in the bird feeder for the parrots.',
+          'A tiny green shoot grew out of the seed.',
+          'I wore my warm seed on my head in the cold wind.',
+          'Watering the soil helps the seed sprout.'
+        ],
+        correctIndex: 2
+      }
+    }
+  ],
+  yellow: [
+    {
+      word: 'pollen', icon: '🌼', hint: 'yellow powder in flowers',
+      definition: 'Pollen is a fine yellow powder produced by flowers that helps plants make seeds.',
+      simplifiedMeaning: 'Yellow flower powder.',
+      examples: ['Bees carry pollen on their legs as they fly from flower to flower.', 'Without pollen, many garden plants could not grow fruit or seeds.'],
+      synonym: 'flower powder',
+      tier: 2, tierWhy: 'It is used when talking about plants, insects, and nature.',
+      distractors: {
+        close: 'The sweet liquid syrup inside a blossom.',
+        unrelated: 'A heavy metal hammer used for building.',
+        similarWord: 'A column holding up a roof.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "pollen" INCORRECTLY?',
+        opts: [
+          'Bees collect pollen to feed their hive.',
+          'I wore pollen on my feet to run faster in the race.',
+          'Flowers release pollen during the springtime.',
+          'Butterflies get dusted with pollen when visiting blooms.'
+        ],
+        correctIndex: 1
+      }
+    },
+    {
+      word: 'nectar', icon: '🍯', hint: 'sweet liquid inside flowers',
+      definition: 'Nectar is the sweet liquid produced by flowers to attract insects and birds.',
+      simplifiedMeaning: 'Sweet flower juice.',
+      examples: ['Native honeyeaters use their long beaks to drink nectar from grevilleas.', 'Butterflies sip nectar using a long mouthpart like a straw.'],
+      synonym: 'blossom syrup',
+      tier: 2, tierWhy: 'Used in science and nature discussions about feeding.',
+      distractors: {
+        close: 'The sharp thorns growing along a stem.',
+        unrelated: 'A loud siren on a fire engine.',
+        similarWord: 'A sector of a circle on a graph.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "nectar" INCORRECTLY?',
+        opts: [
+          'Bees turn sweet nectar into delicious honey.',
+          'I plugged the nectar into the wall to charge my phone.',
+          'Colourful flowers are full of tasty nectar.',
+          'Birds visit our garden daily to feed on nectar.'
+        ],
+        correctIndex: 1
+      }
+    },
+    {
+      word: 'shelter', icon: '🌳', hint: 'safe place to rest or hide',
+      definition: 'A shelter is a safe place that protects animals from bad weather and danger.',
+      simplifiedMeaning: 'A safe hiding place.',
+      examples: ['Thick bushes provide shelter for small birds hiding from predators.', 'A garden with plenty of trees offers shelter during hot summer days.'],
+      synonym: 'protection',
+      tier: 2, tierWhy: 'An important concept word when describing animal habitats.',
+      distractors: {
+        close: 'A wide open field with no trees or shrubs.',
+        unrelated: 'A silver spoon used for eating soup.',
+        similarWord: 'A shell found washed up on the beach.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "shelter" INCORRECTLY?',
+        opts: [
+          'Small birds find shelter in dense leafy shrubs.',
+          'Native trees offer shelter from cold rain.',
+          'I watered the shelter so it would grow taller petals.',
+          'Our garden gives bees shelter from strong winds.'
+        ],
+        correctIndex: 2
+      }
+    }
+  ],
+  green: [
+    {
+      word: 'pollination', icon: '🐝', hint: 'moving pollen so plants grow seeds',
+      definition: 'Pollination is the transfer of pollen from one flower to another, allowing plants to produce fruit and seeds.',
+      simplifiedMeaning: 'Helping flowers make seeds.',
+      sentences: ['Bees are responsible for the pollination of many fruits and vegetables.', 'Attracting butterflies to your garden helps improve pollination.', 'Without pollination, many food crops would fail to grow.'],
+      synonym: 'fertilisation', antonym: 'sterility',
+      nonExamples: 'Simply watering a plant with a hose is not pollination.',
+      tier: 3, tierWhy: 'A specific scientific word describing an essential ecological process.',
+      distractors: {
+        close: 'Pulling weeds out of the soil by their roots.',
+        unrelated: 'A large ocean liner sailing across the sea.',
+        similarWord: 'A population of people living in a large city.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "pollination" INCORRECTLY?',
+        opts: [
+          'Bees play a vital role in garden pollination.',
+          'I ate a sweet bowl of pollination for dessert.',
+          'Wind and insects both assist with pollination.',
+          'Successful pollination leads to healthy seeds and fruit.'
+        ],
+        correctIndex: 1
+      }
+    },
+    {
+      word: 'habitat', icon: '🌿', hint: 'natural home for wildlife',
+      definition: 'A habitat is the natural home or environment where an animal, plant, or insect lives.',
+      simplifiedMeaning: 'A natural home.',
+      sentences: ['We can turn our backyard into a safe habitat for native birds.', 'Destroying bushland removes the natural habitat of bees and butterflies.', 'A good garden habitat includes food, water, and shelter.'],
+      synonym: 'environment', antonym: 'wasteland',
+      nonExamples: 'A concrete car park with no plants is not a natural habitat.',
+      tier: 3, tierWhy: 'A formal science word used in biology and environmental studies.',
+      distractors: {
+        close: 'A daily habit of brushing your teeth every morning.',
+        unrelated: 'A thick woollen blanket for winter nights.',
+        similarWord: 'A habit that someone repeats every day.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "habitat" INCORRECTLY?',
+        opts: [
+          'Planting native shrubs creates a rich wildlife habitat.',
+          'Every animal needs a safe habitat to survive.',
+          'I drank a cold glass of habitat after playing sport.',
+          'Our garden provides a habitat for colourful butterflies.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'native', icon: '🦘', hint: 'belonging naturally to Australia',
+      definition: 'Native plants and animals are those that occur naturally in a particular country or region.',
+      simplifiedMeaning: 'Naturally from here.',
+      sentences: ['Australian native plants like banksias attract local honeyeaters.', 'Planting native shrubs supports the insects that evolved with them.', 'Native bees are often smaller and quieter than European honeybees.'],
+      synonym: 'indigenous', antonym: 'introduced',
+      nonExamples: 'An exotic rosebush brought from another continent is not a native plant.',
+      tier: 3, tierWhy: 'An important word for ecology, geography, and biodiversity.',
+      distractors: {
+        close: 'A plastic flower made in a factory.',
+        unrelated: 'A heavy metal lock for securing a door.',
+        similarWord: 'A nation of people living under one government.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "native" INCORRECTLY?',
+        opts: [
+          'We planted native Australian trees along the fence.',
+          'Native birds love drinking nectar from grevillea flowers.',
+          'I tied a native around my shoe to keep it tight.',
+          'Local wildlife thrives when gardens use native plants.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'biodiversity', icon: '🐞', hint: 'variety of living things',
+      definition: 'Biodiversity is the variety of different plant and animal species living together in an environment.',
+      simplifiedMeaning: 'Variety of living things.',
+      sentences: ['A garden with high biodiversity is healthier and more resilient.', 'Attracting birds, bees, and butterflies increases backyard biodiversity.', 'Using chemical sprays can reduce the biodiversity of garden insects.'],
+      synonym: 'biological variety', antonym: 'monoculture',
+      nonExamples: 'A lawn with only one single type of grass has very poor biodiversity.',
+      tier: 3, tierWhy: 'A formal ecological word used in conservation and environmental science.',
+      distractors: {
+        close: 'A biography written about a famous historical person.',
+        unrelated: 'A large tree growing in a local park.',
+        similarWord: 'A university where students study for degrees.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "biodiversity" INCORRECTLY?',
+        opts: [
+          'Planting varied flowers boosts garden biodiversity.',
+          'High biodiversity helps keep natural ecosystems balanced.',
+          'I baked a biodiversity in the oven for an hour.',
+          'We can support urban biodiversity by growing native shrubs.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'ecosystem', icon: '🌐', hint: 'community of living things working together',
+      definition: 'An ecosystem is a community of interacting plants, animals, and their physical environment.',
+      simplifiedMeaning: 'Living community working together.',
+      sentences: ['Every backyard functions as a small ecosystem.', 'Birds, bees, and flowers depend on each other within the garden ecosystem.', 'Pollution can disrupt the delicate balance of a natural ecosystem.'],
+      synonym: 'ecological community', antonym: 'lifeless zone',
+      nonExamples: 'A single rock sitting alone in space is not an ecosystem.',
+      tier: 2, tierWhy: 'A common science word used to describe interconnected natural systems.',
+      distractors: {
+        close: 'An electrical system for wiring a house.',
+        unrelated: 'A fluffy white cloud floating in the sky.',
+        similarWord: 'An echo bouncing off the walls of a cave.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "ecosystem" INCORRECTLY?',
+        opts: [
+          'Bees are an essential part of the garden ecosystem.',
+          'Healthy soil supports a thriving underground ecosystem.',
+          'I wore an ecosystem on my head to block the sun.',
+          'Removing native plants can harm the local ecosystem.'
+        ],
+        correctIndex: 2
+      }
+    }
+  ],
+  blue: [
+    {
+      word: 'interdependence', icon: '🔗', hint: 'relying on each other to survive',
+      definition: 'Interdependence is the way two or more living things rely on each other in order to survive and thrive.',
+      simplifiedMeaning: 'Relying on each other.',
+      sentences: ['The interdependence between bees and flowers is vital for plant reproduction.', 'Our garden shows the interdependence of native birds and flowering shrubs.', 'When one species disappears, interdependence means others suffer too.', 'Understanding interdependence helps us see why every garden insect matters.', 'Ecologists study the interdependence of plants and pollinators.'],
+      synonym: 'mutual reliance', antonym: 'independence',
+      nonExamples: 'A plastic statue in the garden has no interdependence with wildlife.',
+      connotation: 'Interdependence sounds harmonious and connected. It implies balance and teamwork in nature.',
+      etymology: 'From the prefix "inter-" meaning between or among, and "dependence" meaning relying on something.',
+      tier: 3, tierWhy: 'An advanced scientific and analytical word used to describe complex relationships.',
+      distractors: {
+        close: 'Living completely alone without needing any help.',
+        unrelated: 'A large painted mural on a brick wall.',
+        similarWord: 'An independence celebration for a country.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "interdependence" INCORRECTLY?',
+        opts: [
+          'Flowers and bees demonstrate ecological interdependence.',
+          'I ate a huge bowl of interdependence for dinner tonight.',
+          'The interdependence of wildlife keeps gardens resilient.',
+          'Protecting pollinators supports natural interdependence.'
+        ],
+        correctIndex: 1
+      }
+    },
+    {
+      word: 'conservation', icon: '🛡️', hint: 'protecting nature and wildlife',
+      definition: 'Conservation is the protection and careful management of nature, wildlife, and natural resources.',
+      simplifiedMeaning: 'Protecting nature.',
+      sentences: ['Backyard conservation begins with planting bee-friendly flowers.', 'Wildlife conservation programs work to protect endangered butterflies.', 'Water conservation helps maintain a healthy garden during dry summers.', 'Local conservation groups plant native trees for woodland birds.', 'Every gardener can contribute to nature conservation.'],
+      synonym: 'preservation', antonym: 'destruction',
+      nonExamples: 'Clearing all shrubs to build a concrete patio is not conservation.',
+      connotation: 'Conservation sounds responsible and protective. It is about caring for the future.',
+      etymology: 'From the Latin word "conservare", meaning to keep, preserve, or guard.',
+      tier: 3, tierWhy: 'A formal environmental and civic word used in science and public policy.',
+      distractors: {
+        close: 'A casual conversation between two friends at lunch.',
+        unrelated: 'A juicy red apple picked from an orchard.',
+        similarWord: 'A conversation spoken over the telephone.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "conservation" INCORRECTLY?',
+        opts: [
+          'We practice conservation by creating bird-friendly habitats.',
+          'Garden conservation helps protect declining bee species.',
+          'The tree grew beautiful conservation in the spring.',
+          'Wildlife conservation requires protecting natural food sources.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'foraging', icon: '🔍', hint: 'searching around for food',
+      definition: 'Foraging is the act of searching widely for food or provisions in the wild.',
+      simplifiedMeaning: 'Searching for food.',
+      sentences: ['Honeybees spend sunny days foraging for pollen and nectar.', 'We watched a native bird foraging for insects among the leaf litter.', 'Providing flowering shrubs gives butterflies a place for foraging.', 'Foraging takes a lot of energy, so pollinators need nectar-rich blooms.', 'Safe foraging areas are essential for urban wildlife.'],
+      synonym: 'food gathering', antonym: 'starving',
+      nonExamples: 'Buying birdseed from a supermarket shelf is not wild foraging.',
+      connotation: 'Foraging sounds active and industrious. It describes the natural daily work of animals.',
+      etymology: 'From the Old French word "fourrage", meaning fodder or food for cattle and livestock.',
+      tier: 3, tierWhy: 'A specialised biology word describing animal behaviour and feeding habits.',
+      distractors: {
+        close: 'Forging a metal horseshoe over a hot fire.',
+        unrelated: 'A complicated recipe for baking a cake.',
+        similarWord: 'A foreigner visiting from another overseas country.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "foraging" INCORRECTLY?',
+        opts: [
+          'Bees fly from bloom to bloom while foraging for nectar.',
+          'Birds were foraging for beetles in the garden mulch.',
+          'I poured foraging into my cup and drank it quickly.',
+          'Good gardens offer safe foraging for native insects.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'equilibrium', icon: '⚖️', hint: 'natural state of balance',
+      definition: 'Equilibrium is a state of balance where competing natural influences or populations are equal.',
+      simplifiedMeaning: 'Natural balance.',
+      sentences: ['Attracting natural predators helps maintain equilibrium in garden insect populations.', 'A healthy ecosystem stays in equilibrium when all species have food.', 'Using harsh chemicals can disturb the delicate equilibrium of the garden.', 'Birds help keep insect numbers in equilibrium.', 'Ecological equilibrium prevents any single pest from taking over.'],
+      synonym: 'balance', antonym: 'imbalance',
+      nonExamples: 'A garden overrun by one single pest species is out of equilibrium.',
+      connotation: 'Equilibrium sounds stable and peaceful. It implies precision and natural order.',
+      etymology: 'From Latin "aequilibriium", from "aequus" meaning equal, and "libra" meaning balance or scales.',
+      tier: 3, tierWhy: 'An advanced scientific term used in ecology, physics, and chemistry.',
+      distractors: {
+        close: 'An equestrian rider jumping horses over fences.',
+        unrelated: 'A soft green field of tall grass.',
+        similarWord: 'An equipment box used for keeping garden tools.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "equilibrium" INCORRECTLY?',
+        opts: [
+          'Beneficial insects maintain equilibrium in backyard gardens.',
+          'Removing native plants can upset ecological equilibrium.',
+          'The equilibrium tasted like sweet strawberry ice cream.',
+          'Nature seeks equilibrium between predators and prey.'
+        ],
+        correctIndex: 2
+      }
+    },
+    {
+      word: 'regeneration', icon: '🔄', hint: 'regrowing and renewing life',
+      definition: 'Regeneration is the process of renewing, regrowing, or restoring ecosystems and plant life over time.',
+      simplifiedMeaning: 'Regrowing and renewing.',
+      sentences: ['Pollinators are essential for the regeneration of native bushland.', 'Garden regeneration happens faster when birds help spread seeds.', 'We can support habitat regeneration by planting diverse native flowers.', 'Natural regeneration allows damaged ecosystems to recover.', 'Bees play a key role in the regeneration of flowering forests.'],
+      synonym: 'renewal', antonym: 'degradation',
+      nonExamples: 'Covering soil in asphalt permanently stops plant regeneration.',
+      connotation: 'Regeneration sounds hopeful and restorative. It implies healing and new growth.',
+      etymology: 'From Latin "regenerare", meaning to create again, from "re-" (again) and "generare" (to produce).',
+      tier: 3, tierWhy: 'A formal environmental science word describing ecological recovery.',
+      distractors: {
+        close: 'A generation of children growing up together in a school.',
+        unrelated: 'Watching a funny movie on the television.',
+        similarWord: 'A registration form signed before entering a competition.'
+      },
+      errorExample: {
+        q: 'Which sentence uses the word "regeneration" INCORRECTLY?',
+        opts: [
+          'Birds assist bush regeneration by dispersing native seeds.',
+          'I planted a regeneration in the garden and watered it.',
+          'Pollinators contribute to the regeneration of wild flora.',
+          'Habitat regeneration brings wildlife back to urban areas.'
+        ],
+        correctIndex: 1
+      }
+    }
+  ]
+};
+
+const groupMeta = {
+  red:    { name: 'Red Group',    label: 'early readers - 3 words',      bg: 'red-bg',    barClass: 'bar-red',    badgeClass: 'badge-red',    tabClass: 'tab-red'    },
+  yellow: { name: 'Yellow Group', label: 'developing readers - 3 words', bg: 'yellow-bg', barClass: 'bar-yellow', badgeClass: 'badge-yellow', tabClass: 'tab-yellow' },
+  green:  { name: 'Green Group',  label: 'confident readers - 5 words',  bg: 'green-bg',  barClass: 'bar-green',  badgeClass: 'badge-green',  tabClass: 'tab-green'  },
+  blue:   { name: 'Blue Group',   label: 'fluent readers - 5 words',     bg: 'blue-bg',   barClass: 'bar-blue',   badgeClass: 'badge-blue',   tabClass: 'tab-blue'   }
+};
+
+const extraContentQuestions = {
+  green: [
+    {
+      q: 'According to the non-examples in the Learn section, why is watering a plant with a hose NOT considered pollination?',
+      opts: [
+        { text: 'It does not involve transferring pollen from flower to flower to produce seeds.', type: 'correct' },
+        { text: 'It requires a garden hose.', type: 'close' },
+        { text: 'It makes the soil too wet for insects.', type: 'unrelated' },
+        { text: 'It causes flowers to lose their bright petals.', type: 'similarWord' }
+      ],
+      correctText: 'It does not involve transferring pollen from flower to flower to produce seeds.'
+    },
+    {
+      q: 'The Learn panel notes that a lawn with only one single type of grass has very poor...',
+      opts: [
+        { text: 'Biodiversity.', type: 'correct' },
+        { text: 'Pollination.', type: 'close' },
+        { text: 'Shelter.', type: 'unrelated' },
+        { text: 'Nectar.', type: 'similarWord' }
+      ],
+      correctText: 'Biodiversity.'
+    }
+  ],
+  blue: [
+    {
+      q: 'Based on the word origin (etymology) section for **conservation**, what did the Latin word "conservare" originally mean?',
+      opts: [
+        { text: 'To keep, preserve, or guard.', type: 'correct' },
+        { text: 'To talk together in a group.', type: 'close' },
+        { text: 'To plant seeds in springtime.', type: 'unrelated' },
+        { text: 'To search widely for wild food.', type: 'similarWord' }
+      ],
+      correctText: 'To keep, preserve, or guard.'
+    },
+    {
+      q: 'In the **foraging** section, where does the Old French root "fourrage" translate to?',
+      opts: [
+        { text: 'Fodder or food for cattle and livestock.', type: 'correct' },
+        { text: 'A long journey through the forest.', type: 'close' },
+        { text: 'A sweet syrup found in blossoms.', type: 'unrelated' },
+        { text: 'A pair of scales used for weighing.', type: 'similarWord' }
+      ],
+      correctText: 'Fodder or food for cattle and livestock.'
+    }
+  ]
+};
+
+// --- State --------------------------------------------------------------------
+
+let currentGroup        = 'red';
+let currentMode         = 'learn';
+let currentQuizQuestions = []; 
+let selectedAnswers     = {};  
+let checkedQuestions    = {};  
+let voices              = [];
+let activeSpeakBtn      = null;
+
+// --- Speech -------------------------------------------------------------------
+
+function loadVoices() { voices = window.speechSynthesis.getVoices(); }
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+  loadVoices();
+}
+
+function getVoice() {
+  const williamNatural = voices.find(v => v.name.toLowerCase().includes('william') && v.name.toLowerCase().includes('natural'));
+  const william = voices.find(v => v.name.toLowerCase().includes('william'));
+  const natural = voices.find(v => /natural/i.test(v.name) && v.lang.startsWith('en'));
+  const english = voices.find(v => v.lang.startsWith('en-'));
+  return williamNatural || william || natural || english || null;
+}
+
+function speakText(text, btn) {
+  if (!('speechSynthesis' in window)) { alert('Read-aloud is not supported in this browser.'); return; }
+
+  if (activeSpeakBtn === btn) {
+    window.speechSynthesis.cancel();
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+  if (activeSpeakBtn) { activeSpeakBtn.classList.remove('speaking'); activeSpeakBtn = null; }
+
+  const ut  = new SpeechSynthesisUtterance(text);
+  const v    = getVoice();
+  const rate = parseFloat(document.getElementById('speedSelect').value) || 0.85;
+  if (v) ut.voice = v;
+  ut.rate = rate;
+
+  activeSpeakBtn = btn;
+  btn.classList.add('speaking');
+
+  ut.onend = ut.onerror = () => {
+    if (activeSpeakBtn === btn) { btn.classList.remove('speaking'); activeSpeakBtn = null; }
+  };
+
+  window.speechSynthesis.speak(ut);
+}
+
+function readSectionText(btn) { speakText(btn.dataset.text, btn); }
+
+function readOptionText(btn, e) {
+  e.stopPropagation();
+  speakText(btn.dataset.text, btn);
+}
+
+// --- Helpers -----------------------------------------------------------------
+
+function escAttr(str) {
+  return (str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+}
+
+function sectionReadBtn(text) {
+  return `<button class="sec-read-btn" data-text="${escAttr(text)}" onclick="readSectionText(this)" title="Read aloud">🔊</button>`;
+}
+
+function tierBadge(item) {
+  return `<div class="tier-row">
+    <span class="tier-badge tier-${item.tier}">Tier ${item.tier}</span>
+    <span class="tier-why">${item.tierWhy}</span>
+  </div>`;
+}
+
+// --- Navigation ---------------------------------------------------------------
+
+function showGroup(group) {
+  currentGroup = group;
+  window.speechSynthesis?.cancel();
+  activeSpeakBtn = null;
+
+  const meta = groupMeta[group];
+  document.getElementById('frontMenu').classList.add('hidden');
+  document.getElementById('groupView').classList.remove('hidden');
+
+  const bar = document.getElementById('topBar');
+  bar.className = 'group-top-bar ' + meta.barClass;
+
+  const badge = document.getElementById('groupBadge');
+  badge.textContent = meta.name;
+  badge.className   = 'group-badge ' + meta.badgeClass;
+
+  ['learnTab', 'quizTab'].forEach(id => {
+    const tab = document.getElementById(id);
+    tab.classList.remove('tab-red','tab-yellow','tab-green','tab-blue');
+    tab.classList.add(meta.tabClass);
+  });
+
+  switchMode('learn');
+}
+
+function backToMenu() {
+  window.speechSynthesis?.cancel();
+  activeSpeakBtn = null;
+  document.getElementById('groupView').classList.add('hidden');
+  document.getElementById('frontMenu').classList.remove('hidden');
+}
+
+function switchMode(mode) {
+  currentMode = mode;
+  window.speechSynthesis?.cancel();
+  activeSpeakBtn = null;
+
+  document.getElementById('learnTab').classList.toggle('active', mode === 'learn');
+  document.getElementById('quizTab') .classList.toggle('active', mode === 'quiz');
+  document.getElementById('learnPanel').classList.toggle('hidden', mode !== 'learn');
+  document.getElementById('quizPanel') .classList.toggle('hidden', mode !== 'quiz');
+
+  if (mode === 'learn') { renderGrid(); }
+  else                  { generateQuiz(); }
+}
+
+// --- Learn mode ---------------------------------------------------------------
+
+function renderGrid() {
+  const meta  = groupMeta[currentGroup];
+  const words = groupVocab[currentGroup];
+
+  document.getElementById('groupLabel').textContent = `${meta.name} - ${meta.label}`;
+
+  const grid = document.getElementById('vocabGrid');
+  grid.innerHTML = '';
+  words.forEach(item => {
+    const card = document.createElement('div');
+    card.className = `vocab-card ${meta.bg}`;
+    card.innerHTML = `
+      <div>
+        <div class="card-icon">${item.icon}</div>
+        <div class="card-word">${item.word}</div>
+      </div>
+      <div class="card-hint">${item.hint}</div>
+    `;
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.vocab-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      showDetail(item);
+    });
+    grid.appendChild(card);
+  });
+
+  document.getElementById('detailBox').classList.add('hidden');
+}
+
+function showDetail(item) {
+  const box = document.getElementById('detailBox');
+  
+  let html = `
+    <div class="detail-word-row">
+      <div class="detail-word">${item.icon} ${item.word}</div>
+      <div class="tier-section" style="margin-bottom: 0;">
+        ${tierBadge(item)}
+      </div>
+    </div>
+  `;
+
+  html += section('What it means (Full)', item.definition, item.definition);
+  html += section('Simplified Meaning', `<strong>${item.simplifiedMeaning}</strong>`, item.simplifiedMeaning);
+
+  if (currentGroup === 'red') {
+    html += exampleSection('Example', item.example)
+          + factSection('Did you know?', item.didYouKnow);
+
+  } else if (currentGroup === 'yellow') {
+    const allExamples = item.examples.join(' ');
+    html += multiExampleSection('Examples', item.examples, allExamples)
+          + section('Synonym (similar word)', item.synonym, `A synonym for ${item.word} is: ${item.synonym}`);
+
+  } else if (currentGroup === 'green') {
+    const allSentences = item.sentences.join(' ');
+    html += multiExampleSection('Example sentences', item.sentences, allSentences)
+          + section('Synonym (similar word)', item.synonym, `A synonym for ${item.word} is: ${item.synonym}`)
+          + section('Antonym (opposite)', item.antonym, `The antonym, or opposite, of ${item.word} is: ${item.antonym}`)
+          + section('Non-examples', item.nonExamples, item.nonExamples);
+
+  } else {
+    const allSentences = item.sentences.join(' ');
+    html += multiExampleSection('Example sentences', item.sentences, allSentences)
+          + section('Synonym (similar word)', item.synonym, `A synonym for ${item.word} is: ${item.synonym}`)
+          + section('Antonym (opposite)', item.antonym, `The antonym, or opposite, of ${item.word} is: ${item.antonym}`)
+          + section('Non-examples', item.nonExamples, item.nonExamples)
+          + section('Connotation', item.connotation, item.connotation)
+          + section('Word origin (etymology)', item.etymology, item.etymology);
+  }
+
+  box.innerHTML = html;
+  box.classList.remove('hidden');
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function section(label, contentHTML, readText) {
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(readText)}
+    </div>
+    <div class="detail-content">${contentHTML}</div>
+  </div>`;
+}
+
+function exampleSection(label, text) {
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(text)}
+    </div>
+    <div class="example-box">${text}</div>
+  </div>`;
+}
+
+function factSection(label, text) {
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(text)}
+    </div>
+    <div class="fact-box">${text}</div>
+  </div>`;
+}
+
+function multiExampleSection(label, items, readText) {
+  const boxes = items.map(s => `<div class="example-box">${s}</div>`).join('');
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(readText)}
+    </div>
+    ${boxes}
+  </div>`;
+}
+
+// --- Quiz mode (With Per-Question Check and Retry Buttons) --------------------
+
+function generateQuiz() {
+  selectedAnswers     = {};
+  checkedQuestions    = {};
+  currentQuizQuestions = [];
+  window.speechSynthesis?.cancel();
+  activeSpeakBtn = null;
+
+  const words = groupVocab[currentGroup];
+
+  // 1. Definition Lookup Questions (Red has 3 choices, others have 4)
+  words.forEach(item => {
+    let optsArray = [];
+    if (currentGroup === 'red') {
+      optsArray = [
+        { text: item.simplifiedMeaning, type: 'correct' },
+        { text: item.distractors.close, type: 'close' },
+        { text: item.distractors.unrelated, type: 'unrelated' }
+      ];
+    } else {
+      optsArray = [
+        { text: item.definition, type: 'correct' },
+        { text: item.distractors.close, type: 'close' },
+        { text: item.distractors.unrelated, type: 'unrelated' },
+        { text: item.distractors.similarWord, type: 'similarWord' }
+      ];
+    }
+    
+    currentQuizQuestions.push({
+      type: 'meaning',
+      word: item.word,
+      questionText: currentGroup === 'red' ? `What is a <strong>${item.word}</strong>?` : `What does the word "${item.word}" mean?`,
+      options: shuffleArray([...optsArray]),
+      correctText: currentGroup === 'red' ? item.simplifiedMeaning : item.definition
+    });
+  });
+
+  // 2. Incorrect Sentence Detection Questions (4 simplified choices for all groups)
+  words.forEach(item => {
+    const errorData = item.errorExample;
+    const optsArray = errorData.opts.map((text, idx) => {
+      return { text: text, isCorrectSlot: idx === errorData.correctIndex };
+    });
+
+    currentQuizQuestions.push({
+      type: 'error_detect',
+      word: item.word,
+      questionText: errorData.q,
+      options: shuffleArray([...optsArray]),
+      correctText: errorData.opts[errorData.correctIndex]
+    });
+  });
+
+  // 3. Content Questions for Green and Blue Groups
+  if ((currentGroup === 'green' || currentGroup === 'blue') && extraContentQuestions[currentGroup]) {
+    extraContentQuestions[currentGroup].forEach((extra) => {
+      currentQuizQuestions.push({
+        type: 'content_based',
+        word: extra.word || '',
+        questionText: extra.q,
+        options: shuffleArray([...extra.opts]),
+        correctText: extra.correctText
+      });
+    });
+  }
+
+  // Shuffle all questions completely
+  shuffleArray(currentQuizQuestions);
+
+  const progress = document.getElementById('quizProgress');
+  progress.innerHTML = currentQuizQuestions.map((_, i) => `<div class="progress-dot unanswered" id="dot-${i}"></div>`).join('');
+
+  renderQuizUI();
+}
+
+function renderQuizUI() {
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+
+  currentQuizQuestions.forEach((qObj, qIdx) => {
+    const card = document.createElement('div');
+    card.className = 'quiz-card';
+    card.id = `qcard-${qIdx}`;
+
+    let html = `
+      <div class="quiz-q-number">Question ${qIdx + 1} of ${currentQuizQuestions.length}</div>
+      <div class="quiz-q-row">
+        <div class="quiz-q-text">${qObj.questionText}</div>
+        <button class="q-read-btn" data-text="${escAttr(qObj.questionText.replace(/<[^>]*>/g, ''))}" onclick="readSectionText(this)" title="Read question">🔊</button>
+      </div>
+      <div class="quiz-options-grid" id="opts-grid-${qIdx}">
+    `;
+
+    qObj.options.forEach((opt, oIdx) => {
+      html += `
+        <div class="quiz-opt-row" 
+             id="optrow-${qIdx}-${oIdx}"
+             onclick="selectOption(${qIdx}, ${oIdx}, '${escAttr(opt.text)}')">
+          <div class="opt-main">${opt.text}</div>
+          <div class="opt-speaker-zone">
+            <button class="opt-read-btn" data-text="${escAttr(opt.text)}" onclick="readOptionText(this, event)" title="Read option">🔊</button>
+          </div>
+        </div>
+      `;
+    });
+
+    html += `
+      </div>
+      <div class="card-actions">
+        <button class="card-btn check-btn" id="check-btn-${qIdx}" onclick="checkCardAnswer(${qIdx})" disabled>Check Answer</button>
+        <button class="card-btn retry-btn hidden" id="retry-btn-${qIdx}" onclick="retryCard(${qIdx})">Retry</button>
+      </div>
+      <div id="feedback-${qIdx}"></div>
+    `;
+    card.innerHTML = html;
+    container.appendChild(card);
+  });
+}
+
+function selectOption(qIdx, oIdx) {
+  if (checkedQuestions[qIdx]) return;
+
+  const grid = document.getElementById(`opts-grid-${qIdx}`);
+  grid.querySelectorAll('.quiz-opt-row').forEach(row => row.classList.remove('selected'));
+
+  const selectedRow = document.getElementById(`optrow-${qIdx}-${oIdx}`);
+  selectedRow.classList.add('selected');
+
+  selectedAnswers[qIdx] = oIdx;
+  document.getElementById(`check-btn-${qIdx}`).disabled = false;
+
+  const dot = document.getElementById(`dot-${qIdx}`);
+  if (dot && dot.className.includes('unanswered')) {
+    dot.className = 'progress-dot answered';
+  }
+}
+
+function checkCardAnswer(qIdx) {
+  if (checkedQuestions[qIdx]) return;
+  window.speechSynthesis?.cancel();
+
+  const qObj = currentQuizQuestions[qIdx];
+  const chosenOptIdx = selectedAnswers[qIdx];
+  const chosenOpt = qObj.options[chosenOptIdx];
+  const isCorrect = chosenOpt.text === qObj.correctText;
+
+  checkedQuestions[qIdx] = true;
+  document.getElementById(`check-btn-${qIdx}`).classList.add('hidden');
+  document.getElementById(`retry-btn-${qIdx}`).classList.remove('hidden');
+
+  const grid = document.getElementById(`opts-grid-${qIdx}`);
+  grid.querySelectorAll('.quiz-opt-row').forEach((row, oIdx) => {
+    row.classList.add('disabled');
+    const rowOpt = qObj.options[oIdx];
+    
+    if (rowOpt.text === qObj.correctText) {
+      row.classList.add('correct');
+    } else if (oIdx === chosenOptIdx && !isCorrect) {
+      row.classList.add('incorrect');
+    } else {
+      row.classList.add('dimmed');
+    }
+  });
+
+  const fbContainer = document.getElementById(`feedback-${qIdx}`);
+  const fb = document.createElement('div');
+  fb.className = `quiz-feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+  fb.textContent = isCorrect ? '✓ Correct!' : '✗ Try again next time!';
+  fbContainer.appendChild(fb);
+
+  const dot = document.getElementById(`dot-${qIdx}`);
+  if (dot) {
+    dot.className = `progress-dot ${isCorrect ? 'correct' : 'incorrect'}`;
+  }
+}
+
+function retryCard(qIdx) {
+  window.speechSynthesis?.cancel();
+  
+  delete selectedAnswers[qIdx];
+  delete checkedQuestions[qIdx];
+
+  const qObj = currentQuizQuestions[qIdx];
+  shuffleArray(qObj.options);
+
+  const dot = document.getElementById(`dot-${qIdx}`);
+  if (dot) dot.className = 'progress-dot unanswered';
+
+  const card = document.getElementById(`qcard-${qIdx}`);
+  const grid = card.querySelector('.quiz-options-grid');
+  grid.innerHTML = '';
+
+  qObj.options.forEach((opt, oIdx) => {
+    const row = document.createElement('div');
+    row.className = 'quiz-opt-row';
+    row.id = `optrow-${qIdx}-${oIdx}`;
+    row.onclick = () => selectOption(qIdx, oIdx, escAttr(opt.text));
+    row.innerHTML = `
+      <div class="opt-main">${opt.text}</div>
+      <div class="opt-speaker-zone">
+        <button class="opt-read-btn" data-text="${escAttr(opt.text)}" onclick="readOptionText(this, event)" title="Read option">🔊</button>
+      </div>
+    `;
+    grid.appendChild(row);
+  });
+
+  document.getElementById(`check-btn-${qIdx}`).classList.remove('hidden');
+  document.getElementById(`check-btn-${qIdx}`).disabled = true;
+  document.getElementById(`retry-btn-${qIdx}`).classList.add('hidden');
+  document.getElementById(`feedback-${qIdx}`).innerHTML = '';
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+</script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='vocab-nature-t3w3';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-vocab.js"></script>
+</body>
+</html>

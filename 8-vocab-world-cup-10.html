@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Cup: Vocabulary Learning</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Helvetica Neue', Helvetica, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: #f4f4f9;
+      padding: 20px;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* ══════════════════════════════════════════
+       FRONT MENU
+    ══════════════════════════════════════════ */
+    .front-menu {
+      background: white;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    .front-menu h1 { font-size: 2.2rem; color: #222; margin-top: 0; margin-bottom: 10px; }
+    .front-menu > p { font-size: 1.1rem; color: #666; margin-bottom: 35px; }
+
+    .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
+
+    .menu-button {
+      padding: 30px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    .menu-button:hover  { transform: translateY(-4px); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
+    .menu-button:active { transform: translateY(-2px); }
+
+    .red-btn          { background-color: #e53935; }
+    .red-btn:hover    { background-color: #c62828; }
+    .yellow-btn       { background-color: #ffb300; color: #333; }
+    .yellow-btn:hover { background-color: #ff9800; }
+    .green-btn        { background-color: #43a047; }
+    .green-btn:hover  { background-color: #2e7d32; }
+    .blue-btn         { background-color: #1e88e5; }
+    .blue-btn:hover   { background-color: #1565c0; }
+
+    /* ══════════════════════════════════════════
+       GROUP VIEW SHELL
+    ══════════════════════════════════════════ */
+    #groupView { max-width: 900px; margin: 0 auto; }
+
+    .group-top-bar { height: 12px; border-radius: 8px 8px 0 0; }
+    .bar-red    { background: #e53935; }
+    .bar-yellow { background: #ffb300; }
+    .bar-green  { background: #43a047; }
+    .bar-blue   { background: #1e88e5; }
+
+    .group-header {
+      background: white;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .back-btn {
+      background: #f0f0f0;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      color: #444;
+      transition: background 0.2s;
+      font-family: inherit;
+    }
+    .back-btn:hover { background: #e0e0e0; }
+
+    .group-badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      color: white;
+    }
+    .badge-red    { background: #e53935; }
+    .badge-yellow { background: #ffb300; color: #333; }
+    .badge-green  { background: #43a047; }
+    .badge-blue   { background: #1e88e5; }
+
+    .speed-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.85rem;
+      color: #555;
+      font-weight: 500;
+    }
+    .speed-row select {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 0.85rem;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    /* ── Mode tabs ── */
+    .mode-tabs {
+      display: flex;
+      background: #f8f8f8;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    .mode-tab {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      color: #888;
+      transition: all 0.15s;
+      font-family: inherit;
+      border-bottom: 3px solid transparent;
+    }
+    .mode-tab:hover { color: #444; background: rgba(0,0,0,0.03); }
+    .mode-tab.active { font-weight: 700; border-bottom-color: currentColor; }
+    .mode-tab.active.tab-red    { color: #e53935; }
+    .mode-tab.active.tab-yellow { color: #c48800; }
+    .mode-tab.active.tab-green  { color: #2e7d32; }
+    .mode-tab.active.tab-blue   { color: #1565c0; }
+
+    /* ══════════════════════════════════════════
+       LEARN PANEL
+    ══════════════════════════════════════════ */
+    .learn-panel {
+      background: white;
+      padding: 24px;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .group-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #aaa;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .vocab-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 2rem;
+    }
+
+    .vocab-card {
+      padding: 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      border: 2px solid transparent;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      user-select: none;
+    }
+    .vocab-card:hover   { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .vocab-card.selected { border-color: #555; box-shadow: 0 0 0 3px rgba(0,0,0,0.07); }
+
+    .vocab-card.red-bg    { background: #FEE8E8; }
+    .vocab-card.yellow-bg { background: #FDF4E6; }
+    .vocab-card.green-bg  { background: #EDF7EF; }
+    .vocab-card.blue-bg   { background: #EEF4FD; }
+
+    .card-icon { font-size: 26px; margin-bottom: 6px; line-height: 1; }
+    .card-word { font-size: 15px; font-weight: 600; color: #222; }
+    .card-hint { font-size: 11px; color: #777; margin-top: 4px; }
+
+    /* ── Detail box ── */
+    .detail-box {
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 1.5rem 1.75rem;
+      border: 1px solid #e8e8e8;
+    }
+    .detail-box.hidden { display: none; }
+
+    .detail-word-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 1.25rem;
+    }
+
+    .detail-word { font-size: 26px; font-weight: 700; color: #111; }
+
+    .detail-section { margin-bottom: 1.25rem; }
+    .detail-section:last-child { margin-bottom: 0; }
+
+    .detail-label-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 0.45rem;
+    }
+    .detail-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #bbb;
+      font-weight: 700;
+    }
+
+    .sec-read-btn {
+      background: none;
+      border: 1px solid #ddd;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      font-size: 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      padding: 0;
+      flex-shrink: 0;
+      color: #888;
+    }
+    .sec-read-btn:hover   { background: #f0f0f0; border-color: #999; color: #333; }
+    .sec-read-btn.speaking { background: #333; border-color: #333; color: white; }
+
+    .detail-content { font-size: 15px; line-height: 1.75; color: #444; }
+
+    .example-box {
+      background: white;
+      border-left: 3px solid #378ADD;
+      padding: 9px 13px;
+      margin: 6px 0;
+      font-size: 14px;
+      color: #555;
+      border-radius: 0 6px 6px 0;
+      line-height: 1.6;
+      font-style: italic;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .fact-box {
+      background: white;
+      border-left: 3px solid #D69E2E;
+      padding: 9px 13px;
+      margin: 6px 0;
+      font-size: 14px;
+      color: #555;
+      border-radius: 0 6px 6px 0;
+      line-height: 1.6;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .tier-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .tier-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .tier-1 { background: #C6F6D5; color: #22543D; }
+    .tier-2 { background: #FEEBC8; color: #7B341E; }
+    .tier-3 { background: #E9D8FD; color: #44337A; }
+    .tier-why { font-size: 13px; color: #777; }
+
+    /* ══════════════════════════════════════════
+       QUIZ PANEL
+    ══════════════════════════════════════════ */
+    .quiz-panel {
+      background: white;
+      padding: 24px;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .quiz-intro-text { font-size: 14px; color: #888; margin-bottom: 1.25rem; }
+
+    .quiz-progress { display: flex; gap: 7px; margin-bottom: 1.75rem; flex-wrap: wrap; align-items: center; }
+    .progress-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .progress-dot.unanswered { background: #e0e0e0; }
+    .progress-dot.answered { background: #b0bec5; }
+    .progress-dot.correct   { background: #43a047; transform: scale(1.15); }
+    .progress-dot.incorrect { background: #e53935; transform: scale(1.15); }
+
+    .quiz-card {
+      background: #fafafa;
+      border-radius: 14px;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 1.75rem;
+      border: 1.5px solid #ececec;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .quiz-q-number {
+      font-size: 11px;
+      font-weight: 700;
+      color: #bbb;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .quiz-q-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 1.25rem;
+    }
+    .quiz-q-text {
+      flex: 1;
+      font-size: 17px;
+      font-weight: 600;
+      color: #111;
+      line-height: 1.4;
+    }
+    .q-read-btn {
+      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1.5px solid #ddd;
+      background: white;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      margin-top: 2px;
+    }
+    .q-read-btn:hover { border-color: #aaa; background: #f5f5f5; }
+    .q-read-btn.speaking { background: #333; border-color: #333; color: white; }
+
+    .quiz-options-grid { display: flex; flex-direction: column; gap: 10px; }
+
+    .quiz-opt-row {
+      display: flex;
+      align-items: stretch;
+      border: 2px solid #e2e2e2;
+      border-radius: 10px;
+      background: white;
+      overflow: hidden;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+    }
+    .quiz-opt-row:not(.disabled):hover { border-color: #378ADD; box-shadow: 0 0 0 3px rgba(55,138,221,0.1); }
+    .quiz-opt-row.selected { border-color: #1e88e5; background: #e3f2fd; }
+    .quiz-opt-row.correct   { border-color: #43a047; background: #f0fff4; cursor: default; }
+    .quiz-opt-row.incorrect { border-color: #e53935; background: #fff5f5; cursor: default; }
+    .quiz-opt-row.dimmed    { border-color: #eee;    background: #fafafa; cursor: default; }
+
+    .opt-main {
+      flex: 1;
+      padding: 12px 15px;
+      font-size: 14px;
+      line-height: 1.55;
+      color: #444;
+      user-select: none;
+    }
+    .quiz-opt-row.correct  .opt-main { color: #1b5e20; font-weight: 500; }
+    .quiz-opt-row.incorrect .opt-main { color: #b71c1c; }
+    .quiz-opt-row.dimmed   .opt-main { color: #c8c8c8; }
+
+    .opt-speaker-zone {
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      border-left: 1.5px solid #ececec;
+      flex-shrink: 0;
+    }
+    .quiz-opt-row.correct   .opt-speaker-zone { border-left-color: #b2dfdb; }
+    .quiz-opt-row.incorrect .opt-speaker-zone { border-left-color: #ffccbc; }
+    .quiz-opt-row.dimmed    .opt-speaker-zone { border-left-color: #eee; }
+
+    .opt-read-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      padding: 5px;
+      border-radius: 6px;
+      color: #aaa;
+      transition: color 0.15s, background 0.15s;
+      line-height: 1;
+    }
+    .opt-read-btn:hover { color: #444; background: #f0f0f0; }
+    .quiz-opt-row.dimmed .opt-read-btn { color: #ddd; }
+    .opt-read-btn.speaking { color: #1e88e5; }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .card-btn {
+      padding: 8px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    .card-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .check-btn { background: #43a047; color: white; }
+    .check-btn:hover:not(:disabled) { background: #2e7d32; }
+    .retry-btn { background: #757575; color: white; }
+    .retry-btn:hover:not(:disabled) { background: #616161; }
+
+    .quiz-feedback {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.5;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .quiz-feedback.correct   { background: #e8f5e9; color: #1b5e20; }
+    .quiz-feedback.incorrect { background: #ffebee; color: #b71c1c; }
+
+    .hidden { display: none; }
+
+    @media (max-width: 600px) {
+      .menu-grid { grid-template-columns: 1fr 1fr; }
+      .menu-button { padding: 25px 15px; font-size: 1.1rem; }
+      .front-menu { padding: 30px 20px; }
+      .front-menu h1 { font-size: 1.8rem; }
+      .group-header { gap: 8px; }
+      body { padding: 10px; }
+    }
+  </style>
+    <style>/* wide layout: fill the embed. Colour chooser = row of 4 on wide screens, 2x2 otherwise (never 3+1) */
+    @media screen { .front-menu, .page, .global-controls, #groupView { max-width: none !important; } }
+    .menu-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    @media (min-width: 900px) { .menu-grid { grid-template-columns: repeat(4, 1fr) !important; } }
+    </style>
+</head>
+<body>
+
+<div id="frontMenu" class="front-menu">
+  <h1>🏆 World Cup: Vocabulary Learning</h1>
+  <p>Choose your reading group</p>
+  <div class="menu-grid">
+    <button class="menu-button red-btn"    onclick="showGroup('red')">Red Group</button>
+    <button class="menu-button yellow-btn" onclick="showGroup('yellow')">Yellow Group</button>
+    <button class="menu-button green-btn"  onclick="showGroup('green')">Green Group</button>
+    <button class="menu-button blue-btn"   onclick="showGroup('blue')">Blue Group</button>
+  </div>
+</div>
+
+<div id="groupView" class="hidden">
+  <div class="group-top-bar" id="topBar"></div>
+
+  <div class="group-header">
+    <button class="back-btn" onclick="backToMenu()">← Back to groups</button>
+    <span class="group-badge" id="groupBadge"></span>
+    <div class="speed-row">
+      <label for="speedSelect">🗣️ Speed:</label>
+      <select id="speedSelect">
+        <option value="0.7">0.7× (very slow)</option>
+        <option value="0.85" selected>0.85× (slow)</option>
+        <option value="1.0">1.0× (normal)</option>
+        <option value="1.15">1.15× (quick)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="mode-tabs">
+    <button class="mode-tab active" id="learnTab" onclick="switchMode('learn')">Learn vocabulary</button>
+    <button class="mode-tab"        id="quizTab"  onclick="switchMode('quiz')">Test yourself</button>
+  </div>
+
+  <div class="learn-panel" id="learnPanel">
+    <div class="group-label" id="groupLabel"></div>
+    <div class="vocab-grid"  id="vocabGrid"></div>
+    <div class="detail-box hidden" id="detailBox"></div>
+  </div>
+
+  <div class="quiz-panel hidden" id="quizPanel">
+    <p class="quiz-intro-text">Answer the questions below. Check or retry each question as you go!</p>
+    <div class="quiz-progress" id="quizProgress"></div>
+    <div id="quizContainer"></div>
+  </div>
+</div>
+
+<script>
+// ─── Vocabulary data ──────────────────────────────────────────────────────────
+
+const groupVocab = {
+  red: [
+    {
+      word: 'stadium', icon: '🏟️', hint: 'huge sports field with seats',
+      definition: 'A stadium is a very big place with a sports field and lots of seats.',
+      simplifiedMeaning: 'A big place for sports or shows.',
+      example: 'We went into the huge stadium to see the match.',
+      didYouKnow: 'Big stadiums can hold thousands of cheering football fans!',
+      tier: 1, tierWhy: 'It is a common name for a large sports building.',
+      distractors: {
+        close: 'A little park playground.',
+        unrelated: 'A small school room.'
+      }
+    },
+    {
+      word: 'match', icon: '⚽', hint: 'a game between two teams',
+      definition: 'A match is a football game played between two teams.',
+      simplifiedMeaning: 'A football game.',
+      example: 'Our team won the exciting football match today.',
+      didYouKnow: 'A real match has two halves with a short break in the middle.',
+      tier: 1, tierWhy: 'It is an everyday word for a sporting game.',
+      distractors: {
+        close: 'A sports shirt.',
+        unrelated: 'A toy boat.'
+      }
+    },
+    {
+      word: 'trophy', icon: '🏆', hint: 'prize for the winner',
+      definition: 'A trophy is a special prize given to the team that wins the cup.',
+      simplifiedMeaning: 'A winner\'s shiny prize.',
+      example: 'The team captain held up the gold trophy.',
+      didYouKnow: 'The famous World Cup trophy is shaped like a gold world!',
+      tier: 1, tierWhy: 'It is a basic word used for winning a competition.',
+      distractors: {
+        close: 'A yellow card.',
+        unrelated: 'A heavy truck.'
+      }
+    }
+  ],
+  yellow: [
+    {
+      word: 'tournament', icon: '📅', hint: 'series of games to find a winner',
+      definition: 'A tournament is a large competition involving many players or teams playing a series of games until only one winner is left.',
+      simplifiedMeaning: 'A big multi-game competition.',
+      examples: ['The World Cup is the most famous football tournament on Earth.', 'Thirty-two nations competed fiercely throughout the month-long tournament.'],
+      synonym: 'competition',
+      tier: 3, tierWhy: 'It is a specific sports word that explains how group competitions are structured.',
+      distractors: {
+        close: 'A single informal practice game between friends.',
+        unrelated: 'A uniform kit worn by players.',
+        similarWord: 'A sudden turning movement.'
+      }
+    },
+    {
+      word: 'spectator', icon: '👀', hint: 'person who watches an event',
+      definition: 'A spectator is a person who watches a sporting event, show, or performance without taking part in it.',
+      simplifiedMeaning: 'A person watching a game.',
+      examples: ['Every single spectator in the stadium stood up and cheered.', 'Millions of spectators watch the live broadcast from home.'],
+      synonym: 'observer',
+      tier: 2, tierWhy: 'Used across literacy, history, and media studies to describe people observing events.',
+      distractors: {
+        close: 'The head official who enforces rules on the pitch.',
+        unrelated: 'A piece of protective footwear worn by athletes.',
+        similarWord: 'A strange ghost or spirit.'
+      }
+    },
+    {
+      word: 'represent', icon: '🇦🇺', hint: 'speak or play on behalf of a group',
+      definition: 'To represent means to officially play, speak, or act on behalf of a specific country, team, or group of people.',
+      simplifiedMeaning: 'Be on the team for your club or country.',
+      examples: ['The dedicated athletes train hard to represent Australia.', 'Wearing the green and gold jersey means you represent your whole nation.'],
+      synonym: 'stand for',
+      tier: 2, tierWhy: 'An important concept used in civic studies, governance, and professional contexts.',
+      distractors: {
+        close: 'Opposing another group during an argument.',
+        unrelated: 'Buying merchandise from a commercial store.',
+        similarWord: 'A nice holiday present.'
+      }
+    }
+  ],
+  green: [
+    {
+      word: 'eliminate', icon: '❌', hint: 'remove from the competition',
+      definition: 'To eliminate means to remove a team or player from a competition after they lose a match.',
+      simplifiedMeaning: 'Knock out of a tournament.',
+      sentences: ['If a team loses in the knockout stage, the match will eliminate them completely.', 'No team wants to be eliminated during the first round of play.', 'A single tactical mistake can eliminate a country from the World Cup finals.'],
+      synonym: 'remove', antonym: 'qualify',
+      nonExamples: 'Awarding a team a bonus point or allowing them to replay a drawing match is not eliminating them.',
+      tier: 3, tierWhy: 'A structured tournament word detailing precise rules of competition progress.',
+      distractors: {
+        close: 'Inviting a guest team to join an exhibition game.',
+        unrelated: 'Fixing broken goal posts before a match begins.',
+        similarWord: 'A refreshing glass of cold lemonade.'
+      }
+    },
+    {
+      word: 'strategy', icon: '📋', hint: 'a carefully detailed plan',
+      definition: 'A strategy is a carefully detailed plan of action designed to achieve a specific long-term goal or victory.',
+      simplifiedMeaning: 'A plan.',
+      sentences: ['The coach designed a defensive strategy to stop the opponent\'s star striker.', 'The team changed their attacking strategy during the half-time break.', 'Executing a successful strategy requires excellent communication between players.'],
+      synonym: 'plan', antonym: 'accident',
+      nonExamples: 'Kicking the ball blindly down the field without looking is not a strategy; it is a random action.',
+      tier: 2, tierWhy: 'Appears frequently across sports, business, writing, and military history contexts.',
+      distractors: {
+        close: 'The physical fitness level of an individual player.',
+        unrelated: 'The metal whistle used by game referees.',
+        similarWord: 'A long straight line.'
+      }
+    },
+    {
+      word: 'prestige', icon: '✨', hint: 'high respect or importance gained',
+      definition: 'Prestige is widespread respect, admiration, or high status gained through success, excellence, or importance.',
+      simplifiedMeaning: 'Fancy and important.',
+      sentences: ['Winning the FIFA World Cup brings immense prestige to a nation.', 'The tournament has great prestige because only the finest teams qualify.', 'Players dream of earning the prestige that comes with an international medal.'],
+      synonym: 'honour', antonym: 'disgrace',
+      nonExamples: 'A casual weekend match played in a backyard lacks global prestige because it has no official status.',
+      tier: 3, tierWhy: 'An advanced abstract noun used to explain social status, history, and achievements.',
+      distractors: {
+        close: 'The total amount of money spent on stadium tickets.',
+        unrelated: 'The physical speed of a soccer ball rolling across grass.',
+        similarWord: 'A fast computer printing press.'
+      }
+    },
+    {
+      word: 'substitute', icon: '🔄', hint: 'player who replaces another',
+      definition: 'To substitute means to replace one player on the field with a fresh player from the team bench during a match.',
+      simplifiedMeaning: 'Replace.',
+      sentences: ['The coach decided to substitute a tired midfielder in the second half.', 'The substitute scored the winning goal just minutes after entering the pitch.', 'Teams are only allowed a limited number of substitutes per match.'],
+      synonym: 'replace', antonym: 'keep on',
+      nonExamples: 'A player receiving a red card and leaving without replacement is not a substitution; the team must play short.',
+      tier: 2, tierWhy: 'Commonly used in sports, education (substitute teachers), cooking, and science.',
+      distractors: {
+        close: 'The medical doctor who assists injured athletes.',
+        unrelated: 'The technical name for the painted penalty lines.',
+        similarWord: 'Subtracting numbers during maths class.'
+      }
+    },
+    {
+      word: 'triumph', icon: '🎉', hint: 'a great victory or achievement',
+      definition: 'A triumph is a great, noteworthy victory, achievement, or success that follows hard work or struggle.',
+      simplifiedMeaning: 'A big win.',
+      sentences: ['The underdog team\'s unexpected win was a magnificent triumph.', 'The players wept with joy celebrating their historic World Cup triumph.', 'Years of dedicated training culminated in an international triumph.'],
+      synonym: 'victory', antonym: 'defeat',
+      nonExamples: 'Losing a match in the final minute or failing to qualify is the opposite of a triumph.',
+      tier: 2, tierWhy: 'An evocative literary noun found across historical texts, journalism, and storytelling.',
+      distractors: {
+        close: 'The simple act of registering for a tournament entry.',
+        unrelated: 'A piece of sports equipment used to clean shoes.',
+        similarWord: 'A brass musical trumpet.'
+      }
+    }
+  ],
+  blue: [
+    {
+      word: 'infrastructure', icon: '🏗️', hint: 'basic facilities needed for society',
+      definition: 'Infrastructure refers to the basic physical systems and structures, such as roads, transport networks, and buildings, needed for a society or event to function.',
+      simplifiedMeaning: 'Boring but important parts of a city.',
+      sentences: ['Hosting the World Cup requires massive investment in local infrastructure.', 'The city improved its transport infrastructure by building new train lines.'],
+      synonym: 'framework', antonym: 'destruction',
+      nonExamples: 'The individual design of a player\'s jersey or the rules of the offside law are not infrastructure.',
+      connotation: 'Infrastructure sounds institutional and structural. It highlights planning and massive scale.',
+      etymology: '"Infra" means below or underneath in Latin. "Structure" means to build. So infrastructure is the hidden framework building underneath a city.',
+      affixesAndDerivations: '<strong>Root:</strong> structure (to build)<br><strong>Prefix:</strong> infra- (below)<br><strong>Derived forms:</strong> infrastructural (adjective), infrastructures (plural noun).',
+      tier: 3, tierWhy: 'A high-level political, economic, and civic word used to analyse societal development.',
+      distractors: {
+        close: 'The internal strategy system used by a coaching staff.',
+        unrelated: 'The individual medical health record of an elite athlete.',
+        similarWord: 'An instructor explaining a lesson inside a classroom.'
+      }
+    },
+    {
+      word: 'ambassador', icon: '🤝', hint: 'official representative sent abroad',
+      definition: 'An ambassador is an official representative sent by a country or organisation to act as a public face or promoter.',
+      simplifiedMeaning: 'Official promoter or rep.',
+      sentences: ['The retired football legend was appointed as a global World Cup ambassador.', 'Ambassadors travel internationally to promote unity and fair play.'],
+      synonym: 'representative', antonym: 'adversary',
+      nonExamples: 'A casual spectator buying a ticket or an unruly fan causing trouble is not acting as an ambassador.',
+      connotation: 'Ambassador carries a tone of dignity, leadership, and diplomacy.',
+      etymology: 'Derived from old Latin "ambactus" meaning a servant or messenger.',
+      affixesAndDerivations: '<strong>Suffix:</strong> -or (one who does an action)<br><strong>Derived forms:</strong> ambassadorial (adjective), ambassadorship (noun).',
+      tier: 3, tierWhy: 'A formal vocabulary word used in international relations, politics, and marketing.',
+      distractors: {
+        close: 'A private security officer working at a stadium gate.',
+        unrelated: 'A collection of statistics tracking player physical speed.',
+        similarWord: 'A hot amber flame burning inside a fire pit.'
+      }
+    },
+    {
+      word: 'controversial', icon: '🤨', hint: 'causing strong disagreement or debate',
+      definition: 'Controversial describes something that causes strong disagreement, heated discussion, or conflicting opinions among people.',
+      simplifiedMeaning: 'Causing arguments.',
+      sentences: ['The referee made a highly controversial decision to award a late penalty.', 'Using technology to review close goals remains controversial among older fans.'],
+      synonym: 'disputed', antonym: 'agreed',
+      nonExamples: 'A clear, obvious goal that everyone agrees on is completely undisputed, not controversial.',
+      connotation: 'Controversial sounds tense and critical. It hints at public debate and divided opinions.',
+      etymology: 'From Latin "contra" meaning against, and "vertere" meaning to turn.',
+      affixesAndDerivations: '<strong>Base word:</strong> controversy (noun)<br><strong>Suffix:</strong> -ial (forming adjectives of relation)<br><strong>Derived forms:</strong> controversially (adverb), controversies (plural noun).',
+      tier: 2, tierWhy: 'An essential academic adjective used across humanities, journalism, and essay writing.',
+      distractors: {
+        close: 'A friendly celebration shared by players after winning.',
+        unrelated: 'The specific length of a commercial half-time advertisement break.',
+        similarWord: 'A control system used to steer large remote planes.'
+      }
+    },
+    {
+      word: 'legacy', icon: '🌱', hint: 'something left behind for the future',
+      definition: 'A legacy is something handed down or left behind from the past that continues to benefit or impact the future.',
+      simplifiedMeaning: 'Good things someone leaves behind after they\'re gone.',
+      sentences: ['The tournament left a positive legacy of brand new sporting facilities.', 'The legendary coach leaves behind a legacy of integrity and teamwork.'],
+      synonym: 'heritage', antonym: 'temporary effect',
+      nonExamples: 'A cheer that lasts five seconds during a match is short-lived; it is not a legacy.',
+      connotation: 'Legacy carries an inspiring, forward-looking tone. It emphasises long-term value.',
+      etymology: 'From the Latin "legatus," meaning an envoy or person sent with a specific commission.',
+      affixesAndDerivations: '<strong>Root connection:</strong> Latin legare (to bequeath)<br><strong>Derived forms:</strong> legacies (plural noun). Often operates as a noun adjunct (e.g., "legacy project").',
+      tier: 2, tierWhy: 'An impactful abstract concept found frequently in historical analysis, biography writing, and sociology.',
+      distractors: {
+        close: 'The dynamic live score shown on a stadium screen.',
+        unrelated: 'The precise physical dimensions of a soccer field layout.',
+        similarWord: 'Legally binding papers signed inside a courtroom.'
+      }
+    },
+    {
+      word: 'glorious', icon: '🌟', hint: 'deserving great praise or honour',
+      definition: 'Glorious describes something that brings, is marked by, or is completely deserving of great praise, honour, splendour, or admiration.',
+      simplifiedMeaning: 'Very beautiful or wonderful.',
+      sentences: ['The captain hoisted the trophy after a glorious victory.', 'The fans celebrated a glorious moment in their nation\'s sporting history.'],
+      synonym: 'splendid', antonym: 'shameful',
+      nonExamples: 'A boring match filled with continuous fouls and uninspiring play is not glorious.',
+      connotation: 'Glorious is a highly positive, emotional, and grand adjective.',
+      etymology: 'From the Latin noun "gloria," which means fame, renown, praise, or high distinction.',
+      affixesAndDerivations: '<strong>Base noun:</strong> glory<br><strong>Suffix:</strong> -ous (full of)<br><strong>Derived forms:</strong> gloriously (adverb), gloriousness (noun), glorify (verb).',
+      tier: 2, tierWhy: 'An expressive descriptive word utilised heavily in classic literature, journalism, and dramatic writing.',
+      distractors: {
+        close: 'A fast sprint that ends in a painful ankle injury.',
+        unrelated: 'The dull grey color of concrete staircase stairs.',
+        similarWord: 'A sticky jar of sweet cooking syrup.'
+      }
+    }
+  ]
+};
+
+const groupMeta = {
+  red:    { name: 'Red Group',    label: 'early readers - 3 words',     bg: 'red-bg',    barClass: 'bar-red',    badgeClass: 'badge-red',    tabClass: 'tab-red'    },
+  yellow: { name: 'Yellow Group', label: 'developing readers - 3 words', bg: 'yellow-bg', barClass: 'bar-yellow', badgeClass: 'badge-yellow', tabClass: 'tab-yellow' },
+  green:  { name: 'Green Group',  label: 'confident readers - 5 words',  bg: 'green-bg',  barClass: 'bar-green',  badgeClass: 'badge-green',  tabClass: 'tab-green'  },
+  blue:   { name: 'Blue Group',   label: 'fluent readers - 5 words',     bg: 'blue-bg',   barClass: 'bar-blue',   badgeClass: 'badge-blue',   tabClass: 'tab-blue'   }
+};
+
+// ─── State ────────────────────────────────────────────────────────────────────
+
+let currentGroup        = 'red';
+let currentMode          = 'learn';
+let currentQuizQuestions = []; 
+let selectedAnswers      = {};  
+let checkedQuestions     = {};  
+let voices               = [];
+let activeSpeakBtn       = null;
+
+// ─── Speech ───────────────────────────────────────────────────────────────────
+
+function loadVoices() { voices = window.speechSynthesis.getVoices(); }
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+  loadVoices();
+}
+
+function getVoice() {
+  const william = voices.find(v => v.name.toLowerCase().includes('william'));
+  const natural = voices.find(v => /natural/i.test(v.name) && v.lang.startsWith('en'));
+  const english = voices.find(v => v.lang.startsWith('en-'));
+  return william || natural || english || null;
+}
+
+function speakText(text, btn) {
+  if (!('speechSynthesis' in window)) { alert('Read-aloud is not supported in this browser.'); return; }
+
+  if (activeSpeakBtn === btn) {
+    window.speechSynthesis.cancel();
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+  if (activeSpeakBtn) { activeSpeakBtn.classList.remove('speaking'); activeSpeakBtn = null; }
+
+  const ut  = new SpeechSynthesisUtterance(text);
+  const v    = getVoice();
+  const rate = parseFloat(document.getElementById('speedSelect').value) || 0.85;
+  if (v) ut.voice = v;
+  ut.rate = rate;
+
+  activeSpeakBtn = btn;
+  btn.classList.add('speaking');
+
+  ut.onend = ut.onerror = () => {
+    if (activeSpeakBtn === btn) { btn.classList.remove('speaking'); activeSpeakBtn = null; }
+  };
+
+  window.speechSynthesis.speak(ut);
+}
+
+function readSectionText(btn) { speakText(btn.dataset.text, btn); }
+
+function readOptionText(btn, e) {
+  e.stopPropagation();
+  speakText(btn.dataset.text, btn);
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function escAttr(str) {
+  return (str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+}
+
+function sectionReadBtn(text) {
+  return `<button class="sec-read-btn" data-text="${escAttr(text)}" onclick="readSectionText(this)" title="Read aloud">🔊</button>`;
+}
+
+function tierBadge(item) {
+  return `<div class="tier-row">
+    <span class="tier-badge tier-${item.tier}">Tier ${item.tier}</span>
+    <span class="tier-why">${item.tierWhy}</span>
+  </div>`;
+}
+
+// ─── Navigation ───────────────────────────────────────────────────────────────
+
+function showGroup(group) {
+  currentGroup = group;
+  window.speechSynthesis?.cancel();
+  activeSpeakBtn = null;
+
+  const meta = groupMeta[group];
+  document.getElementById('frontMenu').classList.add('hidden');
+  document.getElementById('groupView').classList.remove('hidden');
+
+  const bar = document.getElementById('topBar');
+  bar.className = 'group-top-bar ' + meta.barClass;
+
+  const badge = document.getElementById('groupBadge');
+  badge.textContent = meta.name;
+  badge.className   = 'group-badge ' + meta.badgeClass;
+
+  ['learnTab', 'quizTab'].forEach(id => {
+    const tab = document.getElementById(id);
+    tab.classList.remove('tab-red','tab-yellow','tab-green','tab-blue');
+    tab.classList.add(meta.tabClass);
+  });
+
+  switchMode('learn');
+}
+
+function backToMenu() {
+  window.speechSynthesis?.cancel();
+  activeSpeakBtn = null;
+  document.getElementById('groupView').classList.add('hidden');
+  document.getElementById('frontMenu').classList.remove('hidden');
+}
+
+function switchMode(mode) {
+  currentMode = mode;
+  window.speechSynthesis?.cancel();
+  activeSpeakBtn = null;
+
+  document.getElementById('learnTab').classList.toggle('active', mode === 'learn');
+  document.getElementById('quizTab') .classList.toggle('active', mode === 'quiz');
+  document.getElementById('learnPanel').classList.toggle('hidden', mode !== 'learn');
+  document.getElementById('quizPanel') .classList.toggle('hidden', mode !== 'quiz');
+
+  if (mode === 'learn') { renderGrid(); }
+  else                  { generateQuiz(); }
+}
+
+// ─── Learn mode ───────────────────────────────────────────────────────────────
+
+function renderGrid() {
+  const meta  = groupMeta[currentGroup];
+  const words = groupVocab[currentGroup];
+
+  document.getElementById('groupLabel').textContent = `${meta.name} - ${meta.label}`;
+
+  const grid = document.getElementById('vocabGrid');
+  grid.innerHTML = '';
+  words.forEach(item => {
+    const card = document.createElement('div');
+    card.className = `vocab-card ${meta.bg}`;
+    card.innerHTML = `
+      <div>
+        <div class="card-icon">${item.icon}</div>
+        <div class="card-word">${item.word}</div>
+      </div>
+      <div class="card-hint">${item.hint}</div>
+    `;
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.vocab-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      showDetail(item);
+    });
+    grid.appendChild(card);
+  });
+
+  document.getElementById('detailBox').classList.add('hidden');
+}
+
+function showDetail(item) {
+  const box = document.getElementById('detailBox');
+  
+  let html = `
+    <div class="detail-word-row">
+      <div class="detail-word">${item.icon} ${item.word}</div>
+      <div class="tier-section" style="margin-bottom: 0;">
+        ${tierBadge(item)}
+      </div>
+    </div>
+  `;
+
+  html += section('What it means (Full)', item.definition, item.definition);
+  html += section('Simplified Meaning', `<strong>${item.simplifiedMeaning}</strong>`, item.simplifiedMeaning);
+
+  if (currentGroup === 'red') {
+    html += exampleSection('Example', item.example)
+          + factSection('Did you know?', item.didYouKnow);
+
+  } else if (currentGroup === 'yellow') {
+    const allExamples = item.examples.join(' ');
+    html += multiExampleSection('Examples', item.examples, allExamples)
+          + section('Synonym (similar word)', item.synonym, `A synonym for ${item.word} is: ${item.synonym}`);
+
+  } else if (currentGroup === 'green') {
+    const allSentences = item.sentences.join(' ');
+    html += multiExampleSection('Example sentences', item.sentences, allSentences)
+          + section('Synonym (similar word)', item.synonym, `A synonym for ${item.word} is: ${item.synonym}`)
+          + section('Antonym (opposite)', item.antonym, `The antonym, or opposite, of ${item.word} is: ${item.antonym}`)
+          + section('Non-examples', item.nonExamples, item.nonExamples);
+
+  } else {
+    const allSentences = item.sentences.join(' ');
+    html += multiExampleSection('Example sentences', item.sentences, allSentences)
+          + section('Synonym (similar word)', item.synonym, `A synonym for ${item.word} is: ${item.synonym}`)
+          + section('Antonym (opposite)', item.antonym, `The antonym, or opposite, of ${item.word} is: ${item.antonym}`)
+          + section('Non-examples', item.nonExamples, item.nonExamples)
+          + section('Connotation', item.connotation, item.connotation)
+          + section('Word origin (etymology)', item.etymology, item.etymology)
+          + section('Affixes and Derivations', item.affixesAndDerivations, item.word + ' morphological variations.');
+  }
+
+  box.innerHTML = html;
+  box.classList.remove('hidden');
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function section(label, contentHTML, readText) {
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(readText)}
+    </div>
+    <div class="detail-content">${contentHTML}</div>
+  </div>`;
+}
+
+function exampleSection(label, text) {
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(text)}
+    </div>
+    <div class="example-box">${text}</div>
+  </div>`;
+}
+
+function factSection(label, text) {
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(text)}
+    </div>
+    <div class="fact-box">${text}</div>
+  </div>`;
+}
+
+function multiExampleSection(label, items, readText) {
+  const boxes = items.map(s => `<div class="example-box">${s}</div>`).join('');
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(readText)}
+    </div>
+    ${boxes}
+  </div>`;
+}
+
+// ─── Quiz Generator with Simplified Question Types ───────────────────────────────
+
+function generateQuiz() {
+  selectedAnswers      = {};
+  checkedQuestions     = {};
+  currentQuizQuestions = [];
+  window.speechSynthesis?.cancel();
+  activeSpeakBtn = null;
+
+  const words = groupVocab[currentGroup];
+
+  if (currentGroup === 'red') {
+    // RED GROUP: 2 Simple Formats Only (Meaning Lookups & Basic Context Matches)
+    words.forEach(item => {
+      // Type A: Simple Meaning Match
+      currentQuizQuestions.push({
+        type: 'meaning',
+        word: item.word,
+        questionText: `What is a <strong>${item.word}</strong>?`,
+        options: shuffleArray([
+          { text: item.simplifiedMeaning, isCorrect: true },
+          { text: item.distractors.close, isCorrect: false },
+          { text: item.distractors.unrelated, isCorrect: false }
+        ]),
+        correctText: item.simplifiedMeaning
+      });
+
+      // Type B: Simple Context Fill
+      let sentenceText = "";
+      if(item.word === 'stadium') sentenceText = "The teams ran onto the pitch inside the giant ________.";
+      if(item.word === 'match') sentenceText = "We sat down together to watch the football ________.";
+      if(item.word === 'trophy') sentenceText = "The winning captain held up the shiny gold ________.";
+
+      currentQuizQuestions.push({
+        type: 'cloze',
+        word: item.word,
+        questionText: `Find the missing word:<br><br>"${sentenceText}"`,
+        options: shuffleArray([
+          { text: item.word, isCorrect: true },
+          { text: words.find(w => w.word !== item.word).word, isCorrect: false },
+          { text: words.find(w => w.word !== item.word && w.word !== words.find(x => x.word !== item.word).word)?.word || 'ball', isCorrect: false }
+        ]),
+        correctText: item.word
+      });
+    });
+
+  } else if (currentGroup === 'yellow') {
+    // YELLOW GROUP: Definition, Correct Sentence Use, and Identification
+    words.forEach(item => {
+      // 1. Definition Matching
+      currentQuizQuestions.push({
+        type: 'meaning',
+        word: item.word,
+        questionText: `Which definition matches the word <strong>"${item.word}"</strong>?`,
+        options: shuffleArray([
+          { text: item.definition, isCorrect: true },
+          { text: item.distractors.close, isCorrect: false },
+          { text: item.distractors.unrelated, isCorrect: false },
+          { text: item.distractors.similarWord, isCorrect: false }
+        ]),
+        correctText: item.definition
+      });
+
+      // 2. Which Sentence IS Used Correctly
+      let correctSentence = item.examples[0];
+      let brokenSentence = "";
+      if(item.word === 'tournament') brokenSentence = "I sharpened my tournament before cutting the paper strips.";
+      if(item.word === 'spectator') brokenSentence = "The head spectator kicked a brilliant goal past the keeper.";
+      if(item.word === 'represent') brokenSentence = "Please pack and represent your suitcase for the flight home.";
+
+      currentQuizQuestions.push({
+        type: 'correct_use',
+        word: item.word,
+        questionText: `Identify the sentence where <strong>"${item.word}"</strong> is used CORRECTLY:`,
+        options: shuffleArray([
+          { text: correctSentence, isCorrect: true },
+          { text: brokenSentence, isCorrect: false },
+          { text: "The team wore matching blue socks to celebrate their run.", isCorrect: false },
+          { text: "He forgot his boots and could not buy any food.", isCorrect: false }
+        ]),
+        correctText: correctSentence
+      });
+    });
+
+  } else if (currentGroup === 'green') {
+    // GREEN GROUP: Simplified Definition and Basic Cloze
+    words.forEach(item => {
+      // 1. Definition Match
+      currentQuizQuestions.push({
+        type: 'meaning',
+        word: item.word,
+        questionText: `What is the meaning of the word <strong>"${item.word}"</strong>?`,
+        options: shuffleArray([
+          { text: item.definition, isCorrect: true },
+          { text: item.distractors.close, isCorrect: false },
+          { text: item.distractors.unrelated, isCorrect: false },
+          { text: item.distractors.similarWord, isCorrect: false }
+        ]),
+        correctText: item.definition
+      });
+
+      // 2. Simple Cloze Focus
+      let baseSentence = item.sentences[0].replace(new RegExp(item.word + '[a-z]*', 'gi'), "________");
+      currentQuizQuestions.push({
+        type: 'cloze',
+        word: item.word,
+        questionText: `Choose the correct word to finish the sentence:<br><br>"${baseSentence}"`,
+        options: shuffleArray([
+          { text: item.word, isCorrect: true },
+          { text: item.distractors.close, isCorrect: false },
+          { text: item.distractors.unrelated, isCorrect: false },
+          { text: 'referee', isCorrect: false }
+        ]),
+        correctText: item.word
+      });
+    });
+
+  } else if (currentGroup === 'blue') {
+    // BLUE GROUP: Clear Definitions and Sentence Context (Removed complex morphology)
+    words.forEach(item => {
+      // 1. Definition Match
+      currentQuizQuestions.push({
+        type: 'meaning',
+        word: item.word,
+        questionText: `Which definition best describes <strong>"${item.word}"</strong>?`,
+        options: shuffleArray([
+          { text: item.definition, isCorrect: true },
+          { text: item.distractors.close, isCorrect: false },
+          { text: item.distractors.unrelated, isCorrect: false },
+          { text: item.distractors.similarWord, isCorrect: false }
+        ]),
+        correctText: item.definition
+      });
+
+      // 2. Contextual Cloze Passages
+      let blueSentence = item.sentences[0].replace(new RegExp(item.word + '[a-z]*', 'gi'), "________");
+      currentQuizQuestions.push({
+        type: 'cloze',
+        word: item.word,
+        questionText: `Which word correctly fills the blank space?<br><br>"${blueSentence}"`,
+        options: shuffleArray([
+          { text: item.word, isCorrect: true },
+          { text: item.distractors.close, isCorrect: false },
+          { text: item.distractors.unrelated, isCorrect: false },
+          { text: item.distractors.similarWord, isCorrect: false }
+        ]),
+        correctText: item.word
+      });
+    });
+  }
+
+  // Shuffle all compiled question objects completely
+  shuffleArray(currentQuizQuestions);
+
+  const progress = document.getElementById('quizProgress');
+  progress.innerHTML = currentQuizQuestions.map((_, i) => `<div class="progress-dot unanswered" id="dot-${i}"></div>`).join('');
+
+  renderQuizUI();
+}
+
+function renderQuizUI() {
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+
+  currentQuizQuestions.forEach((qObj, qIdx) => {
+    const card = document.createElement('div');
+    card.className = 'quiz-card';
+    card.id = `qcard-${qIdx}`;
+
+    let html = `
+      <div class="quiz-q-number">Question ${qIdx + 1} of ${currentQuizQuestions.length}</div>
+      <div class="quiz-q-row">
+        <div class="quiz-q-text">${qObj.questionText}</div>
+        <button class="q-read-btn" data-text="${escAttr(qObj.questionText.replace(/<[^>]*>/g, ''))}" onclick="readSectionText(this)" title="Read question">🔊</button>
+      </div>
+      <div class="quiz-options-grid" id="opts-grid-${qIdx}">
+    `;
+
+    qObj.options.forEach((opt, oIdx) => {
+      html += `
+        <div class="quiz-opt-row" 
+             id="optrow-${qIdx}-${oIdx}"
+             onclick="selectOption(${qIdx}, ${oIdx}, '${escAttr(opt.text)}')">
+          <div class="opt-main">${opt.text}</div>
+          <div class="opt-speaker-zone">
+            <button class="opt-read-btn" data-text="${escAttr(opt.text)}" onclick="readOptionText(this, event)" title="Read option">🔊</button>
+          </div>
+        </div>
+      `;
+    });
+
+    html += `
+      </div>
+      <div class="card-actions">
+        <button class="card-btn check-btn" id="check-btn-${qIdx}" onclick="checkCardAnswer(${qIdx})" disabled>Check Answer</button>
+        <button class="card-btn retry-btn hidden" id="retry-btn-${qIdx}" onclick="retryCard(${qIdx})">Retry</button>
+      </div>
+      <div id="feedback-${qIdx}"></div>
+    `;
+    card.innerHTML = html;
+    container.appendChild(card);
+  });
+}
+
+function selectOption(qIdx, oIdx) {
+  if (checkedQuestions[qIdx]) return;
+
+  const grid = document.getElementById(`opts-grid-${qIdx}`);
+  grid.querySelectorAll('.quiz-opt-row').forEach(row => row.classList.remove('selected'));
+
+  const selectedRow = document.getElementById(`optrow-${qIdx}-${oIdx}`);
+  selectedRow.classList.add('selected');
+
+  selectedAnswers[qIdx] = oIdx;
+  document.getElementById(`check-btn-${qIdx}`).disabled = false;
+
+  const dot = document.getElementById(`dot-${qIdx}`);
+  if (dot && dot.className.includes('unanswered')) {
+    dot.className = 'progress-dot answered';
+  }
+}
+
+function checkCardAnswer(qIdx) {
+  if (checkedQuestions[qIdx]) return;
+  window.speechSynthesis?.cancel();
+
+  const qObj = currentQuizQuestions[qIdx];
+  const chosenOptIdx = selectedAnswers[qIdx];
+  const chosenOpt = qObj.options[chosenOptIdx];
+  
+  // Strict logical check for correctness
+  const isCorrect = chosenOpt.text === qObj.correctText;
+
+  checkedQuestions[qIdx] = true;
+  document.getElementById(`check-btn-${qIdx}`).classList.add('hidden');
+  document.getElementById(`retry-btn-${qIdx}`).classList.remove('hidden');
+
+  const grid = document.getElementById(`opts-grid-${qIdx}`);
+  grid.querySelectorAll('.quiz-opt-row').forEach((row, oIdx) => {
+    row.classList.add('disabled');
+    const rowOpt = qObj.options[oIdx];
+    
+    if (rowOpt.text === qObj.correctText) {
+      row.classList.add('correct');
+    } else if (oIdx === chosenOptIdx && !isCorrect) {
+      row.classList.add('incorrect');
+    } else {
+      row.classList.add('dimmed');
+    }
+  });
+
+  const fbContainer = document.getElementById(`feedback-${qIdx}`);
+  const fb = document.createElement('div');
+  fb.className = `quiz-feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+  fb.textContent = isCorrect ? '✓ Correct!' : '✗ Try again next time!';
+  fbContainer.appendChild(fb);
+
+  const dot = document.getElementById(`dot-${qIdx}`);
+  if (dot) {
+    dot.className = `progress-dot ${isCorrect ? 'correct' : 'incorrect'}`;
+  }
+}
+
+function retryCard(qIdx) {
+  window.speechSynthesis?.cancel();
+  
+  delete selectedAnswers[qIdx];
+  delete checkedQuestions[qIdx];
+
+  const qObj = currentQuizQuestions[qIdx];
+  shuffleArray(qObj.options);
+
+  const dot = document.getElementById(`dot-${qIdx}`);
+  if (dot) dot.className = 'progress-dot unanswered';
+
+  const card = document.getElementById(`qcard-${qIdx}`);
+  const grid = card.querySelector('.quiz-options-grid');
+  grid.innerHTML = '';
+
+  qObj.options.forEach((opt, oIdx) => {
+    const row = document.createElement('div');
+    row.className = 'quiz-opt-row';
+    row.id = `optrow-${qIdx}-${oIdx}`;
+    row.onclick = () => selectOption(qIdx, oIdx, escAttr(opt.text));
+    row.innerHTML = `
+      <div class="opt-main">${opt.text}</div>
+      <div class="opt-speaker-zone">
+        <button class="opt-read-btn" data-text="${escAttr(opt.text)}" onclick="readOptionText(this, event)" title="Read option">🔊</button>
+      </div>
+    `;
+    grid.appendChild(row);
+  });
+
+  document.getElementById(`check-btn-${qIdx}`).classList.remove('hidden');
+  document.getElementById(`check-btn-${qIdx}`).disabled = true;
+  document.getElementById(`retry-btn-${qIdx}`).classList.add('hidden');
+  document.getElementById(`feedback-${qIdx}`).innerHTML = '';
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+</script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='vocab-world-cup-10';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-vocab.js"></script>
+</body>
+</html>

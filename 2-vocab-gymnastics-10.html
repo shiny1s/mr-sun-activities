@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gymnastics: Vocabulary Learning</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Helvetica Neue', Helvetica, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: #f4f4f9;
+      padding: 20px;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* ══════════════════════════════════════════
+       FRONT MENU
+       ══════════════════════════════════════════ */
+    .front-menu {
+      background: white;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    .front-menu h1 { font-size: 2.2rem; color: #222; margin-top: 0; margin-bottom: 10px; }
+    .front-menu > p { font-size: 1.1rem; color: #666; margin-bottom: 35px; }
+
+    .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
+
+    .menu-button {
+      padding: 30px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    .menu-button:hover  { transform: translateY(-4px); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
+    .menu-button:active { transform: translateY(-2px); }
+
+    .red-btn          { background-color: #e53935; }
+    .red-btn:hover    { background-color: #c62828; }
+    .yellow-btn       { background-color: #ffb300; color: #333; }
+    .yellow-btn:hover { background-color: #ff9800; }
+    .green-btn        { background-color: #43a047; }
+    .green-btn:hover  { background-color: #2e7d32; }
+    .blue-btn         { background-color: #1e88e5; }
+    .blue-btn:hover   { background-color: #1565c0; }
+
+    /* ══════════════════════════════════════════
+       GROUP VIEW SHELL
+       ══════════════════════════════════════════ */
+    #groupView { max-width: 900px; margin: 0 auto; }
+
+    .group-top-bar { height: 12px; border-radius: 8px 8px 0 0; }
+    .bar-red    { background: #e53935; }
+    .bar-yellow { background: #ffb300; }
+    .bar-green  { background: #43a047; }
+    .bar-blue   { background: #1e88e5; }
+
+    .group-header {
+      background: white;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .back-btn {
+      background: #f0f0f0;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      color: #444;
+      transition: background 0.2s;
+      font-family: inherit;
+    }
+    .back-btn:hover { background: #e0e0e0; }
+
+    .group-badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      color: white;
+    }
+    .badge-red    { background: #e53935; }
+    .badge-yellow { background: #ffb300; color: #333; }
+    .badge-green  { background: #43a047; }
+    .badge-blue   { background: #1e88e5; }
+
+    .speed-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.85rem;
+      color: #555;
+      font-weight: 500;
+    }
+    .speed-row select {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 0.85rem;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    /* ── Mode tabs ── */
+    .mode-tabs {
+      display: flex;
+      background: #f8f8f8;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    .mode-tab {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      color: #888;
+      transition: all 0.15s;
+      font-family: inherit;
+      border-bottom: 3px solid transparent;
+    }
+    .mode-tab:hover { color: #444; background: rgba(0,0,0,0.03); }
+    .mode-tab.active { font-weight: 700; border-bottom-color: currentColor; }
+    .mode-tab.active.tab-red    { color: #e53935; }
+    .mode-tab.active.tab-yellow { color: #c48800; }
+    .mode-tab.active.tab-green  { color: #2e7d32; }
+    .mode-tab.active.tab-blue   { color: #1565c0; }
+
+    /* ══════════════════════════════════════════
+       LEARN PANEL
+       ══════════════════════════════════════════ */
+    .learn-panel {
+      background: white;
+      padding: 24px;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .group-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #aaa;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .vocab-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 2rem;
+    }
+
+    .vocab-card {
+      padding: 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      border: 2px solid transparent;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      user-select: none;
+    }
+    .vocab-card:hover   { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .vocab-card.selected { border-color: #555; box-shadow: 0 0 0 3px rgba(0,0,0,0.07); }
+
+    .vocab-card.red-bg    { background: #FEE8E8; }
+    .vocab-card.yellow-bg { background: #FDF4E6; }
+    .vocab-card.green-bg  { background: #EDF7EF; }
+    .vocab-card.blue-bg   { background: #EEF4FD; }
+
+    .card-icon { font-size: 26px; margin-bottom: 6px; line-height: 1; }
+    .card-word { font-size: 15px; font-weight: 600; color: #222; }
+    .card-hint { font-size: 11px; color: #777; margin-top: 4px; }
+
+    /* ── Detail box ── */
+    .detail-box {
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 1.5rem 1.75rem;
+      border: 1px solid #e8e8e8;
+    }
+    .detail-box.hidden { display: none; }
+
+    .detail-word-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 1.25rem;
+    }
+
+    .detail-word { font-size: 26px; font-weight: 700; color: #111; }
+
+    .detail-section { margin-bottom: 1.25rem; }
+    .detail-section:last-child { margin-bottom: 0; }
+
+    .detail-label-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 0.45rem;
+    }
+    .detail-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #bbb;
+      font-weight: 700;
+    }
+
+    .sec-read-btn {
+      background: none;
+      border: 1px solid #ddd;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      font-size: 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      padding: 0;
+      flex-shrink: 0;
+      color: #888;
+    }
+    .sec-read-btn:hover   { background: #f0f0f0; border-color: #999; color: #333; }
+    .sec-read-btn.speaking { background: #333; border-color: #333; color: white; }
+
+    .detail-content { font-size: 15px; line-height: 1.75; color: #444; }
+
+    .example-box {
+      background: white;
+      border-left: 3px solid #378ADD;
+      padding: 9px 13px;
+      margin: 6px 0;
+      font-size: 14px;
+      color: #555;
+      border-radius: 0 6px 6px 0;
+      line-height: 1.6;
+      font-style: italic;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .fact-box {
+      background: white;
+      border-left: 3px solid #D69E2E;
+      padding: 9px 13px;
+      margin: 6px 0;
+      font-size: 14px;
+      color: #555;
+      border-radius: 0 6px 6px 0;
+      line-height: 1.6;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .tier-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .tier-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .tier-1 { background: #C6F6D5; color: #22543D; }
+    .tier-2 { background: #FEEBC8; color: #7B341E; }
+    .tier-3 { background: #E9D8FD; color: #44337A; }
+    .tier-why { font-size: 13px; color: #777; }
+
+    /* ══════════════════════════════════════════
+       QUIZ PANEL
+       ══════════════════════════════════════════ */
+    .quiz-panel {
+      background: white;
+      padding: 24px;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .quiz-intro-text { font-size: 14px; color: #888; margin-bottom: 1.25rem; }
+
+    .quiz-progress { display: flex; gap: 7px; margin-bottom: 1.75rem; flex-wrap: wrap; align-items: center; }
+    .progress-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .progress-dot.unanswered { background: #e0e0e0; }
+    .progress-dot.answered { background: #b0bec5; }
+    .progress-dot.correct   { background: #43a047; transform: scale(1.15); }
+    .progress-dot.incorrect { background: #e53935; transform: scale(1.15); }
+
+    .quiz-card {
+      background: #fafafa;
+      border-radius: 14px;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 1.75rem;
+      border: 1.5px solid #ececec;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .quiz-q-number {
+      font-size: 11px;
+      font-weight: 700;
+      color: #bbb;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .quiz-q-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 1.25rem;
+    }
+    .quiz-q-text {
+      flex: 1;
+      font-size: 17px;
+      font-weight: 600;
+      color: #111;
+      line-height: 1.4;
+    }
+    .q-read-btn {
+      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1.5px solid #ddd;
+      background: white;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      margin-top: 2px;
+    }
+    .q-read-btn:hover { border-color: #aaa; background: #f5f5f5; }
+    .q-read-btn.speaking { background: #333; border-color: #333; color: white; }
+
+    .quiz-options-grid { display: flex; flex-direction: column; gap: 10px; }
+
+    .quiz-opt-row {
+      display: flex;
+      align-items: stretch;
+      border: 2px solid #e2e2e2;
+      border-radius: 10px;
+      background: white;
+      overflow: hidden;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+    }
+    .quiz-opt-row:not(.disabled):hover { border-color: #378ADD; box-shadow: 0 0 0 3px rgba(55,138,221,0.1); }
+    .quiz-opt-row.selected { border-color: #1e88e5; background: #e3f2fd; }
+    .quiz-opt-row.correct   { border-color: #43a047; background: #f0fff4; cursor: default; }
+    .quiz-opt-row.incorrect { border-color: #e53935; background: #fff5f5; cursor: default; }
+    .quiz-opt-row.dimmed    { border-color: #eee;    background: #fafafa; cursor: default; }
+
+    .opt-main {
+      flex: 1;
+      padding: 12px 15px;
+      font-size: 14px;
+      line-height: 1.55;
+      color: #444;
+      user-select: none;
+    }
+    .quiz-opt-row.correct  .opt-main { color: #1b5e20; font-weight: 500; }
+    .quiz-opt-row.incorrect .opt-main { color: #b71c1c; }
+    .quiz-opt-row.dimmed   .opt-main { color: #c8c8c8; }
+
+    .opt-speaker-zone {
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      border-left: 1.5px solid #ececec;
+      flex-shrink: 0;
+    }
+    .quiz-opt-row.correct   .opt-speaker-zone { border-left-color: #b2dfdb; }
+    .quiz-opt-row.incorrect .opt-speaker-zone { border-left-color: #ffccbc; }
+    .quiz-opt-row.dimmed    .opt-speaker-zone { border-left-color: #eee; }
+
+    .opt-read-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      padding: 5px;
+      border-radius: 6px;
+      color: #aaa;
+      transition: color 0.15s, background 0.15s;
+      line-height: 1;
+    }
+    .opt-read-btn:hover { color: #444; background: #f0f0f0; }
+    .quiz-opt-row.dimmed .opt-read-btn { color: #ddd; }
+    .opt-read-btn.speaking { color: #1e88e5; }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .card-btn {
+      padding: 8px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    .card-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .check-btn { background: #43a047; color: white; }
+    .check-btn:hover:not(:disabled) { background: #2e7d32; }
+    .retry-btn { background: #757575; color: white; }
+    .retry-btn:hover:not(:disabled) { background: #616161; }
+
+    .quiz-feedback {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.5;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .quiz-feedback.correct   { background: #e8f5e9; color: #1b5e20; }
+    .quiz-feedback.incorrect { background: #ffebee; color: #b71c1c; }
+
+    .hidden { display: none; }
+
+    @media (max-width: 600px) {
+      .menu-grid { grid-template-columns: 1fr 1fr; }
+      .menu-button { padding: 25px 15px; font-size: 1.1rem; }
+      .front-menu { padding: 30px 20px; }
+      .front-menu h1 { font-size: 1.8rem; }
+      .group-header { gap: 8px; }
+      body { padding: 10px; }
+    }
+  </style>
+    <style>/* wide layout: fill the embed. Colour chooser = row of 4 on wide screens, 2x2 otherwise (never 3+1) */
+    @media screen { .front-menu, .page, .global-controls, #groupView { max-width: none !important; } }
+    .menu-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    @media (min-width: 900px) { .menu-grid { grid-template-columns: repeat(4, 1fr) !important; } }
+    </style>
+</head>
+<body>
+
+<!-- ══ FRONT MENU ══════════════════════════════════════ -->
+<div id="frontMenu" class="front-menu">
+  <h1>🤸 Gymnastics: Vocabulary Learning</h1>
+  <p>Choose your reading group</p>
+  <div class="menu-grid">
+    <button class="menu-button red-btn"    onclick="showGroup('red')">Red Group</button>
+    <button class="menu-button yellow-btn" onclick="showGroup('yellow')">Yellow Group</button>
+    <button class="menu-button green-btn"  onclick="showGroup('green')">Green Group</button>
+    <button class="menu-button blue-btn"   onclick="showGroup('blue')">Blue Group</button>
+  </div>
+</div>
+
+<!-- ══ GROUP VIEW ══════════════════════════════════════ -->
+<div id="groupView" class="hidden">
+  <div class="group-top-bar" id="topBar"></div>
+
+  <div class="group-header">
+    <button class="back-btn" onclick="backToMenu()">← Back to groups</button>
+    <span class="group-badge" id="groupBadge"></span>
+    <div class="speed-row">
+      <label for="speedSelect">🗣️ Speed:</label>
+      <select id="speedSelect">
+        <option value="0.7">0.7× (very slow)</option>
+        <option value="0.85" selected>0.85× (slow)</option>
+        <option value="1.0">1.0× (normal)</option>
+        <option value="1.15">1.15× (quick)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="mode-tabs">
+    <button class="mode-tab active" id="learnTab" onclick="switchMode('learn')">Learn vocabulary</button>
+    <button class="mode-tab"        id="quizTab"  onclick="switchMode('quiz')">Test yourself</button>
+  </div>
+
+  <!-- Learn panel -->
+  <div class="learn-panel" id="learnPanel">
+    <div class="group-label" id="groupLabel"></div>
+    <div class="vocab-grid"  id="vocabGrid"></div>
+    <div class="detail-box hidden" id="detailBox"></div>
+  </div>
+
+  <!-- Quiz panel -->
+  <div class="quiz-panel hidden" id="quizPanel">
+    <p class="quiz-intro-text">Answer the questions below. Check or retry each question as you go!</p>
+    <div class="quiz-progress" id="quizProgress"></div>
+    <div id="quizContainer"></div>
+  </div>
+</div>
+
+<script>
+// ─── Vocabulary data ──────────────────────────────────────────────────────────
+
+const groupVocab = {
+  red: [
+    {
+      word: 'mat', icon: '🟦', hint: 'soft pad on the floor',
+      definition: 'A mat is a thick, soft pad on the floor that keeps you safe when you land or roll.',
+      simplifiedMeaning: 'A soft safety pad for landing.',
+      pronunciationBreakdown: 'MAT',
+      example: 'I rolled across the soft blue mat.',
+      didYouKnow: 'Gym mats have thick foam inside to protect your knees and feet!',
+      tier: 1, tierWhy: 'A basic word for safety equipment in the gym.',
+      distractors: {
+        close: 'A wooden park bench.',
+        unrelated: 'A metal water bottle.'
+      }
+    },
+    {
+      word: 'beam', icon: '🪵', hint: 'long narrow bar to balance on',
+      definition: 'A balance beam is a long, narrow wooden bar raised off the floor that gymnasts walk and turn on.',
+      simplifiedMeaning: 'A high, narrow bar for balancing.',
+      pronunciationBreakdown: 'BEEM',
+      example: 'She held her arms out wide to walk along the beam.',
+      didYouKnow: 'A real gymnastics balance beam is only 10 centimetres wide!',
+      tier: 1, tierWhy: 'A basic word for a common piece of gym equipment.',
+      distractors: {
+        close: 'A skipping rope.',
+        unrelated: 'A pair of running shoes.'
+      }
+    },
+    {
+      word: 'salto', icon: '🔄', hint: 'a flip in the air without hands',
+      definition: 'A salto is a complete flip in the air where your hands do not touch the ground.',
+      simplifiedMeaning: 'A flip in the air without hands.',
+      pronunciationBreakdown: 'SAL-toe',
+      example: 'The crowd cheered when he did a backward salto.',
+      didYouKnow: 'Salto is the special gym word for a flip or somersault!',
+      tier: 3, tierWhy: 'A gymnastics word for a flip.',
+      distractors: {
+        close: 'A simple handstand.',
+        unrelated: 'Taking a deep breath.'
+      }
+    }
+  ],
+  yellow: [
+    {
+      word: 'apparatus', icon: '🤸', hint: 'big equipment used for gymnastics',
+      definition: 'An apparatus is a big piece of equipment that you use to practise gymnastics skills.',
+      simplifiedMeaning: 'The big equipment used in the gym.',
+      pronunciationBreakdown: 'ap-uh-RAH-tuhs',
+      examples: ['The uneven bars are my favourite gymnastics apparatus.', 'We move to a new apparatus after our warm up.'],
+      synonym: 'equipment',
+      tier: 3, tierWhy: 'A word used to group the different stations in a gym.',
+      distractors: {
+        close: 'The sports uniform worn by athletes.',
+        unrelated: 'A clipboard used by a coach.',
+        similarWord: 'A shiny red apple.'
+      }
+    },
+    {
+      word: 'dismount', icon: '🛬', hint: 'how you jump off equipment safely',
+      definition: 'A dismount is the final skill you do to jump off a piece of equipment and land on the floor.',
+      simplifiedMeaning: 'The skill used to get off equipment.',
+      pronunciationBreakdown: 'DIS-mount',
+      examples: ['She did a neat flip as her dismount from the beam.', 'Land on two feet to finish your dismount safely.'],
+      synonym: 'exit jump',
+      tier: 2, tierWhy: 'A useful word for learning how to leave gym equipment.',
+      distractors: {
+        close: 'The first jump used to get up on a bar.',
+        unrelated: 'White chalk powder used for grip.',
+        similarWord: 'A tall mountain peak.'
+      }
+    },
+    {
+      word: 'coordinate', icon: '🧠', hint: 'make body parts work together smoothly',
+      definition: 'To coordinate means to make different parts of your body move together smoothly and easily.',
+      simplifiedMeaning: 'Move body parts together smoothly.',
+      pronunciationBreakdown: 'co-OR-di-nayt',
+      examples: ['You must coordinate your arms and legs to swing on the bars.', 'Gymnasts coordinate their movements to twist in the air.'],
+      synonym: 'match together',
+      tier: 2, tierWhy: 'A helpful word for describing how our body moves.',
+      distractors: {
+        close: 'Screaming loudly during a fast game.',
+        unrelated: 'Cleaning your trophy after a win.',
+        similarWord: 'A piece of colourful wool.'
+      }
+    }
+  ],
+  green: [
+    {
+      word: 'flexibility', icon: '🧘', hint: 'being able to bend and stretch easily',
+      definition: 'Flexibility is how well your muscles and joints can bend and stretch without hurting.',
+      simplifiedMeaning: 'Bending and stretching easily.',
+      pronunciationBreakdown: 'flek-suh-BIL-uh-tee',
+      sentences: ['Daily stretching helps gymnasts keep their amazing flexibility.', 'You need good shoulder flexibility to do a proper handstand.', 'Doing a perfect split takes a lot of leg flexibility.'],
+      synonym: 'bendi-ness', antonym: 'stiffness',
+      nonExamples: 'Having tight legs that stop you from touching your toes is a lack of flexibility.',
+      tier: 3, tierWhy: 'A standard health word for describing body movement.',
+      distractors: {
+        close: 'How strong your arm muscles are.',
+        unrelated: 'The bright colours on a gym leotard.',
+        similarWord: 'A small flickering light.'
+      }
+    },
+    {
+      word: 'execution', icon: '🎯', hint: 'how neatly you perform a skill',
+      definition: 'Execution is how cleanly and neatly you do a skill from start to finish.',
+      simplifiedMeaning: 'How neatly you do a skill.',
+      pronunciationBreakdown: 'ek-suh-KYOO-shun',
+      sentences: ['The coach praised her neat execution on the vault.', 'Keeping your legs straight shows good execution.', 'Neat execution is just as important as doing hard tricks.'],
+      synonym: 'neatness', antonym: 'messiness',
+      nonExamples: 'Bending your knees and landing with a messy fall lacks good execution.',
+      tier: 2, tierWhy: 'A word used to score how well an activity is completed.',
+      distractors: {
+        close: 'The exact height of a big safety mat.',
+        unrelated: 'The metal springs inside a springboard.',
+        similarWord: 'An exciting family holiday.'
+      }
+    },
+    {
+      word: 'momentum', icon: '⚡', hint: 'the speed you get from moving',
+      definition: 'Momentum is the movement power you build up as your body moves forward or spins.',
+      simplifiedMeaning: 'Speed and power built up by moving.',
+      pronunciationBreakdown: 'mo-MEN-tum',
+      sentences: ['Run fast down the track to build momentum for your vault.', 'If you lose your momentum, you will stop swinging on the bars.', 'Use your swinging momentum to help you flip higher.'],
+      synonym: 'driving power', antonym: 'stopping still',
+      nonExamples: 'Standing perfectly still on the floor creates zero momentum.',
+      tier: 3, tierWhy: 'A science word that explains how things move.',
+      distractors: {
+        close: 'The exact weight of a wooden balance beam.',
+        unrelated: 'A soft shoe worn for special dances.',
+        similarWord: 'A brief minute on the clock.'
+      }
+    },
+    {
+      word: 'dedication', icon: '❤️', hint: 'working hard and not giving up',
+      definition: 'Dedication means trying your hardest and practising a lot, even when things get difficult.',
+      simplifiedMeaning: 'Working hard and not giving up.',
+      pronunciationBreakdown: 'ded-uh-KAY-shun',
+      sentences: ['Learning a new flip takes a lot of practice and dedication.', 'Her dedication showed when she kept trying after a messy fall.', 'Coaches love to see dedication at every single practice.'],
+      synonym: 'hard work', antonym: 'giving up quickly',
+      nonExamples: 'Staying home from practice because you want to watch TV shows a lack of dedication.',
+      tier: 2, tierWhy: 'A word for showing strong focus and effort.',
+      distractors: {
+        close: 'The cost of buying a new gym shirt.',
+        unrelated: 'The safety poster on the gym wall.',
+        similarWord: 'Doing hard sums in maths class.'
+      }
+    },
+    {
+      word: 'sequence', icon: '🔢', hint: 'putting actions in a set order',
+      definition: 'A sequence is a list of gymnastics skills done one after another in a set order.',
+      simplifiedMeaning: 'Skills done in a set order.',
+      pronunciationBreakdown: 'SEE-kwens',
+      sentences: ['My floor routine has a fun sequence of jumps and rolls.', 'You must remember the exact sequence of moves for the contest.', 'A smooth sequence means moving easily from a cartwheel into a roll.'],
+      synonym: 'set order', antonym: 'mixed up jumble',
+      nonExamples: 'Doing random moves on the spot without any plan is not a sequence.',
+      tier: 2, tierWhy: 'A helpful word for ordering things in writing, numbers, or actions.',
+      distractors: {
+        close: 'The loud music playing during gym practice.',
+        unrelated: 'The spray used to clean the plastic mats.',
+        similarWord: 'A shiny round token on a dress.'
+      }
+    }
+  ],
+  blue: [
+    {
+      word: 'biomechanics', icon: '🤖', hint: 'the science of how bodies move',
+      definition: 'Biomechanics is the science study of how our muscles, bones, and forces work together when we move.',
+      simplifiedMeaning: 'The science of how our bodies move.',
+      pronunciationBreakdown: 'by-oh-muh-KAN-iks',
+      sentences: ['Coaches use biomechanics to help us flip faster and safer.', 'Understanding biomechanics helps people design better springboards.'],
+      synonym: 'movement science', antonym: 'sitting still',
+      nonExamples: 'The price of a gym ticket or the colour of a mat has nothing to do with biomechanics.',
+      connotation: 'A scientific word for breaking down movement.',
+      etymology: '"Bio" means life and "mechanics" is about how things move.',
+      affixesAndDerivations: '<strong>Root:</strong> mechanic (moving keys)<br><strong>Prefix:</strong> bio- (living things)',
+      tier: 3, tierWhy: 'An advanced science word for human movement.',
+      distractors: {
+        close: 'The score given by a gymnastics judge.',
+        unrelated: 'The healthy food an athlete eats for lunch.',
+        similarWord: 'A library book about wild green plants.'
+      }
+    },
+    {
+      word: 'proprioception', icon: '🧭', hint: 'knowing where your body parts are',
+      definition: 'Proprioception is your brain automatically knowing exactly where your arms and legs are without you looking at them.',
+      simplifiedMeaning: 'Knowing where your body is without looking.',
+      pronunciationBreakdown: 'pro-pree-oh-SEP-shun',
+      sentences: ['Gymnasts use proprioception to know when to open up from a flip.', 'Spinning around fast in the air takes great proprioception.'],
+      synonym: 'body awareness', antonym: 'no feeling',
+      nonExamples: 'Looking at a wall map or using a wooden ruler does not use your internal proprioception.',
+      connotation: 'A special brain and muscle awareness word.',
+      etymology: 'Comes from a word meaning "one\'s own feeling".',
+      affixesAndDerivations: '<strong>Root:</strong> perception (sensing things)',
+      tier: 3, tierWhy: 'A technical word for how our senses and brain work.',
+      distractors: {
+        close: 'Feeling a bit nervous before a big game.',
+        unrelated: 'A liquid cleaner used on gym equipment.',
+        similarWord: 'Setting plates on a table the correct way.'
+      }
+    },
+    {
+      word: 'unprecedented', icon: '🤯', hint: 'something amazing never done before',
+      definition: 'Unprecedented describes something fantastic that has absolutely never happened or been done before.',
+      simplifiedMeaning: 'Never done before.',
+      pronunciationBreakdown: 'un-PREE-suh-DEN-ted',
+      sentences: ['Winning five gold medals in one day was an unprecedented win.', 'The young girl did an unprecedented flip that shocked the sport.'],
+      synonym: 'never matched', antonym: 'normal and common',
+      nonExamples: 'Doing a standard forward roll that every child learns is common, not unprecedented.',
+      connotation: 'A big word used for record-breaking moments.',
+      etymology: '"Un" means not and "precedent" means done before.',
+      affixesAndDerivations: '<strong>Prefix:</strong> un- (not)<br><strong>Base:</strong> precedent (past event)',
+      tier: 2, tierWhy: 'A great descriptive word for history and special news stories.',
+      distractors: {
+        close: 'A fast run that you practice every week.',
+        unrelated: 'The total weight a wooden table can hold.',
+        similarWord: 'A short speech given by a principal.'
+      }
+    },
+    {
+      word: 'trajectory', icon: '📈', hint: 'the curved path of a flying object',
+      definition: 'A trajectory is the curved path or line that your body makes through the air when you jump or flip.',
+      simplifiedMeaning: 'The path you take through the air.',
+      pronunciationBreakdown: 'tra-JEK-tor-ree',
+      sentences: ['The coach looked at her vault trajectory to see how high she jumped.', 'A bad launch off the board will change your trajectory and ruin your landing.'],
+      synonym: 'flight path', antonym: 'ground line',
+      nonExamples: 'Standing totally still on a floor mat has no flying trajectory.',
+      connotation: 'A math and science word for an air path.',
+      etymology: 'Comes from an old word that means "to throw across".',
+      affixesAndDerivations: '<strong>Plural form:</strong> trajectories',
+      tier: 2, tierWhy: 'A useful science word for paths in space or air.',
+      distractors: {
+        close: 'The stopwatch used to time a runner.',
+        unrelated: 'The sticky tape wrapped around a bar grip.',
+        similarWord: 'A sad story acted out on a theater stage.'
+      }
+    },
+    {
+      word: 'prestigious', icon: '💎', hint: 'highly respected, special, and important',
+      definition: 'Prestigious describes something that is highly respected, famous, and looked up to because it is excellent.',
+      simplifiedMeaning: 'Highly respected and very important.',
+      pronunciationBreakdown: 'pres-TIJ-us',
+      sentences: ['Winning an Olympic medal is a prestigious honor.', 'Only the top gymnasts are invited to this prestigious meet.'],
+      synonym: 'famous and special', antonym: 'unimportant',
+      nonExamples: 'A casual game in your backyard is unimportant, not prestigious.',
+      connotation: 'A fancy word for high honors and prizes.',
+      etymology: 'Comes from an old word for a dazzling trick.',
+      affixesAndDerivations: '<strong>Base word:</strong> prestige (noun)',
+      tier: 2, tierWhy: 'A common word for top awards, schools, or contests.',
+      distractors: {
+        close: 'A cheap play program made for new beginners.',
+        unrelated: 'The total locker space in a change room.',
+        similarWord: 'A small pump used to inflate bicycle tyres.'
+      }
+    }
+  ]
+};
+
+const groupMeta = {
+  red:    { name: 'Red Group',    label: 'early readers - 3 words',    bg: 'red-bg',    barClass: 'bar-red',    badgeClass: 'badge-red',    tabClass: 'tab-red'    },
+  yellow: { name: 'Yellow Group', label: 'developing readers - 3 words', bg: 'yellow-bg', barClass: 'bar-yellow', badgeClass: 'badge-yellow', tabClass: 'tab-yellow' },
+  green:  { name: 'Green Group',  label: 'confident readers - 5 words',  bg: 'green-bg',  barClass: 'bar-green',  badgeClass: 'badge-green',  tabClass: 'tab-green'  },
+  blue:   { name: 'Blue Group',   label: 'fluent readers - 5 words',     bg: 'blue-bg',   barClass: 'bar-blue',   badgeClass: 'badge-blue',   tabClass: 'tab-blue'   }
+};
+
+// ─── State ────────────────────────────────────────────────────────────────────
+
+let currentGroup        = 'red';
+let currentMode          = 'learn';
+let currentQuizQuestions = []; 
+let selectedAnswers     = {};  
+let checkedQuestions    = {};  
+let voices              = [];
+let activeSpeakBtn      = null;
+
+// ─── Speech ───────────────────────────────────────────────────────────────────
+
+function loadVoices() { voices = window.speechSynthesis.getVoices(); }
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+  loadVoices();
+}
+
+function getVoice() {
+  const aus = voices.find(v => v.lang.includes('en-AU'));
+  const william = voices.find(v => v.name.toLowerCase().includes('william'));
+  const natural = voices.find(v => /natural/i.test(v.name) && v.lang.startsWith('en'));
+  const english = voices.find(v => v.lang.startsWith('en-'));
+  return william || natural || aus || english || null;
+}
+
+function speakText(text, btn) {
+  if (!('speechSynthesis' in window)) { alert('Read-aloud is not supported in this browser.'); return; }
+
+  if (activeSpeakBtn === btn) {
+    window.speechSynthesis.cancel();
+    return;
+  }
+
+  // ─── PRONUNCIATION OVERRIDES ───
+  // Create a copy of the text to modify for the speech engine
+  let spokenText = text;
+  
+  // Replace words with phonetic spellings just for the audio
+  spokenText = spokenText.replace(/\btrajectory\b/gi, 'trajehctorie');
+  spokenText = spokenText.replace(/\btrajectories\b/gi, 'trajehctories');
+  spokenText = spokenText.replace(/\bapparatus\b/gi, 'apparartus');
+  spokenText = spokenText.replace(/\unprecedented\b/gi, 'unpreacer-Dentted');
+  // You can copy the line above to add more words later if needed!
+  // ───────────────────────────────
+
+  if (window.speechSynthesis) { window.speechSynthesis.cancel(); }
+  if (activeSpeakBtn) { activeSpeakBtn.classList.remove('speaking'); activeSpeakBtn = null; }
+
+  const ut  = new SpeechSynthesisUtterance(spokenText);
+  const v    = getVoice();
+  const rate = parseFloat(document.getElementById('speedSelect').value) || 0.85;
+  if (v) ut.voice = v;
+  ut.rate = rate;
+
+  activeSpeakBtn = btn;
+  btn.classList.add('speaking');
+
+  ut.onend = ut.onerror = () => {
+    if (activeSpeakBtn === btn) { btn.classList.remove('speaking'); activeSpeakBtn = null; }
+  };
+
+  window.speechSynthesis.speak(ut);
+}
+
+function readSectionText(btn) { speakText(btn.dataset.text, btn); }
+
+function readOptionText(btn, e) {
+  e.stopPropagation();
+  speakText(btn.dataset.text, btn);
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function escAttr(str) {
+  return (str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+}
+
+function sectionReadBtn(text) {
+  return `<button class="sec-read-btn" data-text="${escAttr(text)}" onclick="readSectionText(this)" title="Read aloud">🔊</button>`;
+}
+
+function tierBadge(item) {
+  return `<div class="tier-row">
+    <span class="tier-badge tier-${item.tier}">Tier ${item.tier}</span>
+    <span class="tier-why">${item.tierWhy}</span>
+  </div>`;
+}
+
+// ─── Navigation ───────────────────────────────────────────────────────────────
+
+function showGroup(group) {
+  currentGroup = group;
+  if (window.speechSynthesis) { window.speechSynthesis.cancel(); }
+  activeSpeakBtn = null;
+
+  const meta = groupMeta[group];
+  document.getElementById('frontMenu').classList.add('hidden');
+  document.getElementById('groupView').classList.remove('hidden');
+
+  const bar = document.getElementById('topBar');
+  bar.className = 'group-top-bar ' + meta.barClass;
+
+  const badge = document.getElementById('groupBadge');
+  badge.textContent = meta.name;
+  badge.className   = 'group-badge ' + meta.badgeClass;
+
+  ['learnTab', 'quizTab'].forEach(id => {
+    const tab = document.getElementById(id);
+    tab.classList.remove('tab-red','tab-yellow','tab-green','tab-blue');
+    tab.classList.add(meta.tabClass);
+  });
+
+  switchMode('learn');
+}
+
+function backToMenu() {
+  if (window.speechSynthesis) { window.speechSynthesis.cancel(); }
+  activeSpeakBtn = null;
+  document.getElementById('groupView').classList.add('hidden');
+  document.getElementById('frontMenu').classList.remove('hidden');
+}
+
+function switchMode(mode) {
+  currentMode = mode;
+  if (window.speechSynthesis) { window.speechSynthesis.cancel(); }
+  activeSpeakBtn = null;
+
+  document.getElementById('learnTab').classList.toggle('active', mode === 'learn');
+  document.getElementById('quizTab') .classList.toggle('active', mode === 'quiz');
+  document.getElementById('learnPanel').classList.toggle('hidden', mode !== 'learn');
+  document.getElementById('quizPanel') .classList.toggle('hidden', mode !== 'quiz');
+
+  if (mode === 'learn') { renderGrid(); }
+  else                  { generateQuiz(); }
+}
+
+// ─── Learn mode ───────────────────────────────────────────────────────────────
+
+function renderGrid() {
+  const meta  = groupMeta[currentGroup];
+  const words = groupVocab[currentGroup];
+
+  document.getElementById('groupLabel').textContent = `${meta.name} - ${meta.label}`;
+
+  const grid = document.getElementById('vocabGrid');
+  grid.innerHTML = '';
+  words.forEach(item => {
+    const card = document.createElement('div');
+    card.className = `vocab-card ${meta.bg}`;
+    card.innerHTML = `
+      <div>
+        <div class="card-icon">${item.icon}</div>
+        <div class="card-word">${item.word}</div>
+      </div>
+      <div class="card-hint">${item.hint}</div>
+    `;
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.vocab-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      showDetail(item);
+    });
+    grid.appendChild(card);
+  });
+
+  document.getElementById('detailBox').classList.add('hidden');
+}
+
+function showDetail(item) {
+  const box = document.getElementById('detailBox');
+  
+  let html = `
+    <div class="detail-word-row">
+      <div class="detail-word">${item.icon} ${item.word}</div>
+      <div class="tier-section" style="margin-bottom: 0;">
+        ${tierBadge(item)}
+      </div>
+    </div>
+  `;
+
+  // We pass the actual word to the speech engine so it pronounces correctly instead of trying to read mangled phonetic spelling
+  let speechPronunciation = item.word;
+
+  html += section('How to say it', `<strong>${item.pronunciationBreakdown}</strong>`, speechPronunciation);
+  html += section('What it means', item.definition, item.definition);
+  html += section('Short Meaning', `<strong>${item.simplifiedMeaning}</strong>`, item.simplifiedMeaning);
+
+  if (currentGroup === 'red') {
+    html += exampleSection('Sentence Example', item.example)
+          + factSection('Fun Fact', item.didYouKnow);
+
+  } else if (currentGroup === 'yellow') {
+    const allExamples = item.examples.join(' ');
+    html += multiExampleSection('Sentence Examples', item.examples, allExamples)
+          + section('Similar Word', item.synonym, `Another word for ${item.word} is: ${item.synonym}`);
+
+  } else if (currentGroup === 'green') {
+    const allSentences = item.sentences.join(' ');
+    html += multiExampleSection('Sentence Examples', item.sentences, allSentences)
+          + section('Similar Word', item.synonym, `Another word for ${item.word} is: ${item.synonym}`)
+          + section('Opposite Word', item.antonym, `The opposite of ${item.word} is: ${item.antonym}`)
+          + section('Non-examples', item.nonExamples, item.nonExamples);
+
+  } else {
+    const allSentences = item.sentences.join(' ');
+    html += multiExampleSection('Sentence Examples', item.sentences, allSentences)
+          + section('Similar Word', item.synonym, `Another word for ${item.word} is: ${item.synonym}`)
+          + section('Opposite Word', item.antonym, `The opposite of ${item.word} is: ${item.antonym}`)
+          + section('Non-examples', item.nonExamples, item.nonExamples)
+          + section('Word Connotation', item.connotation, item.connotation)
+          + section('Where it comes from', item.etymology, item.etymology)
+          + section('Word Building Blocks', item.affixesAndDerivations, item.word + ' parts.');
+  }
+
+  box.innerHTML = html;
+  box.classList.remove('hidden');
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function section(label, contentHTML, readText) {
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(readText)}
+    </div>
+    <div class="detail-content">${contentHTML}</div>
+  </div>`;
+}
+
+function exampleSection(label, text) {
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(text)}
+    </div>
+    <div class="example-box">${text}</div>
+  </div>`;
+}
+
+function factSection(label, text) {
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(text)}
+    </div>
+    <div class="fact-box">${text}</div>
+  </div>`;
+}
+
+function multiExampleSection(label, items, readText) {
+  const boxes = items.map(s => `<div class="example-box">${s}</div>`).join('');
+  return `<div class="detail-section">
+    <div class="detail-label-row">
+      <span class="detail-label">${label}</span>
+      ${sectionReadBtn(readText)}
+    </div>
+    ${boxes}
+  </div>`;
+}
+
+// ─── Quiz Generator ─────────────────────────────────────────────────────────
+
+function generateQuiz() {
+  selectedAnswers     = {};
+  checkedQuestions    = {};
+  currentQuizQuestions = [];
+  if (window.speechSynthesis) { window.speechSynthesis.cancel(); }
+  activeSpeakBtn = null;
+
+  const words = groupVocab[currentGroup];
+
+  if (currentGroup === 'red') {
+    // RED GROUP
+    words.forEach(item => {
+      let otherWords = words.filter(w => w.word !== item.word);
+      let distractor1 = otherWords.length > 0 ? otherWords[0].word : 'shoes';
+      let distractor2 = otherWords.length > 1 ? otherWords[1].word : 'chalk';
+
+      currentQuizQuestions.push({
+        type: 'meaning',
+        word: item.word,
+        questionText: `What is a <strong>${item.word}</strong>?`,
+        options: shuffleArray([
+          { text: item.simplifiedMeaning, isCorrect: true },
+          { text: item.distractors.close, isCorrect: false },
+          { text: item.distractors.unrelated, isCorrect: false }
+        ]),
+        correctText: item.simplifiedMeaning
+      });
+
+      let sentenceText = "";
+      if(item.word === 'mat') sentenceText = "I landed safely after doing a roll on the blue [blank].";
+      if(item.word === 'beam') sentenceText = "Keep your balance as you walk across the long wooden [blank].";
+      if(item.word === 'salto') sentenceText = "The gymnast did a big flip in the air called a [blank].";
+
+      currentQuizQuestions.push({
+        type: 'cloze',
+        word: item.word,
+        questionText: `Pick the missing word:<br><br>"${sentenceText}"`,
+        options: shuffleArray([
+          { text: item.word, isCorrect: true },
+          { text: distractor1, isCorrect: false },
+          { text: distractor2, isCorrect: false }
+        ]),
+        correctText: item.word
+      });
+    });
+
+  } else if (currentGroup === 'yellow') {
+    // YELLOW GROUP
+    words.forEach(item => {
+      currentQuizQuestions.push({
+        type: 'meaning',
+        word: item.word,
+        questionText: `Which choice matches the word <strong>"${item.word}"</strong>?`,
+        options: shuffleArray([
+          { text: item.simplifiedMeaning, isCorrect: true },
+          { text: item.distractors.close, isCorrect: false },
+          { text: item.distractors.unrelated, isCorrect: false },
+          { text: item.distractors.similarWord, isCorrect: false }
+        ]),
+        correctText: item.simplifiedMeaning
+      });
+
+      let correctSentence = item.examples[0];
+      let brokenSentence = "";
+      if(item.word === 'apparatus') brokenSentence = "I peeled a fresh apparatus to eat at recess.";
+      if(item.word === 'dismount') brokenSentence = "The dismount rained water from the sky.";
+      if(item.word === 'coordinate') brokenSentence = "Put on your blue coordinate coat to stay warm.";
+
+      currentQuizQuestions.push({
+        type: 'correct_use',
+        word: item.word,
+        questionText: `Pick the sentence where <strong>"${item.word}"</strong> makes sense:`,
+        options: shuffleArray([
+          { text: correctSentence, isCorrect: true },
+          { text: brokenSentence, isCorrect: false },
+          { text: `The team wore matching ${item.word} outfits for the game.`, isCorrect: false },
+          { text: `He lost his ${item.word} and could not eat lunch.`, isCorrect: false }
+        ]),
+        correctText: correctSentence
+      });
+    });
+
+  } else if (currentGroup === 'green') {
+    // GREEN GROUP
+    words.forEach(item => {
+      let otherWords = words.filter(w => w.word !== item.word);
+      let distractor1 = otherWords.length > 0 ? otherWords[0].word : 'shoes';
+      let distractor2 = otherWords.length > 1 ? otherWords[1].word : 'chalk';
+
+      currentQuizQuestions.push({
+        type: 'chip_match',
+        word: item.word,
+        questionText: `Which word means: <em>"${item.hint}"</em>?`,
+        options: shuffleArray([
+          { text: item.word, isCorrect: true },
+          { text: distractor1, isCorrect: false },
+          { text: distractor2, isCorrect: false },
+          { text: 'equipment', isCorrect: false }
+        ]),
+        correctText: item.word
+      });
+
+      let baseSentence = item.sentences[0].replace(new RegExp(`\\b${item.word}\\b`, 'gi'), "[blank]");
+      currentQuizQuestions.push({
+        type: 'cloze',
+        word: item.word,
+        questionText: `Pick the correct word for the [blank]:<br><br>"${baseSentence}"`,
+        options: shuffleArray([
+          { text: item.word, isCorrect: true },
+          { text: distractor1, isCorrect: false },
+          { text: distractor2, isCorrect: false },
+          { text: 'coach', isCorrect: false }
+        ]),
+        correctText: item.word
+      });
+    });
+
+  } else if (currentGroup === 'blue') {
+    // BLUE GROUP
+    words.forEach(item => {
+      let otherWords = words.filter(w => w.word !== item.word);
+      let distractor1 = otherWords.length > 0 ? otherWords[0].word : 'shoes';
+      let distractor2 = otherWords.length > 1 ? otherWords[1].word : 'chalk';
+
+      let affixQ = "";
+      let affixOpts = [];
+      let correctAffix = "";
+
+      if(item.word === 'biomechanics') {
+        affixQ = "Which part of the word <strong>biomechanics</strong> means 'life' or 'living things'?";
+        affixOpts = [
+          { text: "The prefix 'bio-'", isCorrect: true },
+          { text: "The root word 'mechanics'", isCorrect: false },
+          { text: "The end of the word", isCorrect: false },
+          { text: "The whole word combined", isCorrect: false }
+        ];
+        correctAffix = "The prefix 'bio-'";
+      } else if(item.word === 'proprioception') {
+        affixQ = "What does the first part of the word <strong>proprioception</strong> talk about?";
+        affixOpts = [
+          { text: "It talks about 'one's own body'", isCorrect: true },
+          { text: "It talks about spinning fast", isCorrect: false },
+          { text: "It talks about losing your grip", isCorrect: false },
+          { text: "It talks about gym mats", isCorrect: false }
+        ];
+        correctAffix = "It talks about 'one's own body'";
+      } else if(item.word === 'unprecedented') {
+        affixQ = "What does the short prefix 'un-' do in the word <strong>unprecedented</strong>?";
+        affixOpts = [
+          { text: "It changes the meaning to 'not done before'", isCorrect: true },
+          { text: "It makes the word a past-tense action", isCorrect: false },
+          { text: "It describes how fast a gymnast runs", isCorrect: false },
+          { text: "It names a special kind of gym floor", isCorrect: false }
+        ];
+        correctAffix = "It changes the meaning to 'not done before'";
+      } else if(item.word === 'trajectory') {
+        affixQ = "The old history root of the word <strong>trajectory</strong> means what?";
+        affixOpts = [
+          { text: "It means to 'throw across' or cast along", isCorrect: true },
+          { text: "It names a special clock for timing", isCorrect: false },
+          { text: "It is a rule for using bars safely", isCorrect: false },
+          { text: "It describes a messy landing", isCorrect: false }
+        ];
+        correctAffix = "It means to 'throw across' or cast along";
+      } else {
+        affixQ = "What does the suffix ending '-ious' do in the word <strong>prestigious</strong>?";
+        affixOpts = [
+          { text: "It turns a noun into a descriptive word", isCorrect: true },
+          { text: "It means the action happened yesterday", isCorrect: false },
+          { text: "It names the person doing the flip", isCorrect: false },
+          { text: "It turns a single item into a plural group", isCorrect: false }
+        ];
+        correctAffix = "It turns a noun into a descriptive word";
+      }
+
+      currentQuizQuestions.push({
+        type: 'affix_study',
+        word: item.word,
+        questionText: affixQ,
+        options: shuffleArray(affixOpts),
+        correctText: correctAffix
+      });
+
+      let blueSentence = item.sentences[0].replace(new RegExp(`\\b${item.word}\\b`, 'gi'), "[blank]");
+      currentQuizQuestions.push({
+        type: 'cloze',
+        word: item.word,
+        questionText: `Pick the missing word for the [blank]:<br><br>"${blueSentence}"`,
+        options: shuffleArray([
+          { text: item.word, isCorrect: true },
+          { text: distractor1, isCorrect: false },
+          { text: distractor2, isCorrect: false },
+          { text: 'equipment', isCorrect: false }
+        ]),
+        correctText: item.word
+      });
+    });
+  }
+
+  shuffleArray(currentQuizQuestions);
+
+  const progress = document.getElementById('quizProgress');
+  progress.innerHTML = currentQuizQuestions.map((_, i) => `<div class="progress-dot unanswered" id="dot-${i}"></div>`).join('');
+
+  renderQuizUI();
+}
+
+function renderQuizUI() {
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+
+  currentQuizQuestions.forEach((qObj, qIdx) => {
+    const card = document.createElement('div');
+    card.className = 'quiz-card';
+    card.id = `qcard-${qIdx}`;
+
+    let rawQText = qObj.questionText.replace(/<[^>]*>/g, '');
+    let speechQText = rawQText.replace(/\[blank\]/gi, 'blank').replace(/_+/g, 'blank');
+
+    let html = `
+      <div class="quiz-q-number">Question ${qIdx + 1} of ${currentQuizQuestions.length}</div>
+      <div class="quiz-q-row">
+        <div class="quiz-q-text">${qObj.questionText}</div>
+        <button class="q-read-btn" data-text="${escAttr(speechQText)}" onclick="readSectionText(this)" title="Read question">🔊</button>
+      </div>
+      <div class="quiz-options-grid" id="opts-grid-${qIdx}">
+    `;
+
+    qObj.options.forEach((opt, oIdx) => {
+      html += `
+        <div class="quiz-opt-row" 
+             id="optrow-${qIdx}-${oIdx}"
+             onclick="selectOption(${qIdx}, ${oIdx}, '${escAttr(opt.text)}')">
+          <div class="opt-main">${opt.text}</div>
+          <div class="opt-speaker-zone">
+            <button class="opt-read-btn" data-text="${escAttr(opt.text)}" onclick="readOptionText(this, event)" title="Read option">🔊</button>
+          </div>
+        </div>
+      `;
+    });
+
+    html += `
+      </div>
+      <div class="card-actions">
+        <button class="card-btn check-btn" id="check-btn-${qIdx}" onclick="checkCardAnswer(${qIdx})" disabled>Check Answer</button>
+        <button class="card-btn retry-btn hidden" id="retry-btn-${qIdx}" onclick="retryCard(${qIdx})">Retry</button>
+      </div>
+      <div id="feedback-${qIdx}"></div>
+    `;
+    card.innerHTML = html;
+    container.appendChild(card);
+  });
+}
+
+function selectOption(qIdx, oIdx) {
+  if (checkedQuestions[qIdx]) return;
+
+  const grid = document.getElementById(`opts-grid-${qIdx}`);
+  grid.querySelectorAll('.quiz-opt-row').forEach(row => row.classList.remove('selected'));
+
+  const selectedRow = document.getElementById(`optrow-${qIdx}-${oIdx}`);
+  selectedRow.classList.add('selected');
+
+  selectedAnswers[qIdx] = oIdx;
+  document.getElementById(`check-btn-${qIdx}`).disabled = false;
+
+  const dot = document.getElementById(`dot-${qIdx}`);
+  if (dot && dot.className.includes('unanswered')) {
+    dot.className = 'progress-dot answered';
+  }
+}
+
+function checkCardAnswer(qIdx) {
+  if (checkedQuestions[qIdx]) return;
+  if (window.speechSynthesis) { window.speechSynthesis.cancel(); }
+
+  const qObj = currentQuizQuestions[qIdx];
+  const chosenOptIdx = selectedAnswers[qIdx];
+  const chosenOpt = qObj.options[chosenOptIdx];
+  
+  const isCorrect = chosenOpt.text === qObj.correctText;
+
+  checkedQuestions[qIdx] = true;
+  document.getElementById(`check-btn-${qIdx}`).classList.add('hidden');
+  document.getElementById(`retry-btn-${qIdx}`).classList.remove('hidden');
+
+  const grid = document.getElementById(`opts-grid-${qIdx}`);
+  grid.querySelectorAll('.quiz-opt-row').forEach((row, oIdx) => {
+    row.classList.add('disabled');
+    const rowOpt = qObj.options[oIdx];
+    
+    if (rowOpt.text === qObj.correctText) {
+      row.classList.add('correct');
+    } else if (oIdx === chosenOptIdx && !isCorrect) {
+      row.classList.add('incorrect');
+    } else {
+      row.classList.add('dimmed');
+    }
+  });
+
+  const fbContainer = document.getElementById(`feedback-${qIdx}`);
+  const fb = document.createElement('div');
+  fb.className = `quiz-feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+  fb.textContent = isCorrect ? '✓ Correct!' : '✗ Try again next time!';
+  fbContainer.appendChild(fb);
+
+  const dot = document.getElementById(`dot-${qIdx}`);
+  if (dot) {
+    dot.className = `progress-dot ${isCorrect ? 'correct' : 'incorrect'}`;
+  }
+}
+
+function retryCard(qIdx) {
+  if (window.speechSynthesis) { window.speechSynthesis.cancel(); }
+  
+  delete selectedAnswers[qIdx];
+  delete checkedQuestions[qIdx];
+
+  const qObj = currentQuizQuestions[qIdx];
+  shuffleArray(qObj.options);
+
+  const dot = document.getElementById(`dot-${qIdx}`);
+  if (dot) dot.className = 'progress-dot unanswered';
+
+  const card = document.getElementById(`qcard-${qIdx}`);
+  const grid = card.querySelector('.quiz-options-grid');
+  grid.innerHTML = '';
+
+  qObj.options.forEach((opt, oIdx) => {
+    const row = document.createElement('div');
+    row.className = 'quiz-opt-row';
+    row.id = `optrow-${qIdx}-${oIdx}`;
+    row.onclick = () => selectOption(qIdx, oIdx, escAttr(opt.text));
+    row.innerHTML = `
+      <div class="opt-main">${opt.text}</div>
+      <div class="opt-speaker-zone">
+        <button class="opt-read-btn" data-text="${escAttr(opt.text)}" onclick="readOptionText(this, event)" title="Read option">🔊</button>
+      </div>
+    `;
+    grid.appendChild(row);
+  });
+
+  document.getElementById(`check-btn-${qIdx}`).classList.remove('hidden');
+  document.getElementById(`check-btn-${qIdx}`).disabled = true;
+  document.getElementById(`retry-btn-${qIdx}`).classList.add('hidden');
+  document.getElementById(`feedback-${qIdx}`).innerHTML = '';
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+</script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='vocab-gymnastics-10';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-vocab.js"></script>
+</body>
+</html>

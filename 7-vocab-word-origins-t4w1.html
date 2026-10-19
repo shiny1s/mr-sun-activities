@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Country Word Explorer</title>
+<style>
+:root{
+  --dark:#1f3864; --blue:#2e75b6; --green:#2e7d32; --gold:#f2b705;
+  --red:#c62828; --ink:#23303d; --soft:#f4f7fb; --line:#d8e2ee;
+}
+*{box-sizing:border-box}
+body{
+  font-family:"Nunito","Segoe UI",Arial,sans-serif;margin:0;color:var(--ink);
+  background:var(--soft);background-image:radial-gradient(#d7dee6 2px,transparent 2px);
+  background-size:30px 30px;font-size:18px;line-height:1.6;
+}
+header{background:linear-gradient(135deg,var(--dark),var(--blue));color:#fff;padding:16px 18px}
+header h1{margin:0;font-size:24px}
+header p{margin:5px 0 0;font-size:15px;opacity:.92}
+.wrap{max-width:980px;margin:auto;padding:18px 16px 80px}
+.panel{background:#fff;border-radius:18px;box-shadow:0 8px 22px rgba(0,0,0,.08);padding:18px;margin:16px 0}
+h2{color:var(--dark);margin:0 0 10px}
+.audio{background:#fff;border:2px solid var(--line);border-radius:18px;color:#203963;font-weight:700;cursor:pointer;padding:6px 12px;font-size:14px;display:inline-flex;gap:5px;align-items:center}
+.audio:hover{background:#eef4fa}
+.word-card{border:2px solid var(--line);border-radius:16px;margin:14px 0;overflow:hidden;background:#fff}
+.word-head{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:14px 16px;background:#eef4fb;cursor:pointer}
+.word-title{font-size:21px;font-weight:900;color:var(--dark)}
+.word-body{padding:0 16px 16px;display:none}
+.word-card.open .word-body{display:block}
+.section{border-top:1px solid var(--line);padding:12px 0}
+.section h3{margin:0 0 6px;font-size:17px;color:var(--dark);display:flex;align-items:center;gap:8px}
+.line{display:flex;gap:8px;align-items:flex-start;margin:7px 0}
+.line span{flex:1}
+.example{background:#f2f8f2;border-left:5px solid var(--green);padding:9px 11px;border-radius:8px;margin:7px 0}
+.nonexample{background:#fff1f0;border-left:5px solid var(--red);padding:9px 11px;border-radius:8px;margin:7px 0}
+.related{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:#eaf2fb;border:2px solid #bcd6f2;color:#1f3864;border-radius:18px;padding:5px 12px;font-weight:700}
+.frame{background:#fff8e1;border:2px dashed #e0b400;border-radius:12px;padding:12px;margin-top:8px}
+.frame input{font:inherit;width:100%;padding:10px;margin-top:8px;border:2px solid var(--line);border-radius:8px}
+.note{font-size:14px;color:#536375;font-style:italic;margin:6px 0 0}
+textarea{font:inherit;width:100%;min-height:90px;padding:10px;border:2px solid var(--line);border-radius:10px;margin-top:8px;resize:vertical}
+footer{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(to right,var(--dark),#23303d);color:#fff;padding:12px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+footer button{background:#ffc400;border:0;color:#333;font:inherit;font-weight:800;border-radius:10px;padding:10px 16px;cursor:pointer}
+@media(max-width:600px){
+  header h1{font-size:20px}
+  .wrap{padding:12px 8px 90px}
+  .word-head{flex-wrap:wrap}
+}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Country Word Explorer</h1>
+  <p>Explore important words connected to Aboriginal Country. Tap 🔊 to listen to any part.</p>
+</header>
+
+<div class="wrap">
+  <section class="panel">
+    <h2>Choose a word</h2>
+    <p>Tap a word to open its meaning, examples, related words and writing activity.</p>
+    <button class="audio" id="readList">🔊 Read the word list</button>
+  </section>
+
+  <section id="wordList"></section>
+</div>
+
+<footer>
+  <span>Country Word Explorer</span>
+  <button id="topButton">Back to top</button>
+</footer>
+
+<script>
+const words=[
+{
+  word:"ancestry",type:"noun",
+  meaning:"Ancestry means the family members who came before you, such as grandparents, great-grandparents and earlier relatives.",
+  examples:[
+    "She learned about her ancestry through old family photographs.",
+    "His ancestry connects him to people who lived long ago.",
+    "Aboriginal peoples may have deep ancestry connected to particular Country."
+  ],
+  related:["descent","heritage","lineage","family history"],
+  opposite:"Descendants are the people who come after an ancestor.",
+  nonExamples:[
+    {text:"My best friend is part of my ancestry.",why:"A friend is not usually a family member from an earlier generation."},
+    {text:"My younger cousin is part of my ancestry.",why:"A younger cousin comes after you in the family line, not before you."}
+  ],
+  connotation:"Ancestry often sounds respectful and connected to family history.",
+  origin:"Ancestry comes from Latin words meaning one who goes before.",
+  frame:"My ancestry helps me understand ______.",
+  challenge:"Ask a family member about one relative who lived before you were born."
+},
+{
+  word:"belonging",type:"noun",
+  meaning:"Belonging means feeling accepted, safe and connected to a person, group or place.",
+  examples:[
+    "The students felt a sense of belonging in their class.",
+    "Belonging can come from family, friends and community.",
+    "For many Aboriginal peoples, belonging is connected to Country."
+  ],
+  related:["connection","acceptance","community","identity"],
+  opposite:"Isolation means feeling alone or separated from other people.",
+  nonExamples:[
+    {text:"I own a toy, so I belong to it.",why:"Belonging is about people, groups or places, not owning an object."},
+    {text:"I visited a place once, so I have belonging there.",why:"Belonging usually grows through relationships, experiences and connection over time."}
+  ],
+  connotation:"Belonging sounds warm, safe and positive.",
+  origin:"Belonging comes from the verb belong, meaning to be connected with or be part of something.",
+  frame:"I feel belonging when ______.",
+  challenge:"Describe a place or group where you feel you belong."
+},
+{
+  word:"ceremony",type:"noun",
+  meaning:"A ceremony is a special event or practice that has cultural, spiritual or important meaning.",
+  examples:[
+    "The community held a ceremony to celebrate the new centre.",
+    "A ceremony may include music, dance, stories or smoking.",
+    "Some ceremonies mark important changes or events."
+  ],
+  related:["ritual","celebration","tradition","observance"],
+  opposite:"An ordinary activity is not necessarily a ceremony because it may not have special cultural meaning.",
+  nonExamples:[
+    {text:"I brushed my teeth this morning, so it was a ceremony.",why:"Brushing teeth is a routine, not usually a special cultural event."},
+    {text:"A ceremony is always loud and public.",why:"Some ceremonies are quiet, private or held with a small group."}
+  ],
+  connotation:"Ceremony sounds important, respectful and meaningful.",
+  origin:"Ceremony comes from Latin and relates to a formal act or observance.",
+  frame:"A ceremony can help people ______.",
+  challenge:"Explain why it is important to be respectful during a ceremony."
+},
+{
+  word:"connection",type:"noun",
+  meaning:"A connection is a strong link between people, places, family, stories or Country.",
+  examples:[
+    "The children felt a connection to the river.",
+    "Stories can create a connection between generations.",
+    "Aboriginal peoples have continuing connections to Country."
+  ],
+  related:["bond","link","relationship","belonging"],
+  opposite:"Disconnection means a link has been broken or weakened.",
+  nonExamples:[
+    {text:"I saw the mountain from the car, so I have a connection to it.",why:"Seeing something once does not always show a strong connection."},
+    {text:"The two blocks were connected with glue.",why:"This is a physical connection, not the deeper connection used when talking about Country."}
+  ],
+  connotation:"Connection usually sounds positive and meaningful.",
+  origin:"Connection comes from Latin words meaning to join together.",
+  frame:"I feel connected to ______ because ______.",
+  challenge:"Describe a place that makes you feel connected."
+},
+{
+  word:"culture",type:"noun",
+  meaning:"Culture is the beliefs, stories, languages, practices and ways of living shared by a group of people.",
+  examples:[
+    "Music and dance are part of many cultures.",
+    "The students shared stories about their cultures.",
+    "Aboriginal cultures have continued for many thousands of years."
+  ],
+  related:["heritage","tradition","language","identity"],
+  opposite:"Culture is not the opposite of another culture. Different cultures can exist side by side.",
+  nonExamples:[
+    {text:"Culture means wearing the same clothes every day.",why:"Culture includes many things, such as language, beliefs, stories and practices."},
+    {text:"Only food is part of culture.",why:"Food can be part of culture, but culture is much broader."}
+  ],
+  connotation:"Culture is usually a respectful and positive word. It recognises the ways people live and share knowledge.",
+  origin:"Culture comes from Latin and originally related to growing or cultivating.",
+  frame:"One part of my culture is ______.",
+  challenge:"Share one story, food, song or tradition that is important in your family."
+},
+{
+  word:"custodianship",type:"noun",
+  meaning:"Custodianship is the responsibility to care for Country, culture and knowledge for future generations.",
+  examples:[
+    "The rangers showed custodianship by protecting the wetland.",
+    "Custodianship means caring for important places so others can learn from them later.",
+    "Elders may hold custodianship of special knowledge."
+  ],
+  related:["responsibility","protection","stewardship","care"],
+  opposite:"Neglect means failing to care for something that needs protection.",
+  nonExamples:[
+    {text:"Custodianship means owning everything in the park.",why:"Custodianship is about caring for something, not simply owning it."},
+    {text:"Custodianship only lasts for one day.",why:"Custodianship is a continuing responsibility for the future."}
+  ],
+  connotation:"Custodianship sounds serious, respectful and responsible.",
+  origin:"Custodianship comes from custodian, which comes from Latin words about guarding or keeping safe.",
+  frame:"Custodianship means caring for ______.",
+  challenge:"Name something in your community that needs custodianship."
+},
+{
+  word:"habitat",type:"noun",
+  meaning:"A habitat is the natural home of a plant or animal.",
+  examples:[
+    "The wetland is a habitat for frogs and birds.",
+    "A hollow tree can be a habitat for a possum.",
+    "Pollution can damage an animal’s habitat."
+  ],
+  related:["home","environment","ecosystem","territory"],
+  opposite:"A habitat is not the opposite of another habitat. Different habitats suit different living things.",
+  nonExamples:[
+    {text:"A classroom is a habitat for students.",why:"A habitat is the natural home of a plant or animal."},
+    {text:"A habitat is only a cave.",why:"Habitats can be forests, reefs, deserts, wetlands and many other places."}
+  ],
+  connotation:"Habitat usually sounds scientific and neutral, but it can also sound urgent when habitats are damaged.",
+  origin:"Habitat comes from Latin and means it dwells or lives.",
+  frame:"The ______ is a habitat for ______.",
+  challenge:"Name an animal and describe its habitat."
+},
+{
+  word:"heritage",type:"noun",
+  meaning:"Heritage is the stories, places, objects, practices and knowledge passed down through generations.",
+  examples:[
+    "The old meeting place is part of the community’s heritage.",
+    "Language and stories can be important heritage.",
+    "Heritage helps people understand the past."
+  ],
+  related:["legacy","tradition","culture","history"],
+  opposite:"Heritage is not the opposite of the future. Heritage is passed from the past into the future.",
+  nonExamples:[
+    {text:"A new shopping centre is always heritage.",why:"Heritage usually has historical, cultural or community importance."},
+    {text:"Heritage only means old buildings.",why:"Heritage can also include language, stories, practices and knowledge."}
+  ],
+  connotation:"Heritage sounds valuable and worth protecting.",
+  origin:"Heritage comes from Old French and relates to property or something passed down.",
+  frame:"An important part of my heritage is ______.",
+  challenge:"Name something from the past that should be protected for the future."
+},
+{
+  word:"identity",type:"noun",
+  meaning:"Identity is who a person is, including their family, culture, language and connections.",
+  examples:[
+    "Language can be an important part of identity.",
+    "Her identity is connected to her family and community.",
+    "Stories and Country can help shape a person’s identity."
+  ],
+  related:["self","character","culture","belonging"],
+  opposite:"Identity is not the opposite of another identity. People can have many connected parts to their identity.",
+  nonExamples:[
+    {text:"Identity means having the same name as someone else.",why:"A name can be part of identity, but identity includes much more."},
+    {text:"Identity means copying another person exactly.",why:"Identity is about who you are, not becoming someone else."}
+  ],
+  connotation:"Identity sounds personal and important.",
+  origin:"Identity comes from Latin words meaning the same or sameness.",
+  frame:"My identity is connected to ______.",
+  challenge:"List three things that help make you who you are."
+},
+{
+  word:"kinship",type:"noun",
+  meaning:"Kinship is the way Aboriginal and Torres Strait Islander peoples understand family relationships, responsibilities and connections.",
+  examples:[
+    "Kinship helps people understand who they are related to.",
+    "Kinship can describe responsibilities between family members.",
+    "Kinship connects people across generations."
+  ],
+  related:["family","relationship","connection","responsibility"],
+  opposite:"Being unrelated means not having a family connection.",
+  nonExamples:[
+    {text:"Kinship means owning a house.",why:"Kinship is about relationships and responsibilities, not property."},
+    {text:"Kinship means living in the same street.",why:"People can have kinship connections even if they live far apart."}
+  ],
+  connotation:"Kinship sounds warm and connected. It highlights that people belong to a network of family relationships.",
+  origin:"Kinship comes from the word kin, which means family or relatives.",
+  frame:"Kinship helps people understand ______.",
+  challenge:"Name one person who helps care for you and one person you help care for."
+},
+{
+  word:"knowledge",type:"noun",
+  meaning:"Knowledge is what people know, understand and learn from experience, stories and teaching.",
+  examples:[
+    "The Elder shared knowledge about native plants.",
+    "Reading helps us build knowledge.",
+    "Aboriginal peoples hold deep knowledge of Country."
+  ],
+  related:["understanding","learning","wisdom","expertise"],
+  opposite:"Ignorance means not knowing or understanding something.",
+  nonExamples:[
+    {text:"Knowledge means remembering every fact.",why:"Knowledge also includes understanding, experience and knowing how to do things."},
+    {text:"Knowledge can only come from books.",why:"Knowledge can come from stories, observation, teaching and experience."}
+  ],
+  connotation:"Knowledge sounds valuable and powerful.",
+  origin:"Knowledge comes from Old English and relates to knowing or recognising.",
+  frame:"I learned knowledge about ______ from ______.",
+  challenge:"Share one thing you know that someone taught you."
+},
+{
+  word:"protocol",type:"noun",
+  meaning:"A protocol is the respectful way to do something according to cultural rules and expectations.",
+  examples:[
+    "The students followed protocol when visiting the community.",
+    "Protocol may explain how to welcome visitors respectfully.",
+    "It is important to learn protocol before entering a special place."
+  ],
+  related:["custom","etiquette","procedure","respect"],
+  opposite:"Breaking protocol means not following the expected respectful way of doing something.",
+  nonExamples:[
+    {text:"Protocol means a list of rules made up by students.",why:"Protocol often comes from cultural expectations and community guidance."},
+    {text:"Protocol is only used in government buildings.",why:"Protocols can be used in communities, schools, ceremonies and many other settings."}
+  ],
+  connotation:"Protocol sounds formal and respectful.",
+  origin:"Protocol comes from Greek and originally referred to the first sheet glued to a scroll.",
+  frame:"Before visiting a special place, it is respectful to learn the ______.",
+  challenge:"Describe one respectful behaviour you would use when visiting a new community."
+},
+{
+  word:"reciprocity",type:"noun",
+  meaning:"Reciprocity means giving and receiving care, help or respect in return.",
+  examples:[
+    "Reciprocity means helping others because they have helped you.",
+    "The community showed reciprocity by sharing food and knowledge.",
+    "Caring for Country can involve reciprocity between people and nature."
+  ],
+  related:["exchange","mutual care","sharing","respect"],
+  opposite:"One-sided taking means taking without giving back or caring in return.",
+  nonExamples:[
+    {text:"Reciprocity means paying money for everything.",why:"Reciprocity can involve care, time, knowledge or respect, not only money."},
+    {text:"Reciprocity means giving only when someone forces you.",why:"Reciprocity is based on mutual care and respect."}
+  ],
+  connotation:"Reciprocity sounds fair, generous and respectful.",
+  origin:"Reciprocity comes from Latin words meaning to return or move back and forth.",
+  frame:"Reciprocity means giving ______ and receiving ______.",
+  challenge:"Describe one way you could give back to someone who has helped you."
+},
+{
+  word:"regeneration",type:"noun",
+  meaning:"Regeneration is the process of helping plants, animals, land or communities grow and become healthy again.",
+  examples:[
+    "Planting native seedlings supported the regeneration of the bushland.",
+    "After rain, the land showed signs of regeneration.",
+    "Regeneration can help damaged habitats recover."
+  ],
+  related:["renewal","restoration","recovery","growth"],
+  opposite:"Degeneration means becoming weaker, damaged or less healthy.",
+  nonExamples:[
+    {text:"Regeneration means building a new shopping centre.",why:"In this context, regeneration is about natural or community renewal."},
+    {text:"Regeneration happens instantly.",why:"Regeneration usually takes time, care and the right conditions."}
+  ],
+  connotation:"Regeneration sounds hopeful and healing.",
+  origin:"Regeneration comes from Latin words meaning to create again or bring forth again.",
+  frame:"Regeneration can help ______ become healthy again.",
+  challenge:"Name one way people could help a damaged natural area recover."
+},
+{
+  word:"respect",type:"noun",
+  meaning:"Respect means treating people, places and living things with care and consideration.",
+  examples:[
+    "The students showed respect by listening carefully.",
+    "We show respect for Country by not leaving rubbish.",
+    "Respect means valuing other people’s beliefs and experiences."
+  ],
+  related:["consideration","care","courtesy","valuation"],
+  opposite:"Disrespect means treating someone or something without care or consideration.",
+  nonExamples:[
+    {text:"Respect means always agreeing with everyone.",why:"You can respect someone while still having a different opinion."},
+    {text:"Respect means being quiet all the time.",why:"Respect can include listening, but it also includes care, kindness and consideration."}
+  ],
+  connotation:"Respect sounds positive, kind and important.",
+  origin:"Respect comes from Latin words meaning to look back at or regard.",
+  frame:"I show respect by ______.",
+  challenge:"Describe one way you can show respect at school."
+},
+{
+  word:"sustainability",type:"noun",
+  meaning:"Sustainability is using resources in a way that keeps them available for the future.",
+  examples:[
+    "Sustainability means using water carefully.",
+    "Recycling can support sustainability.",
+    "Sustainability helps protect resources for future generations."
+  ],
+  related:["conservation","responsibility","renewal","care"],
+  opposite:"Waste means using more than needed or failing to look after resources.",
+  nonExamples:[
+    {text:"Sustainability means never using anything.",why:"Sustainability is about using resources carefully, not avoiding all use."},
+    {text:"Sustainability only matters to scientists.",why:"Everyone can make choices that support sustainability."}
+  ],
+  connotation:"Sustainability sounds responsible and forward-thinking.",
+  origin:"Sustainability comes from sustain, which means to keep going or support over time.",
+  frame:"Sustainability means caring for ______ so it lasts for ______.",
+  challenge:"Name one resource you could use more carefully."
+},
+{
+  word:"tradition",type:"noun",
+  meaning:"A tradition is a belief, practice, story or custom passed down from older generations.",
+  examples:[
+    "Sharing a meal with family is a tradition for some people.",
+    "The community continued its tradition of storytelling.",
+    "Traditional practices can carry important knowledge."
+  ],
+  related:["custom","practice","heritage","ritual"],
+  opposite:"A new practice is not yet a tradition because it has not been passed down over time.",
+  nonExamples:[
+    {text:"I tried a new game today, so it is my tradition.",why:"A tradition is usually repeated and passed down, not tried only once."},
+    {text:"A tradition must be very old.",why:"Traditions can begin more recently, but they are passed on over time."}
+  ],
+  connotation:"Tradition often sounds valued and important.",
+  origin:"Tradition comes from Latin words meaning to hand over or pass on.",
+  frame:"One tradition in my family is ______.",
+  challenge:"Explain one tradition that has been passed down in your family."
+}
+];
+
+const list=document.getElementById("wordList");
+
+function speak(text){
+  if(!window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang="en-AU";
+  u.rate=.9;
+  speechSynthesis.speak(u);
+}
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function audio(text,label="Listen"){
+  return `<button class="audio" data-say="${esc(text)}" aria-label="${esc(label)}">🔊</button>`;
+}
+
+function render(){
+  list.innerHTML=words.map(w=>{
+    const related=w.related.map(r=>`<span class="chip">${esc(r)}</span>`).join("");
+    const examples=w.examples.map(e=>`
+      <div class="example"><div class="line"><span>${esc(e)}</span>${audio(e,"Listen to example")}</div></div>`).join("");
+
+    const nonExamples=w.nonExamples.map(n=>`
+      <div class="nonexample">
+        <div class="line"><span><strong>Not this meaning:</strong> ${esc(n.text)}</span>${audio(n.text)}</div>
+        <div class="line"><span><strong>Why:</strong> ${esc(n.why)}</span>${audio(n.why)}</div>
+      </div>`).join("");
+
+    return `<article class="word-card" data-word="${esc(w.word)}">
+      <div class="word-head" data-toggle="1">
+        <div class="word-title">${esc(w.word)}</div>
+        <div>${audio(`${w.word}. ${w.meaning}`,"Listen to this word")}<span style="font-size:22px">▾</span></div>
+      </div>
+      <div class="word-body">
+        <div class="section">
+          <h3>What does it mean? ${audio(w.meaning)}</h3>
+          <div class="line"><span>${esc(w.meaning)}</span></div>
+          <p class="note">Word type: ${esc(w.type)} ${audio(`Word type: ${w.type}`)}</p>
+        </div>
+
+        <div class="section">
+          <h3>See it in a sentence ${audio("Here are some example sentences.")}</h3>
+          ${examples}
+        </div>
+
+        <div class="section">
+          <h3>Related words ${audio("These words are related to "+w.word+".")}</h3>
+          <div class="related">${related}</div>
+          <p class="note">Related words share an idea. They are not always exact synonyms.</p>
+        </div>
+
+        <div class="section">
+          <h3>Opposite or contrast ${audio(w.opposite)}</h3>
+          <div class="line"><span>${esc(w.opposite)}</span>${audio(w.opposite)}</div>
+        </div>
+
+        <div class="section">
+          <h3>What does not fit? ${audio("These examples do not show the meaning of "+w.word+".")}</h3>
+          ${nonExamples}
+        </div>
+
+        <div class="section">
+          <h3>What feeling does it give? ${audio(w.connotation)}</h3>
+          <div class="line"><span>${esc(w.connotation)}</span></div>
+        </div>
+
+        <div class="section">
+          <h3>Where does it come from? ${audio(w.origin)}</h3>
+          <div class="line"><span>${esc(w.origin)}</span></div>
+        </div>
+
+        <div class="section">
+          <h3>Your turn ${audio("Complete this sentence.")}</h3>
+          <div class="frame">
+            <div class="line"><span>${esc(w.frame)}</span>${audio(w.frame)}</div>
+            <input class="sentence-input" aria-label="Complete the sentence for ${esc(w.word)}">
+          </div>
+          <p class="note">Now use the word in your own sentence.</p>
+          <textarea class="own-writing" placeholder="Write your own sentence using ${esc(w.word)}." aria-label="Write your own sentence using ${esc(w.word)}"></textarea>
+          <button class="audio" data-read-word="${esc(w.word)}">🔊 Read my sentence</button>
+        </div>
+      </div>
+    </article>`;
+  }).join("");
+}
+
+document.addEventListener("click",e=>{
+  const sayButton=e.target.closest("[data-say]");
+  if(sayButton){speak(sayButton.dataset.say);return;}
+
+  const head=e.target.closest("[data-toggle]");
+  if(head){
+    head.closest(".word-card").classList.toggle("open");
+    return;
+  }
+
+  const readWord=e.target.closest("[data-read-word]");
+  if(readWord){
+    const card=readWord.closest(".word-card");
+    const word=card.dataset.word;
+    const frame=card.querySelector(".sentence-input").value;
+    const own=card.querySelector(".own-writing").value;
+    speak(`For the word ${word}, the sentence frame says: ${frame||"no answer yet"}. Your own sentence says: ${own||"no sentence yet"}.`);
+    return;
+  }
+
+  if(e.target.id==="readList"){
+    speak(words.map(w=>w.word).join(", "));
+    return;
+  }
+
+  if(e.target.id==="topButton"){
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+});
+
+render();
+</script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='vocab-word-origins-t4w1';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-vocab.js"></script>
+</body>
+</html>
