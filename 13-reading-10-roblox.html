@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Reading Groups</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background-color: #f4f4f9; }
+
+        .front-menu { background: white; max-width: 800px; margin: 0 auto 40px auto; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; }
+        .front-menu h1 { font-size: 2.2rem; color: #222; margin-top: 0; margin-bottom: 10px; }
+        .front-menu p { font-size: 1.1rem; color: #666; margin-bottom: 35px; }
+
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
+        .menu-button { padding: 30px 20px; border: none; border-radius: 8px; font-size: 1.3rem; font-weight: bold; color: white; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .menu-button:hover { transform: translateY(-4px); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
+        .menu-button:active { transform: translateY(-2px); }
+
+        .red-btn { background-color: #e53935; }
+        .red-btn:hover { background-color: #c62828; }
+        .yellow-btn { background-color: #ffb300; color: #333; }
+        .yellow-btn:hover { background-color: #ff9800; }
+        .green-btn { background-color: #43a047; }
+        .green-btn:hover { background-color: #2e7d32; }
+        .blue-btn { background-color: #1e88e5; }
+        .blue-btn:hover { background-color: #1565c0; }
+
+        .back-to-menu { text-align: center; margin: 30px 0; }
+        .back-to-menu button { background-color: #999; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s; }
+        .back-to-menu button:hover { background-color: #666; }
+
+        .page { background: white; max-width: 800px; margin: 0 auto 40px auto; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); page-break-after: always; position: relative; border-top: 15px solid; display: none; }
+        .page.active { display: block; }
+
+        .red-group { border-top-color: #e53935; }
+        .yellow-group { border-top-color: #ffb300; }
+        .green-group { border-top-color: #43a047; }
+        .blue-group { border-top-color: #1e88e5; }
+
+        .header-container { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .badge { display: inline-block; padding: 6px 12px; font-weight: bold; border-radius: 20px; color: white; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+        .red-badge { background-color: #e53935; }
+        .yellow-badge { background-color: #ffb300; color: #333; }
+        .green-badge { background-color: #43a047; }
+        .blue-badge { background-color: #1e88e5; }
+
+        .audio-btn { background-color: #ffffff; border: 2px solid #ccc; border-radius: 20px; padding: 6px 15px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s ease; }
+        .audio-btn:hover { background-color: #f0f0f0; border-color: #888; }
+        .audio-btn.playing { background-color: #333; color: white; border-color: #333; }
+
+        .question-wrapper { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 5px; }
+        .q-audio-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 2px 5px; margin-top: -2px; border-radius: 4px; transition: background 0.2s; }
+        .q-audio-btn:hover { background-color: #e0e0e0; }
+        .q-audio-btn.playing { animation: pulse 1.5s infinite; background-color: #333; border-radius: 50%; }
+
+        .opt-audio-btn { background: none; border: none; font-size: 0.9rem; cursor: pointer; padding: 2px 6px; border-radius: 4px; transition: background 0.2s; margin-left: 4px; }
+        .opt-audio-btn:hover { background-color: #e0e0e0; }
+        .opt-audio-btn.playing { background-color: #ddd; font-weight: bold; }
+
+        h1 { font-size: 2rem; color: #222; margin-top: 0; }
+        h2 { font-size: 1.4rem; color: #444; border-bottom: 2px solid #eee; padding-bottom: 8px; margin-top: 30px; }
+        p { font-size: 1.1rem; color: #4a4a4a; margin-bottom: 20px; }
+        .story-box { background: #f9f9fb; padding: 25px; border-left: 5px solid #ccc; border-radius: 4px; font-size: 1.15rem; margin-bottom: 30px; }
+
+        .red-group .story-box { border-left-color: #e53935; }
+        .yellow-group .story-box { border-left-color: #ffb300; }
+        .green-group .story-box { border-left-color: #43a047; }
+        .blue-group .story-box { border-left-color: #1e88e5; }
+
+        .line { border-bottom: 1px dashed #999; height: 30px; margin-top: 10px; margin-bottom: 15px; }
+
+        .question-item { margin: 15px 0; padding: 12px; background: #f5f5f5; border-radius: 6px; }
+        .question-item label { display: flex; align-items: center; margin: 8px 0; cursor: pointer; font-size: 1rem; }
+        .question-item input[type="radio"] { margin-right: 10px; transform: scale(1.2); cursor: pointer; }
+
+        .check-button { background-color: #43a047; color: white; border: none; padding: 12px 30px; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s; margin: 30px 0; }
+        .check-button:hover { background-color: #2e7d32; }
+
+        .score-display { background: #e8f5e9; padding: 15px; border-radius: 6px; margin: 20px 0; font-size: 1.1rem; font-weight: bold; display: none; }
+        .score-display.show { display: block; }
+
+        .feedback { margin-top: 10px; padding: 10px; border-radius: 4px; font-weight: bold; }
+        .correct { background: #c8e6c9; color: #1b5e20; }
+        .incorrect { background: #ffcccc; color: #c62828; }
+
+        .highlight { background-color: #ffeb3b; border-radius: 2px; }
+        .text-content span, .question-content span { transition: background-color 0.1s ease; }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        @media (max-width: 600px) {
+            .menu-grid { grid-template-columns: 1fr 1fr; }
+            .menu-button { padding: 25px 15px; font-size: 1.1rem; }
+            .front-menu { padding: 30px 20px; }
+            .front-menu h1 { font-size: 1.8rem; }
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .front-menu, .back-to-menu, .global-controls, .check-button, .score-display { display: none !important; }
+            .page { box-shadow: none; max-width: 100%; margin: 0; padding: 20px; border-radius: 0; display: block !important; }
+            .audio-btn, .q-audio-btn, .opt-audio-btn { display: none !important; }
+        }
+    </style>
+    <style>/* wide layout: fill the embed. Colour chooser = row of 4 on wide screens, 2x2 otherwise (never 3+1) */
+    @media screen { .front-menu, .page, .global-controls, #groupView { max-width: none !important; } }
+    .menu-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    @media (min-width: 900px) { .menu-grid { grid-template-columns: repeat(4, 1fr) !important; } }
+    </style>
+</head>
+<body>
+
+    <div class="front-menu" id="front-menu">
+        <h1>🎮 Roblox</h1>
+        <p>Reading Groups</p>
+        <div class="menu-grid">
+            <button class="menu-button red-btn" onclick="showGroup('red')">Red Group</button>
+            <button class="menu-button yellow-btn" onclick="showGroup('yellow')">Yellow Group</button>
+            <button class="menu-button green-btn" onclick="showGroup('green')">Green Group</button>
+            <button class="menu-button blue-btn" onclick="showGroup('blue')">Blue Group</button>
+        </div>
+    </div>
+
+    <div class="global-controls" id="global-controls" style="display: none; max-width: 800px; margin: 10px auto; padding: 10px 40px; background: #eef2f5; border-radius: 8px; display: flex; align-items: center; gap: 10px;">
+        <label for="speed-rate" style="font-weight: bold; font-size: 0.9rem;">🗣️ Reading Speed:</label>
+        <select id="speed-rate" style="padding: 5px 10px; border-radius: 4px; border: 1px solid #ccc; font-weight: bold;">
+            <option value="0.7">0.7x (Very Slow)</option>
+            <option value="0.85" selected>0.85x (Slow)</option>
+            <option value="1">1.0x (Normal)</option>
+            <option value="1.15">1.15x (Quick)</option>
+        </select>
+    </div>
+
+    <!-- RED GROUP -->
+    <div class="page red-group" id="group-red">
+        <div class="back-to-menu"><button onclick="backToMenu()">← Back to Menu</button></div>
+        <div class="header-container">
+            <span class="badge red-badge">Red Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-red', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>Roblox is Fun</h1>
+        <div class="story-box text-content">
+            <p>Roblox is a <strong>game platform</strong>. People play games on it. You can make a character. Your character is called an <strong>avatar</strong>. You can dress your avatar in cool clothes.</p>
+            <p>You can play with <strong>friends</strong>. You can run and jump in games. You can build things. You can pretend and have fun. Roblox has many different games to play. There is always something new and <strong>exciting</strong> to do!</p>
+        </div>
+
+        <h2>Comprehension Questions</h2>
+
+        <div class="question-wrapper" id="red-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q1', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>1. Vocabulary:</strong> What is a <strong>platform</strong>?</p></div>
+        </div>
+        <div class="question-item" data-question="red-q1">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q1" value="a"> <span>A place where you can play games</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q1" value="b"> <span>A type of shoe</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q1" value="c"> <span>A kind of sandwich</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q1" value="d"> <span>A big book</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-red-q1"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q2', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>2. Literal:</strong> What is an <strong>avatar</strong>?</p></div>
+        </div>
+        <div class="question-item" data-question="red-q2">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q2" value="a"> <span>A character you make in Roblox</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q2" value="b"> <span>A toy car</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q2" value="c"> <span>A video camera</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q2" value="d"> <span>A type of bird</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-red-q2"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q3', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>3. Vocabulary:</strong> What does <strong>exciting</strong> mean?</p></div>
+        </div>
+        <div class="question-item" data-question="red-q3">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q3" value="a"> <span>Very fun and interesting</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q3" value="b"> <span>Very tired</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q3" value="c"> <span>Very sad</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q3" value="d"> <span>Very cold</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-red-q3"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q4">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q4', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>4. Literal:</strong> Can you play with friends in Roblox?</p></div>
+        </div>
+        <div class="question-item" data-question="red-q4">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q4" value="a"> <span>Yes, you can</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q4" value="b"> <span>No, you cannot</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q4" value="c"> <span>Only on weekends</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q4" value="d"> <span>Only at school</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-red-q4"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q5">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q5', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>5. Inference:</strong> Why do you think people like playing Roblox?</p></div>
+        </div>
+        <div class="question-item" data-question="red-q5">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q5" value="a"> <span>Because there are many fun games to play</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q5" value="b"> <span>Because it makes them sad</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q5" value="c"> <span>Because it is boring</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q5" value="d"> <span>Because there is nothing to do</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-red-q5"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q6">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q6', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>6. Inference:</strong> Why would you want to dress your avatar in cool clothes?</p></div>
+        </div>
+        <div class="question-item" data-question="red-q6">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q6" value="a"> <span>To make your character look nice</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q6" value="b"> <span>To make it run faster</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q6" value="c"> <span>To make it disappear</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q6" value="d"> <span>To make it sleep</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-red-q6"></div>
+        <div class="line"></div>
+
+        <button class="check-button" onclick="checkAnswers('red')">Check Answers</button>
+        <div id="score-red" class="score-display"></div>
+    </div>
+
+    <!-- YELLOW GROUP -->
+    <div class="page yellow-group" id="group-yellow">
+        <div class="back-to-menu"><button onclick="backToMenu()">← Back to Menu</button></div>
+        <div class="header-container">
+            <span class="badge yellow-badge">Yellow Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-yellow', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>Playing in Roblox</h1>
+        <div class="story-box text-content">
+            <p>Roblox is an <strong>online game platform</strong> where players can explore different worlds. Each game in Roblox is <strong>unique</strong>. Some games are about racing, while others are about building or solving puzzles. Players create an <strong>avatar</strong> to represent them in the games.</p>
+            <p>You can make your avatar look different by adding clothes, <strong>accessories</strong>, and hairstyles. When you play with <strong>friends</strong>, you can work together to complete challenges. Many players enjoy Roblox because there is always a new game to try. You can also watch what other players have created and learn from their ideas.</p>
+        </div>
+
+        <h2>Comprehension Questions</h2>
+
+        <div class="question-wrapper" id="yellow-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q1', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>1. Vocabulary:</strong> What does <strong>unique</strong> mean?</p></div>
+        </div>
+        <div class="question-item" data-question="yellow-q1">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q1" value="a"> <span>Different and special, unlike anything else</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q1" value="b"> <span>Very old and broken</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q1" value="c"> <span>Exactly the same as others</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q1" value="d"> <span>Very small and tiny</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-yellow-q1"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q2', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>2. Literal:</strong> What types of games are mentioned in Roblox?</p></div>
+        </div>
+        <div class="question-item" data-question="yellow-q2">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q2" value="a"> <span>Racing, building, and puzzle games</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q2" value="b"> <span>Only sports games</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q2" value="c"> <span>Only card games</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q2" value="d"> <span>Only music games</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-yellow-q2"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q3', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>3. Vocabulary:</strong> What are <strong>accessories</strong>?</p></div>
+        </div>
+        <div class="question-item" data-question="yellow-q3">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q3" value="a"> <span>Extra items you add to make something look better</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q3" value="b"> <span>A type of game controller</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q3" value="c"> <span>A computer program</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q3" value="d"> <span>A type of vehicle</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-yellow-q3"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q4">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q4', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>4. Literal:</strong> What can you do with your avatar in Roblox?</p></div>
+        </div>
+        <div class="question-item" data-question="yellow-q4">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q4" value="a"> <span>Give it clothes, accessories, and hairstyles</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q4" value="b"> <span>Only change its color</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q4" value="c"> <span>Delete it forever</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q4" value="d"> <span>Lock it away</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-yellow-q4"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q5">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q5', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>5. Inference:</strong> Why is it helpful to watch what other players have created?</p></div>
+        </div>
+        <div class="question-item" data-question="yellow-q5">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q5" value="a"> <span>You can learn new ideas and get inspired</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q5" value="b"> <span>It makes you tired</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q5" value="c"> <span>It wastes time</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q5" value="d"> <span>It is boring</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-yellow-q5"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q6">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q6', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>6. Inference:</strong> Why do you think working together with friends is fun in Roblox?</p></div>
+        </div>
+        <div class="question-item" data-question="yellow-q6">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q6" value="a"> <span>You can help each other and share the fun</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q6" value="b"> <span>It makes you sad</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q6" value="c"> <span>It is too difficult</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q6" value="d"> <span>You cannot talk to friends</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-yellow-q6"></div>
+        <div class="line"></div>
+
+        <button class="check-button" onclick="checkAnswers('yellow')">Check Answers</button>
+        <div id="score-yellow" class="score-display"></div>
+    </div>
+
+    <!-- GREEN GROUP -->
+    <div class="page green-group" id="group-green">
+        <div class="back-to-menu"><button onclick="backToMenu()">← Back to Menu</button></div>
+        <div class="header-container">
+            <span class="badge green-badge">Green Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-green', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>Games and Friends in Roblox</h1>
+        <div class="story-box text-content">
+            <p>Roblox has many types of <strong>different games</strong> that players can choose from. Some games are about solving puzzles or completing <strong>missions</strong>. Other games let you build things, race cars, or act out roles in different worlds. Each game has its own rules and challenges to complete.</p>
+            <p>When you play games in Roblox, you often play with other people. You can work as a <strong>team</strong> to reach goals and solve problems together. Working with friends helps you finish difficult <strong>challenges</strong>. Many Roblox games teach you new <strong>skills</strong> as you play. Some games teach you about building, while others help you learn to plan and work with others. The more you play, the better you get at different skills.</p>
+        </div>
+
+        <h2>Comprehension Questions</h2>
+
+        <div class="question-wrapper" id="green-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q1', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>1. Vocabulary:</strong> What is a <strong>mission</strong>?</p></div>
+        </div>
+        <div class="question-item" data-question="green-q1">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q1" value="a"> <span>A task or goal you need to complete</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q1" value="b"> <span>A type of video game</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q1" value="c"> <span>A game controller</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q1" value="d"> <span>A kind of award</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-green-q1"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q2', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>2. Literal:</strong> What are some types of games you can play in Roblox?</p></div>
+        </div>
+        <div class="question-item" data-question="green-q2">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q2" value="a"> <span>Puzzle, building, racing, and role-playing games</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q2" value="b"> <span>Only sports games</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q2" value="c"> <span>Only card games</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q2" value="d"> <span>Only music games</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-green-q2"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q3', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>3. Vocabulary:</strong> What does <strong>challenge</strong> mean?</p></div>
+        </div>
+        <div class="question-item" data-question="green-q3">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q3" value="a"> <span>Something difficult that you need to overcome</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q3" value="b"> <span>A type of food</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q3" value="c"> <span>A dance move</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q3" value="d"> <span>A kind of animal</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-green-q3"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q4">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q4', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>4. Literal:</strong> What happens when you work as a team in Roblox?</p></div>
+        </div>
+        <div class="question-item" data-question="green-q4">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q4" value="a"> <span>You can reach goals and solve problems together</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q4" value="b"> <span>You play alone</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q4" value="c"> <span>You lose games faster</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q4" value="d"> <span>You cannot talk to other players</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-green-q4"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q5">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q5', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>5. Inference:</strong> How do Roblox games teach you new skills?</p></div>
+        </div>
+        <div class="question-item" data-question="green-q5">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q5" value="a"> <span>By giving you tasks to solve and challenges to complete</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q5" value="b"> <span>By reading instructions only</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q5" value="c"> <span>By never letting you fail</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q5" value="d"> <span>Games do not teach anything</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-green-q5"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q6">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q6', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>6. Inference:</strong> Why do you think getting better at skills takes practice?</p></div>
+        </div>
+        <div class="question-item" data-question="green-q6">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q6" value="a"> <span>The more you play, the better you understand the game</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q6" value="b"> <span>You only get better once</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q6" value="c"> <span>Skills never improve</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q6" value="d"> <span>Practice makes things worse</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-green-q6"></div>
+        <div class="line"></div>
+
+        <button class="check-button" onclick="checkAnswers('green')">Check Answers</button>
+        <div id="score-green" class="score-display"></div>
+    </div>
+
+    <!-- BLUE GROUP -->
+    <div class="page blue-group" id="group-blue">
+        <div class="back-to-menu"><button onclick="backToMenu()">← Back to Menu</button></div>
+        <div class="header-container">
+            <span class="badge blue-badge">Blue Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-blue', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>Exploring the World of Roblox</h1>
+        <div class="story-box text-content">
+            <p>Roblox is a <strong>platform</strong> where players explore thousands of different games and experiences. Each game is designed by creators who use special tools to build <strong>virtual worlds</strong>. Players can <strong>customize</strong> their avatars with clothing, accessories, and animations to make them unique.</p>
+            <p>Roblox offers games in many categories. Some games focus on adventure and exploration, while others feature strategy, sports, or simulation. Players can team up with friends to complete tasks and overcome challenges. The social aspect is important because <strong>teamwork</strong> helps players succeed. Many players enjoy creating their own games on the platform, which makes Roblox both a playground and a <strong>creative tool</strong>.</p>
+        </div>
+
+        <h2>Comprehension Questions</h2>
+
+        <div class="question-wrapper" id="blue-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q1', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>1. Vocabulary:</strong> What does <strong>customize</strong> mean?</p></div>
+        </div>
+        <div class="question-item" data-question="blue-q1">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q1" value="a"> <span>To change something to make it the way you want it</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q1" value="b"> <span>To break something into pieces</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q1" value="c"> <span>To hide something away</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q1" value="d"> <span>To copy something exactly</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-blue-q1"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q2', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>2. Literal:</strong> What types of game categories does Roblox have?</p></div>
+        </div>
+        <div class="question-item" data-question="blue-q2">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q2" value="a"> <span>Adventure, strategy, sports, and simulation games</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q2" value="b"> <span>Only racing games</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q2" value="c"> <span>Only puzzle games</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q2" value="d"> <span>Only building games</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-blue-q2"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q3', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>3. Vocabulary:</strong> What is <strong>teamwork</strong>?</p></div>
+        </div>
+        <div class="question-item" data-question="blue-q3">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q3" value="a"> <span>When people work together to achieve a goal</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q3" value="b"> <span>A type of game controller</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q3" value="c"> <span>When people work alone</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q3" value="d"> <span>A video camera</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-blue-q3"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q4">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q4', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>4. Literal:</strong> Who creates the games on Roblox?</p></div>
+        </div>
+        <div class="question-item" data-question="blue-q4">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q4" value="a"> <span>Creators who use special tools to design games</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q4" value="b"> <span>Only professional game companies</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q4" value="c"> <span>Only teachers</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q4" value="d"> <span>Only adults</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-blue-q4"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q5">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q5', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>5. Inference:</strong> Why is the social aspect of Roblox important?</p></div>
+        </div>
+        <div class="question-item" data-question="blue-q5">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q5" value="a"> <span>Because teamwork helps players succeed and makes games more fun</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q5" value="b"> <span>Because it makes games harder</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q5" value="c"> <span>Because it wastes time</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q5" value="d"> <span>Because friends always lose</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-blue-q5"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q6">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q6', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>6. Inference:</strong> How is Roblox both a playground and a creative tool?</p></div>
+        </div>
+        <div class="question-item" data-question="blue-q6">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q6" value="a"> <span>Players can enjoy games and also create their own games</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q6" value="b"> <span>It only has games to play</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q6" value="c"> <span>It only has tools for creating</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q6" value="d"> <span>It does not let players create anything</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-blue-q6"></div>
+        <div class="line"></div>
+
+        <button class="check-button" onclick="checkAnswers('blue')">Check Answers</button>
+        <div id="score-blue" class="score-display"></div>
+    </div>
+
+    <script>
+        let currentUtterance = null;
+        let wordSpans = [];
+        let currentlyPlayingTargetId = null;
+        let optionAudioStates = {};
+
+        const answerKeys = {
+            red: { "red-q1": "a", "red-q2": "a", "red-q3": "a", "red-q4": "a", "red-q5": "a", "red-q6": "a" },
+            yellow: { "yellow-q1": "a", "yellow-q2": "a", "yellow-q3": "a", "yellow-q4": "a", "yellow-q5": "a", "yellow-q6": "a" },
+            green: { "green-q1": "a", "green-q2": "a", "green-q3": "a", "green-q4": "a", "green-q5": "a", "green-q6": "a" },
+            blue: { "blue-q1": "a", "blue-q2": "a", "blue-q3": "a", "blue-q4": "a", "blue-q5": "a", "blue-q6": "a" }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.text-content, .question-content').forEach((container, containerIndex) => {
+                let globalWordCounter = 0;
+                const paragraphs = container.querySelectorAll('p');
+
+                paragraphs.forEach(p => {
+                    function tokenize(node) {
+                        let childNodes = Array.from(node.childNodes);
+                        childNodes.forEach(child => {
+                            if (child.nodeType === Node.TEXT_NODE) {
+                                const text = child.textContent;
+                                const tokens = text.split(/(\s+)/);
+                                const fragment = document.createDocumentFragment();
+
+                                tokens.forEach(token => {
+                                    if (token.trim().length > 0) {
+                                        const span = document.createElement('span');
+                                        span.textContent = token;
+                                        span.setAttribute('data-word-id', `${containerIndex}-${globalWordCounter}`);
+                                        fragment.appendChild(span);
+                                        globalWordCounter++;
+                                    } else {
+                                        fragment.appendChild(document.createTextNode(token));
+                                    }
+                                });
+                                child.parentNode.replaceChild(fragment, child);
+                            } else if (child.nodeType === Node.ELEMENT_NODE) {
+                                tokenize(child);
+                            }
+                        });
+                    }
+                    tokenize(p);
+                });
+            });
+        });
+
+        function showGroup(groupColor) {
+            document.getElementById('front-menu').style.display = 'none';
+            document.getElementById('global-controls').style.display = 'flex';
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(`group-${groupColor}`).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function backToMenu() {
+            stopSpeech();
+            document.getElementById('front-menu').style.display = 'block';
+            document.getElementById('global-controls').style.display = 'none';
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            window.scrollTo(0, 0);
+        }
+
+        function toggleReadAloud(targetId, contentSelector) {
+            const button = document.querySelector(`#${targetId} .audio-btn, #${targetId} .q-audio-btn`);
+            if (currentlyPlayingTargetId === targetId) { stopSpeech(); return; }
+            stopSpeech();
+            currentlyPlayingTargetId = targetId;
+            button.classList.add('playing');
+            button.innerHTML = button.classList.contains('audio-btn') ? '🛑 Stop' : '⏹️';
+
+            const container = document.querySelector(`#${targetId} ${contentSelector}`);
+            const textContainers = Array.from(document.querySelectorAll('.text-content, .question-content'));
+            const containerIndex = textContainers.indexOf(container);
+
+            wordSpans = Array.from(container.querySelectorAll('span[data-word-id]'));
+            const textToSpeak = wordSpans.map(span => span.textContent).join(' ');
+            currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+
+            const voices = window.speechSynthesis.getVoices();
+            let premiumVoice = voices.find(voice => voice.lang === 'en-AU' && voice.name.includes('Natural'));
+            if (!premiumVoice) premiumVoice = voices.find(voice => voice.lang === 'en-AU');
+            if (premiumVoice) currentUtterance.voice = premiumVoice;
+
+            currentUtterance.rate = parseFloat(document.getElementById('speed-rate').value);
+
+            let textMap = [];
+            let currentOffset = 0;
+            wordSpans.forEach((span, index) => {
+                const word = span.textContent;
+                textMap.push({ start: currentOffset, end: currentOffset + word.length, id: `${containerIndex}-${index}` });
+                currentOffset += word.length + 1;
+            });
+
+            currentUtterance.onboundary = function(event) {
+                if (event.name === 'word') {
+                    const currentWord = textMap.find(map => event.charIndex >= map.start && event.charIndex < map.end);
+                    if (currentWord) {
+                        wordSpans.forEach(span => span.classList.remove('highlight'));
+                        const activeSpan = container.querySelector(`span[data-word-id="${currentWord.id}"]`);
+                        if (activeSpan) activeSpan.classList.add('highlight');
+                    }
+                }
+            };
+
+            currentUtterance.onend = stopSpeech;
+            currentUtterance.onerror = stopSpeech;
+            window.speechSynthesis.speak(currentUtterance);
+        }
+
+        function toggleReadAloudOption(button) {
+            const label = button.parentElement;
+            const optionText = label.querySelector('span').textContent;
+            const optionKey = `option_${Date.now()}_${Math.random()}`;
+
+            if (optionAudioStates[optionKey] && window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                button.classList.remove('playing');
+                optionAudioStates[optionKey] = false;
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(optionText);
+
+            const voices = window.speechSynthesis.getVoices();
+            let premiumVoice = voices.find(voice => voice.lang === 'en-AU' && voice.name.includes('Natural'));
+            if (!premiumVoice) premiumVoice = voices.find(voice => voice.lang === 'en-AU');
+            if (premiumVoice) utterance.voice = premiumVoice;
+
+            const selectedRate = document.getElementById('speed-rate') ? document.getElementById('speed-rate').value : '0.85';
+            utterance.rate = parseFloat(selectedRate);
+
+            button.classList.add('playing');
+            optionAudioStates[optionKey] = true;
+
+            utterance.onend = () => {
+                button.classList.remove('playing');
+                optionAudioStates[optionKey] = false;
+            };
+
+            utterance.onerror = () => {
+                button.classList.remove('playing');
+                optionAudioStates[optionKey] = false;
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function stopSpeech() {
+            window.speechSynthesis.cancel();
+            if (currentlyPlayingTargetId) {
+                const button = document.querySelector(`#${currentlyPlayingTargetId} .audio-btn, #${currentlyPlayingTargetId} .q-audio-btn`);
+                if (button) {
+                    button.classList.remove('playing');
+                    button.innerHTML = button.classList.contains('audio-btn') ? '🗣️ Read Aloud' : '🔊';
+                }
+            }
+            document.querySelectorAll('.text-content span, .question-content span').forEach(span => span.classList.remove('highlight'));
+            currentUtterance = null;
+            currentlyPlayingTargetId = null;
+        }
+
+        function checkAnswers(group) {
+            const answers = answerKeys[group];
+            let correct = 0;
+            let total = 0;
+
+            for (const questionId in answers) {
+                total++;
+                const selected = document.querySelector(`input[name="${questionId}"]:checked`);
+                const feedbackDiv = document.getElementById(`feedback-${questionId}`);
+
+                if (!selected) {
+                    feedbackDiv.innerHTML = `<span class="feedback incorrect">No answer selected</span>`;
+                } else if (selected.value === answers[questionId]) {
+                    correct++;
+                    feedbackDiv.innerHTML = `<span class="feedback correct">✓ Correct!</span>`;
+                } else {
+                    feedbackDiv.innerHTML = `<span class="feedback incorrect">✗ Incorrect. Try again!</span>`;
+                }
+            }
+
+            const scoreDiv = document.getElementById(`score-${group}`);
+            scoreDiv.classList.add('show');
+            const percentage = Math.round((correct / total) * 100);
+            scoreDiv.innerHTML = `Score: ${correct}/${total} (${percentage}%)`;
+        }
+
+        window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+    </script>
+    <script>
+        // Shuffle answer order on each page load (option values and the answer key are unchanged)
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.question-item').forEach(function(box) {
+                var labels = Array.from(box.querySelectorAll('label'));
+                for (var i = labels.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    var t = labels[i]; labels[i] = labels[j]; labels[j] = t;
+                }
+                labels.forEach(function(l) { box.appendChild(l); });
+            });
+        });
+    </script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='reading-10-roblox';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-reading.js"></script>
+</body>
+</html>

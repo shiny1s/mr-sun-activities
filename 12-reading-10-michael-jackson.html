@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Michael Jackson Reading Groups</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background-color: #f4f4f9; }
+
+        /* FRONT MENU STYLES */
+        .front-menu { background: white; max-width: 800px; margin: 0 auto 40px auto; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; }
+        .front-menu h1 { font-size: 2.2rem; color: #222; margin-top: 0; margin-bottom: 10px; }
+        .front-menu p { font-size: 1.1rem; color: #666; margin-bottom: 35px; }
+
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
+        .menu-button { padding: 30px 20px; border: none; border-radius: 8px; font-size: 1.3rem; font-weight: bold; color: white; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .menu-button:hover { transform: translateY(-4px); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
+        .menu-button:active { transform: translateY(-2px); }
+
+        .red-btn { background-color: #e53935; }
+        .red-btn:hover { background-color: #c62828; }
+        .yellow-btn { background-color: #ffb300; color: #333; }
+        .yellow-btn:hover { background-color: #ff9800; }
+        .green-btn { background-color: #43a047; }
+        .green-btn:hover { background-color: #2e7d32; }
+        .blue-btn { background-color: #1e88e5; }
+        .blue-btn:hover { background-color: #1565c0; }
+
+        .back-to-menu { text-align: center; margin: 30px 0; }
+        .back-to-menu button { background-color: #999; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s; }
+        .back-to-menu button:hover { background-color: #666; }
+
+        .page { background: white; max-width: 800px; margin: 0 auto 40px auto; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); page-break-after: always; position: relative; border-top: 15px solid; display: none; }
+        .page.active { display: block; }
+
+        .red-group { border-top-color: #e53935; }
+        .yellow-group { border-top-color: #ffb300; }
+        .green-group { border-top-color: #43a047; }
+        .blue-group { border-top-color: #1e88e5; }
+
+        .header-container { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .badge { display: inline-block; padding: 6px 12px; font-weight: bold; border-radius: 20px; color: white; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+        .red-badge { background-color: #e53935; }
+        .yellow-badge { background-color: #ffb300; color: #333; }
+        .green-badge { background-color: #43a047; }
+        .blue-badge { background-color: #1e88e5; }
+
+        .audio-btn { background-color: #ffffff; border: 2px solid #ccc; border-radius: 20px; padding: 6px 15px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s ease; }
+        .audio-btn:hover { background-color: #f0f0f0; border-color: #888; }
+        .audio-btn.playing { background-color: #333; color: white; border-color: #333; }
+
+        .question-wrapper { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 5px; }
+        .q-audio-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 2px 5px; margin-top: -2px; border-radius: 4px; transition: background 0.2s; }
+        .q-audio-btn:hover { background-color: #e0e0e0; }
+        .q-audio-btn.playing { animation: pulse 1.5s infinite; background-color: #333; border-radius: 50%; }
+
+        h1 { font-size: 2rem; color: #222; margin-top: 0; }
+        h2 { font-size: 1.4rem; color: #444; border-bottom: 2px solid #eee; padding-bottom: 8px; margin-top: 30px; }
+        p { font-size: 1.1rem; color: #4a4a4a; margin-bottom: 20px; }
+        .story-box { background: #f9f9fb; padding: 25px; border-left: 5px solid #ccc; border-radius: 4px; font-size: 1.15rem; margin-bottom: 30px; }
+
+        .red-group .story-box { border-left-color: #e53935; }
+        .yellow-group .story-box { border-left-color: #ffb300; }
+        .green-group .story-box { border-left-color: #43a047; }
+        .blue-group .story-box { border-left-color: #1e88e5; }
+
+        .line { border-bottom: 1px dashed #999; height: 30px; margin-top: 10px; margin-bottom: 15px; }
+
+        .question-item { margin: 15px 0; padding: 12px; background: #f5f5f5; border-radius: 6px; }
+        .question-item label { display: flex; align-items: center; margin: 8px 0; cursor: pointer; font-size: 1rem; }
+        .question-item input[type="radio"] { margin-right: 10px; transform: scale(1.2); cursor: pointer; }
+
+        .check-button { background-color: #43a047; color: white; border: none; padding: 12px 30px; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s; margin: 30px 0; }
+        .check-button:hover { background-color: #2e7d32; }
+
+        .score-display { background: #e8f5e9; padding: 15px; border-radius: 6px; margin: 20px 0; font-size: 1.1rem; font-weight: bold; display: none; }
+        .score-display.show { display: block; }
+
+        .feedback { margin-top: 10px; padding: 10px; border-radius: 4px; font-weight: bold; }
+        .correct { background: #c8e6c9; color: #1b5e20; }
+        .incorrect { background: #ffcccc; color: #c62828; }
+
+        .highlight { background-color: #ffeb3b; border-radius: 2px; }
+        .text-content span, .question-content span { transition: background-colour 0.1s ease; }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        @media (max-width: 600px) {
+            .menu-grid { grid-template-columns: 1fr 1fr; }
+            .menu-button { padding: 25px 15px; font-size: 1.1rem; }
+            .front-menu { padding: 30px 20px; }
+            .front-menu h1 { font-size: 1.8rem; }
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .front-menu, .back-to-menu, .global-controls, .check-button, .score-display { display: none !important; }
+            .page { box-shadow: none; max-width: 100%; margin: 0; padding: 20px; border-radius: 0; display: block !important; }
+            .audio-btn, .q-audio-btn { display: none !important; }
+        }
+    </style>
+    <style>/* wide layout: fill the embed. Colour chooser = row of 4 on wide screens, 2x2 otherwise (never 3+1) */
+    @media screen { .front-menu, .page, .global-controls, #groupView { max-width: none !important; } }
+    .menu-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    @media (min-width: 900px) { .menu-grid { grid-template-columns: repeat(4, 1fr) !important; } }
+    </style>
+</head>
+<body>
+
+    <!-- ================= FRONT MENU ================= -->
+    <div class="front-menu" id="front-menu">
+        <h1>🎤 Michael Jackson</h1>
+        <p>Reading Groups</p>
+        <div class="menu-grid">
+            <button class="menu-button red-btn" onclick="showGroup('red')">Red Group</button>
+            <button class="menu-button yellow-btn" onclick="showGroup('yellow')">Yellow Group</button>
+            <button class="menu-button green-btn" onclick="showGroup('green')">Green Group</button>
+            <button class="menu-button blue-btn" onclick="showGroup('blue')">Blue Group</button>
+        </div>
+    </div>
+
+    <!-- ================= GLOBAL AUDIO CONTROLS ================= -->
+    <div class="global-controls" id="global-controls" style="display: none; max-width: 800px; margin: 10px auto; padding: 10px 40px; background: #eef2f5; border-radius: 8px; display: flex; align-items: centre; gap: 10px;">
+        <label for="speed-rate" style="font-weight: bold; font-size: 0.9rem;">🗣️ Reading Speed:</label>
+        <select id="speed-rate" style="padding: 5px 10px; border-radius: 4px; border: 1px solid #ccc; font-weight: bold;">
+            <option value="0.7">0.7x (Very Slow)</option>
+            <option value="0.85" selected>0.85x (Slow)</option>
+            <option value="1">1.0x (Normal)</option>
+            <option value="1.15">1.15x (Quick)</option>
+        </select>
+    </div>
+
+    <!-- ================= RED GROUP ================= -->
+    <div class="page red-group" id="group-red">
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+        <div class="header-container">
+            <span class="badge red-badge">Red Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-red', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>Michael Jackson</h1>
+
+        <div class="story-box text-content">
+            <p>Michael Jackson was a <strong>singer</strong>. He sang and danced. People loved to watch him.</p>
+            <p>He wore a white glove. He had a big hat. He made <strong>music</strong> that was fun to hear.</p>
+            <p>He could do a special dance move. It was called the moonwalk. People thought it was amazing.</p>
+            <p>Michael Jackson was called the <strong>King of Pop</strong>. He is still famous today.</p>
+        </div>
+
+        <h2>Comprehension Questions</h2>
+
+        <div class="question-wrapper" id="red-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q1', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>1. Vocabulary:</strong> What is a <strong>singer</strong>?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="red-q1">
+            <label><input type="radio" name="red-q1" value="a"> Someone who makes music with their voice</label>
+            <label><input type="radio" name="red-q1" value="b"> Someone who plays sport</label>
+            <label><input type="radio" name="red-q1" value="c"> Someone who drives a bus</label>
+            <label><input type="radio" name="red-q1" value="d"> Someone who cooks food</label>
+        </div>
+        <div id="feedback-red-q1"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q2', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>2. Literal:</strong> What did Michael Jackson wear on his hand?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="red-q2">
+            <label><input type="radio" name="red-q2" value="a"> A white glove</label>
+            <label><input type="radio" name="red-q2" value="b"> A red scarf</label>
+            <label><input type="radio" name="red-q2" value="c"> A blue ring</label>
+            <label><input type="radio" name="red-q2" value="d"> A green sock</label>
+        </div>
+        <div id="feedback-red-q2"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q3', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>3. Literal:</strong> What was Michael Jackson's special dance move called?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="red-q3">
+            <label><input type="radio" name="red-q3" value="a"> The moonwalk</label>
+            <label><input type="radio" name="red-q3" value="b"> The skywalk</label>
+            <label><input type="radio" name="red-q3" value="c"> The sidewalk</label>
+            <label><input type="radio" name="red-q3" value="d"> The beachwalk</label>
+        </div>
+        <div id="feedback-red-q3"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q4">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q4', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>4. Literal:</strong> What was Michael Jackson called?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="red-q4">
+            <label><input type="radio" name="red-q4" value="a"> The King of Pop</label>
+            <label><input type="radio" name="red-q4" value="b"> The King of Sport</label>
+            <label><input type="radio" name="red-q4" value="c"> The King of Food</label>
+            <label><input type="radio" name="red-q4" value="d"> The King of School</label>
+        </div>
+        <div id="feedback-red-q4"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q5">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q5', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>5. Inference:</strong> How did people feel when they watched Michael Jackson dance?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="red-q5">
+            <label><input type="radio" name="red-q5" value="a"> They thought it was amazing</label>
+            <label><input type="radio" name="red-q5" value="b"> They felt bored</label>
+            <label><input type="radio" name="red-q5" value="c"> They felt scared</label>
+            <label><input type="radio" name="red-q5" value="d"> They felt sad</label>
+        </div>
+        <div id="feedback-red-q5"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q6">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q6', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>6. Inference:</strong> Why do people still know who Michael Jackson is today?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="red-q6">
+            <label><input type="radio" name="red-q6" value="a"> Because his music and dancing were very special</label>
+            <label><input type="radio" name="red-q6" value="b"> Because he went to the moon</label>
+            <label><input type="radio" name="red-q6" value="c"> Because he was a teacher</label>
+            <label><input type="radio" name="red-q6" value="d"> Because he liked to eat</label>
+        </div>
+        <div id="feedback-red-q6"></div>
+        <div class="line"></div>
+
+        <button class="check-button" onclick="checkAnswers('red')">Check Answers</button>
+        <div id="score-red" class="score-display"></div>
+    </div>
+
+<!-- ================= YELLOW GROUP (Kindy) ================= -->
+    <div class="page yellow-group" id="group-yellow">
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+        <div class="header-container">
+            <span class="badge yellow-badge">Yellow Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-yellow', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>Michael Jackson the Dancer</h1>
+
+        <div class="story-box text-content">
+            <p>Michael Jackson was a famous singer and dancer. He could sing very well. He could dance very well too. Michael Jackson made <strong>music</strong> that people loved to hear.</p>
+            <p>Michael Jackson did special moves when he danced. He could slide across the stage. He wore sparkly clothes and a white glove. People watched him perform and cheered.</p>
+            <p>Michael Jackson made many songs. Kids and adults loved his music. His songs made people want to dance and have fun. Michael Jackson was the <strong>King of Pop</strong>.</p>
+            <p>Michael Jackson <strong>inspired</strong> many people to sing and dance. He showed that if you <strong>practice</strong>, you can do amazing things. Michael Jackson will always be remembered as a great <strong>artist</strong>.</p>
+        </div>
+
+        <h2>Comprehension Questions</h2>
+
+        <div class="question-wrapper" id="yellow-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q1', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>1. Vocabulary:</strong> What is a <strong>singer</strong>?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="yellow-q1">
+            <label><input type="radio" name="yellow-q1" value="a"> Someone who makes music with their voice</label>
+            <label><input type="radio" name="yellow-q1" value="b"> Someone who plays soccer</label>
+            <label><input type="radio" name="yellow-q1" value="c"> Someone who teaches school</label>
+            <label><input type="radio" name="yellow-q1" value="d"> Someone who cooks food</label>
+        </div>
+        <div id="feedback-yellow-q1"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q2', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>2. Literal:</strong> What special move could Michael Jackson do?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="yellow-q2">
+            <label><input type="radio" name="yellow-q2" value="a"> He could slide across the stage</label>
+            <label><input type="radio" name="yellow-q2" value="b"> He could fly into the air</label>
+            <label><input type="radio" name="yellow-q2" value="c"> He could turn invisible</label>
+            <label><input type="radio" name="yellow-q2" value="d"> He could paint pictures</label>
+        </div>
+        <div id="feedback-yellow-q2"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q3', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>3. Vocabulary:</strong> What does <strong>inspire</strong> mean?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="yellow-q3">
+            <label><input type="radio" name="yellow-q3" value="a"> To make someone want to do something</label>
+            <label><input type="radio" name="yellow-q3" value="b"> To make someone feel sad</label>
+            <label><input type="radio" name="yellow-q3" value="c"> To take something away</label>
+            <label><input type="radio" name="yellow-q3" value="d"> To break something</label>
+        </div>
+        <div id="feedback-yellow-q3"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q4">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q4', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>4. Literal:</strong> What was Michael Jackson called?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="yellow-q4">
+            <label><input type="radio" name="yellow-q4" value="a"> The King of Pop</label>
+            <label><input type="radio" name="yellow-q4" value="b"> The King of Soccer</label>
+            <label><input type="radio" name="yellow-q4" value="c"> The King of Animals</label>
+            <label><input type="radio" name="yellow-q4" value="d"> The King of Food</label>
+        </div>
+        <div id="feedback-yellow-q4"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q5">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q5', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>5. Inference:</strong> Why did people cheer when Michael Jackson performed?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="yellow-q5">
+            <label><input type="radio" name="yellow-q5" value="a"> Because they loved his singing and dancing</label>
+            <label><input type="radio" name="yellow-q5" value="b"> Because they were scared</label>
+            <label><input type="radio" name="yellow-q5" value="c"> Because it was bedtime</label>
+            <label><input type="radio" name="yellow-q5" value="d"> Because they were hungry</label>
+        </div>
+        <div id="feedback-yellow-q5"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q6">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q6', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>6. Inference:</strong> Why did Michael Jackson practice so much?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="yellow-q6">
+            <label><input type="radio" name="yellow-q6" value="a"> To become great at singing and dancing</label>
+            <label><input type="radio" name="yellow-q6" value="b"> Because he had nothing else to do</label>
+            <label><input type="radio" name="yellow-q6" value="c"> To avoid eating meals</label>
+            <label><input type="radio" name="yellow-q6" value="d"> To make people angry</label>
+        </div>
+        <div id="feedback-yellow-q6"></div>
+        <div class="line"></div>
+
+        <button class="check-button" onclick="checkAnswers('yellow')">Check Answers</button>
+        <div id="score-yellow" class="score-display"></div>
+    </div>
+
+    <!-- ================= GREEN GROUP (Year 1) ================= -->
+    <div class="page green-group" id="group-green">
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+        <div class="header-container">
+            <span class="badge green-badge">Green Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-green', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>Michael Jackson's Life and Music</h1>
+
+        <div class="story-box text-content">
+            <p>Michael Jackson was born in 1958. He started to perform when he was very young. His whole family sang and danced together. They were called the Jackson 5. Young Michael was amazing on stage.</p>
+            <p>When he grew up, Michael Jackson became a <strong>solo</strong> artist. He made his own albums with wonderful songs. His album called "Thriller" was the <strong>best-selling</strong> album of all time. Millions of people bought his music and loved to listen to it.</p>
+            <p>Michael Jackson was famous for his special dance moves. He invented the <strong>moonwalk</strong>. This was a move where he appeared to glide backward smoothly. When people saw this, they were amazed! He also wore a sparkly jacket and a white glove when he performed. His style was unique and special.</p>
+            <p>Michael Jackson's songs made people happy and want to dance. Children and adults all over the world loved his music. He gave concerts that people travelled far to watch. Michael Jackson was one of the greatest <strong>entertainers</strong> of all time.</p>
+        </div>
+
+        <h2>Comprehension Questions</h2>
+
+        <div class="question-wrapper" id="green-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q1', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>1. Vocabulary:</strong> What is a <strong>solo</strong> <strong>artist</strong>?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="green-q1">
+            <label><input type="radio" name="green-q1" value="a"> A performer who works alone and makes their own music</label>
+            <label><input type="radio" name="green-q1" value="b"> A singer who is part of a band</label>
+            <label><input type="radio" name="green-q1" value="c"> A person who writes songs for other singers</label>
+            <label><input type="radio" name="green-q1" value="d"> Someone who fixes cars</label>
+        </div>
+        <div id="feedback-green-q1"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q2', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>2. Literal:</strong> What was the Jackson 5?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="green-q2">
+            <label><input type="radio" name="green-q2" value="a"> Michael Jackson's family group that sang and danced</label>
+            <label><input type="radio" name="green-q2" value="b"> A band Michael Jackson joined when he was grown up</label>
+            <label><input type="radio" name="green-q2" value="c"> A famous dance show on television</label>
+            <label><input type="radio" name="green-q2" value="d"> A soccer team</label>
+        </div>
+        <div id="feedback-green-q2"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q3', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>3. Vocabulary:</strong> What is the <strong>moonwalk</strong>?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="green-q3">
+            <label><input type="radio" name="green-q3" value="a"> A special dance move where you glide backward</label>
+            <label><input type="radio" name="green-q3" value="b"> A special dance move where you spin around fast</label>
+            <label><input type="radio" name="green-q3" value="c"> A song about the moon</label>
+            <label><input type="radio" name="green-q3" value="d"> A type of shoe</label>
+        </div>
+        <div id="feedback-green-q3"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q4">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q4', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>4. Literal:</strong> What was the name of Michael Jackson's best-selling album?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="green-q4">
+            <label><input type="radio" name="green-q4" value="a"> Thriller</label>
+            <label><input type="radio" name="green-q4" value="b"> Bad</label>
+            <label><input type="radio" name="green-q4" value="c"> Moonwalk</label>
+            <label><input type="radio" name="green-q4" value="d"> Twinkle Twinkle Little Star</label>
+        </div>
+        <div id="feedback-green-q4"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q5">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q5', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>5. Inference:</strong> How did people feel when they saw Michael Jackson's moonwalk?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="green-q5">
+            <label><input type="radio" name="green-q5" value="a"> Amazed and impressed</label>
+            <label><input type="radio" name="green-q5" value="b"> Surprised and a little confused</label>
+            <label><input type="radio" name="green-q5" value="c"> Calm and sleepy</label>
+            <label><input type="radio" name="green-q5" value="d"> Angry and upset</label>
+        </div>
+        <div id="feedback-green-q5"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q6">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q6', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>6. Inference:</strong> Why did Michael Jackson become famous around the world?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="green-q6">
+            <label><input type="radio" name="green-q6" value="a"> Because his music and dancing were amazing and unique</label>
+            <label><input type="radio" name="green-q6" value="b"> Because he was in many films and TV shows</label>
+            <label><input type="radio" name="green-q6" value="c"> Because he wore a sparkly jacket and a white glove</label>
+            <label><input type="radio" name="green-q6" value="d"> Because he was tall</label>
+        </div>
+        <div id="feedback-green-q6"></div>
+        <div class="line"></div>
+
+        <button class="check-button" onclick="checkAnswers('green')">Check Answers</button>
+        <div id="score-green" class="score-display"></div>
+    </div>
+
+    <!-- ================= BLUE GROUP (Year 2) ================= -->
+    <div class="page blue-group" id="group-blue">
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+        <div class="header-container">
+            <span class="badge blue-badge">Blue Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-blue', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>The King of Pop: Michael Jackson's Impact</h1>
+
+        <div class="story-box text-content">
+            <p>Michael Jackson was born on August 29, 1958, in Indiana. He was part of a musical family called the Jackson 5. As a young boy, he performed with his brothers. His talent was noticed very early. He became a star while still a child.</p>
+            <p>As an adult, Michael Jackson became a <strong>legendary</strong> performer. He sold over 350 million records worldwide. His album "Thriller" changed the music industry. It combined pop, rock, and rhythm and blues. The album won many awards and broke sales records.</p>
+            <p>Michael Jackson's <strong>dancing</strong> was revolutionary. He invented the <strong>moonwalk</strong>, a move that made him appear to float backward. His music videos were like short movies with amazing choreography. He wore a sequined jacket and a sparkly glove that became his trademark. People everywhere copied his style and his moves.</p>
+            <p>Michael Jackson's <strong>influence</strong> went beyond music. He inspired artists everywhere to be creative and original. He used his platform to speak about peace and helping others. Michael Jackson is remembered as one of the greatest <strong>entertainers</strong> in history.</p>
+        </div>
+
+        <h2>Comprehension Questions</h2>
+
+        <div class="question-wrapper" id="blue-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q1', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>1. Vocabulary:</strong> What does <strong>legendary</strong> mean?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="blue-q1">
+            <label><input type="radio" name="blue-q1" value="a"> Famous and greatly respected because of amazing achievements</label>
+            <label><input type="radio" name="blue-q1" value="b"> A person in a story that is not real</label>
+            <label><input type="radio" name="blue-q1" value="c"> Someone who is very old</label>
+            <label><input type="radio" name="blue-q1" value="d"> A type of music award</label>
+        </div>
+        <div id="feedback-blue-q1"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q2', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>2. Literal:</strong> How many records did Michael Jackson sell worldwide?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="blue-q2">
+            <label><input type="radio" name="blue-q2" value="a"> Over 350 million</label>
+            <label><input type="radio" name="blue-q2" value="b"> Over 100 million</label>
+            <label><input type="radio" name="blue-q2" value="c"> Over 50 million</label>
+            <label><input type="radio" name="blue-q2" value="d"> Over 1 billion</label>
+        </div>
+        <div id="feedback-blue-q2"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q3', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>3. Vocabulary:</strong> What is a <strong>trademark</strong>?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="blue-q3">
+            <label><input type="radio" name="blue-q3" value="a"> Something that is special and known as belonging to someone</label>
+            <label><input type="radio" name="blue-q3" value="b"> A type of clothing</label>
+            <label><input type="radio" name="blue-q3" value="c"> A mark on the ground</label>
+            <label><input type="radio" name="blue-q3" value="d"> A commercial break on TV</label>
+        </div>
+        <div id="feedback-blue-q3"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q4">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q4', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>4. Literal:</strong> What made the "Thriller" album special and different?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="blue-q4">
+            <label><input type="radio" name="blue-q4" value="a"> It combined pop, rock, and rhythm and blues</label>
+            <label><input type="radio" name="blue-q4" value="b"> It had only one song</label>
+            <label><input type="radio" name="blue-q4" value="c"> It was only for children</label>
+            <label><input type="radio" name="blue-q4" value="d"> It was the first album ever made</label>
+        </div>
+        <div id="feedback-blue-q4"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q5">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q5', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>5. Inference:</strong> Why did people copy Michael Jackson's dance moves and style?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="blue-q5">
+            <label><input type="radio" name="blue-q5" value="a"> Because his moves and style were amazing and people wanted to be like him</label>
+            <label><input type="radio" name="blue-q5" value="b"> Because they had nothing else to do</label>
+            <label><input type="radio" name="blue-q5" value="c"> Because it was easy to do</label>
+            <label><input type="radio" name="blue-q5" value="d"> Because their teachers made them</label>
+        </div>
+        <div id="feedback-blue-q5"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q6">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q6', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>6. Inference:</strong> What does the text suggest about Michael Jackson's importance?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="blue-q6">
+            <label><input type="radio" name="blue-q6" value="a"> He changed music and inspired artists to be creative</label>
+            <label><input type="radio" name="blue-q6" value="b"> He only made music for fun</label>
+            <label><input type="radio" name="blue-q6" value="c"> He was not as important as other singers</label>
+            <label><input type="radio" name="blue-q6" value="d"> He only danced and never sang</label>
+        </div>
+        <div id="feedback-blue-q6"></div>
+        <div class="line"></div>
+
+        <button class="check-button" onclick="checkAnswers('blue')">Check Answers</button>
+        <div id="score-blue" class="score-display"></div>
+    </div>
+
+    
+
+    <!-- ================= FIXED SPEECH & HIGHLIGHT ENGINE ================= -->
+    <script>
+        let currentUtterance = null;
+        let wordSpans = [];
+        let currentlyPlayingTargetId = null;
+
+        // Answer keys
+        const answerKeys = {
+            red: { 'red-q1': 'a', 'red-q2': 'a', 'red-q3': 'a', 'red-q4': 'a', 'red-q5': 'a', 'red-q6': 'a' },
+            yellow: { 'yellow-q1': 'a', 'yellow-q2': 'a', 'yellow-q3': 'a', 'yellow-q4': 'a', 'yellow-q5': 'a', 'yellow-q6': 'a' },
+            green: { 'green-q1': 'a', 'green-q2': 'a', 'green-q3': 'a', 'green-q4': 'a', 'green-q5': 'a', 'green-q6': 'a' },
+            blue: { 'blue-q1': 'a', 'blue-q2': 'a', 'blue-q3': 'a', 'blue-q4': 'a', 'blue-q5': 'a', 'blue-q6': 'a' }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.text-content, .question-content').forEach((container, containerIndex) => {
+                let globalWordCounter = 0;
+                const paragraphs = container.querySelectorAll('p');
+
+                paragraphs.forEach(p => {
+                    function tokenize(node) {
+                        let childNodes = Array.from(node.childNodes);
+                        childNodes.forEach(child => {
+                            if (child.nodeType === Node.TEXT_NODE) {
+                                const text = child.textContent;
+                                const tokens = text.split(/(\s+)/);
+                                const fragment = document.createDocumentFragment();
+
+                                tokens.forEach(token => {
+                                    if (token.trim().length > 0) {
+                                        const span = document.createElement('span');
+                                        span.textContent = token;
+                                        span.setAttribute('data-word-id', `${containerIndex}-${globalWordCounter}`);
+                                        fragment.appendChild(span);
+                                        globalWordCounter++;
+                                    } else {
+                                        fragment.appendChild(document.createTextNode(token));
+                                    }
+                                });
+                                child.parentNode.replaceChild(fragment, child);
+                            } else if (child.nodeType === Node.ELEMENT_NODE) {
+                                tokenize(child);
+                            }
+                        });
+                    }
+                    tokenize(p);
+                });
+            });
+        });
+
+        function showGroup(groupColor) {
+            document.getElementById('front-menu').style.display = 'none';
+            document.getElementById('global-controls').style.display = 'flex';
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(`group-${groupColor}`).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function backToMenu() {
+            stopSpeech();
+            document.getElementById('front-menu').style.display = 'block';
+            document.getElementById('global-controls').style.display = 'none';
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            window.scrollTo(0, 0);
+        }
+
+        function toggleReadAloud(targetId, contentSelector) {
+            const button = document.querySelector(`#${targetId} .audio-btn, #${targetId} .q-audio-btn`);
+
+            if (currentlyPlayingTargetId === targetId) {
+                stopSpeech();
+                return;
+            }
+
+            stopSpeech();
+
+            currentlyPlayingTargetId = targetId;
+            button.classList.add('playing');
+            if (button.classList.contains('audio-btn')) {
+                button.innerHTML = '🛑 Stop';
+            } else {
+                button.innerHTML = '⏹️';
+            }
+
+            const container = document.querySelector(`#${targetId} ${contentSelector}`);
+            const textContainers = Array.from(document.querySelectorAll('.text-content, .question-content'));
+            const containerIndex = textContainers.indexOf(container);
+
+            wordSpans = Array.from(container.querySelectorAll('span[data-word-id]'));
+            const textToSpeak = wordSpans.map(span => span.textContent).join(' ');
+
+            currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+
+            const voices = window.speechSynthesis.getVoices();
+            let premiumVoice = voices.find(voice => voice.lang === 'en-AU' && voice.name.includes('Natural'));
+            if (!premiumVoice) premiumVoice = voices.find(voice => voice.lang === 'en-AU');
+            if (premiumVoice) currentUtterance.voice = premiumVoice;
+
+            const selectedRate = document.getElementById('speed-rate').value;
+            currentUtterance.rate = parseFloat(selectedRate);
+
+            let textMap = [];
+            let currentOffset = 0;
+
+            wordSpans.forEach((span, index) => {
+                const word = span.textContent;
+                textMap.push({
+                    start: currentOffset,
+                    end: currentOffset + word.length,
+                    id: `${containerIndex}-${index}`
+                });
+                currentOffset += word.length + 1;
+            });
+
+            currentUtterance.onboundary = function(event) {
+                if (event.name === 'word') {
+                    const charIndex = event.charIndex;
+                    const currentWord = textMap.find(map => charIndex >= map.start && charIndex < map.end);
+
+                    if (currentWord) {
+                        wordSpans.forEach(span => span.classList.remove('highlight'));
+                        const activeSpan = container.querySelector(`span[data-word-id="${currentWord.id}"]`);
+                        if (activeSpan) {
+                            activeSpan.classList.add('highlight');
+                        }
+                    }
+                }
+            };
+
+            currentUtterance.onend = stopSpeech;
+            currentUtterance.onerror = stopSpeech;
+
+            window.speechSynthesis.speak(currentUtterance);
+        }
+
+        function stopSpeech() {
+            window.speechSynthesis.cancel();
+            if (currentlyPlayingTargetId) {
+                const button = document.querySelector(`#${currentlyPlayingTargetId} .audio-btn, #${currentlyPlayingTargetId} .q-audio-btn`);
+                if (button) {
+                    button.classList.remove('playing');
+                    if (button.classList.contains('audio-btn')) {
+                        button.innerHTML = '🗣️ Read Aloud';
+                    } else {
+                        button.innerHTML = '🔊';
+                    }
+                }
+            }
+            document.querySelectorAll('.text-content span, .question-content span').forEach(span => span.classList.remove('highlight'));
+            currentUtterance = null;
+            currentlyPlayingTargetId = null;
+        }
+
+        function checkAnswers(group) {
+            const answers = answerKeys[group];
+            let correct = 0;
+            let total = 0;
+
+            for (const questionId in answers) {
+                total++;
+                const selected = document.querySelector(`input[name="${questionId}"]:checked`);
+                const feedbackDiv = document.getElementById(`feedback-${questionId}`);
+
+                if (!selected) {
+                    feedbackDiv.innerHTML = '<span class="feedback incorrect">No answer selected</span>';
+                } else if (selected.value === answers[questionId]) {
+                    correct++;
+                    feedbackDiv.innerHTML = '<span class="feedback correct">✓ Correct!</span>';
+                } else {
+                    feedbackDiv.innerHTML = '<span class="feedback incorrect">✗ Incorrect. Try again!</span>';
+                }
+            }
+
+            const scoreDiv = document.getElementById(`score-${group}`);
+            scoreDiv.classList.add('show');
+            const percentage = Math.round((correct / total) * 100);
+            scoreDiv.innerHTML = `<span>Score: ${correct}/${total} (${percentage}%)</span>`;
+        }
+
+        window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+    </script>
+    <script>
+        // Shuffle answer order on each page load (option values and the answer key are unchanged)
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.question-item').forEach(function(box) {
+                var labels = Array.from(box.querySelectorAll('label'));
+                for (var i = labels.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    var t = labels[i]; labels[i] = labels[j]; labels[j] = t;
+                }
+                labels.forEach(function(l) { box.appendChild(l); });
+            });
+        });
+    </script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='reading-10-michael-jackson';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-reading.js"></script>
+</body>
+</html>

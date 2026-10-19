@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Groups Materials</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background-color: #f4f4f9; }
+        
+        /* FRONT MENU STYLES */
+        .front-menu { background: white; max-width: 800px; margin: 0 auto 40px auto; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; }
+        .front-menu h1 { font-size: 2.2rem; color: #222; margin-top: 0; margin-bottom: 10px; }
+        .front-menu p { font-size: 1.1rem; color: #666; margin-bottom: 35px; }
+
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
+        .menu-button { padding: 30px 20px; border: none; border-radius: 8px; font-size: 1.3rem; font-weight: bold; color: white; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .menu-button:hover { transform: translateY(-4px); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
+        .menu-button:active { transform: translateY(-2px); }
+
+        .red-btn { background-color: #e53935; }
+        .red-btn:hover { background-color: #c62828; }
+        .yellow-btn { background-color: #ffb300; color: #333; }
+        .yellow-btn:hover { background-color: #ff9800; }
+        .green-btn { background-color: #43a047; }
+        .green-btn:hover { background-color: #2e7d32; }
+        .blue-btn { background-color: #1e88e5; }
+        .blue-btn:hover { background-color: #1565c0; }
+
+        .back-to-menu { text-align: center; margin: 30px 0; }
+        .back-to-menu button { background-color: #999; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s; }
+        .back-to-menu button:hover { background-color: #666; }
+
+        .page { background: white; max-width: 800px; margin: 0 auto 40px auto; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); page-break-after: always; position: relative; border-top: 15px solid; display: none; }
+        .page.active { display: block; }
+        
+        /* Colour Coding Rules */
+        .red-group { border-top-color: #e53935; }
+        .yellow-group { border-top-color: #ffb300; }
+        .green-group { border-top-color: #43a047; }
+        .blue-group { border-top-color: #1e88e5; }
+        
+        .header-container { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .badge { display: inline-block; padding: 6px 12px; font-weight: bold; border-radius: 20px; color: white; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+        .red-badge { background-color: #e53935; }
+        .yellow-badge { background-color: #ffb300; color: #333; }
+        .green-badge { background-color: #43a047; }
+        .blue-badge { background-color: #1e88e5; }
+        
+        .audio-btn { background-color: #ffffff; border: 2px solid #ccc; border-radius: 20px; padding: 6px 15px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s ease; }
+        .audio-btn:hover { background-color: #f0f0f0; border-color: #888; }
+        .audio-btn.playing { background-color: #333; color: white; border-color: #333; }
+        
+        /* Question Audio Buttons Layout */
+        .question-wrapper { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 5px; }
+        .q-audio-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 2px 5px; margin-top: -2px; border-radius: 4px; transition: background 0.2s; }
+        .q-audio-btn:hover { background-color: #e0e0e0; }
+        .q-audio-btn.playing { animation: pulse 1.5s infinite; background-color: #333; border-radius: 50%; }
+        
+        h1 { font-size: 2rem; color: #222; margin-top: 0; }
+        h2 { font-size: 1.4rem; color: #444; border-bottom: 2px solid #eee; padding-bottom: 8px; margin-top: 30px; }
+        p { font-size: 1.1rem; color: #4a4a4a; margin-bottom: 20px; }
+        .story-box { background: #f9f9fb; padding: 25px; border-left: 5px solid #ccc; border-radius: 4px; font-size: 1.15rem; margin-bottom: 30px; }
+        
+        .red-group .story-box { border-left-color: #e53935; font-size: 1.4rem; font-weight: bold; }
+        .yellow-group .story-box { border-left-color: #ffb300; }
+        .green-group .story-box { border-left-color: #43a047; }
+        .blue-group .story-box { border-left-color: #1e88e5; }
+        
+        ul { padding-left: 20px; }
+        li { margin-bottom: 12px; font-size: 1.05rem; }
+        .line { border-bottom: 1px dashed #999; height: 30px; margin-top: 10px; margin-bottom: 15px; }
+        .checkbox-item { margin: 10px 0; font-size: 1.1rem; display: flex; align-items: center; }
+        input[type="checkbox"] { margin-right: 10px; transform: scale(1.2); }
+        
+        /* Highlighting Style */
+        .highlight { background-color: #ffeb3b; border-radius: 2px; }
+        .text-content span, .question-content span { transition: background-color 0.1s ease; }
+        
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        @media (max-width: 600px) {
+            .menu-grid { grid-template-columns: 1fr 1fr; }
+            .menu-button { padding: 25px 15px; font-size: 1.1rem; }
+            .front-menu { padding: 30px 20px; }
+            .front-menu h1 { font-size: 1.8rem; }
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .front-menu, .back-to-menu, .global-controls { display: none !important; }
+            .page { box-shadow: none; max-width: 100%; margin: 0; padding: 20px; border-radius: 0; display: block !important; }
+            .audio-btn, .q-audio-btn { display: none !important; }
+        }
+    </style>
+    <style>/* wide layout: fill the embed. Colour chooser = row of 4 on wide screens, 2x2 otherwise (never 3+1) */
+    @media screen { .front-menu, .page, .global-controls, #groupView { max-width: none !important; } }
+    .menu-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    @media (min-width: 900px) { .menu-grid { grid-template-columns: repeat(4, 1fr) !important; } }
+    </style>
+</head>
+<body>
+
+    <!-- ================= FRONT MENU ================= -->
+    <div class="front-menu" id="front-menu">
+        <h1>📚 Reading Groups</h1>
+        <p>The Dingo Cub</p>
+        <div class="menu-grid">
+            <button class="menu-button red-btn" onclick="showGroup('red')">Red Group</button>
+            <button class="menu-button yellow-btn" onclick="showGroup('yellow')">Yellow Group</button>
+            <button class="menu-button green-btn" onclick="showGroup('green')">Green Group</button>
+            <button class="menu-button blue-btn" onclick="showGroup('blue')">Blue Group</button>
+        </div>
+    </div>
+
+    <!-- ================= GLOBAL AUDIO CONTROLS ================= -->
+    <div class="global-controls" id="global-controls" style="display: none; max-width: 800px; margin: 10px auto; padding: 10px 40px; background: #eef2f5; border-radius: 8px; display: flex; align-items: center; gap: 10px;">
+        <label for="speed-rate" style="font-weight: bold; font-size: 0.9rem;">🗣️ Reading Speed:</label>
+        <select id="speed-rate" style="padding: 5px 10px; border-radius: 4px; border: 1px solid #ccc; font-weight: bold;">
+            <option value="0.7">0.7x (Very Slow)</option>
+            <option value="0.85" selected>0.85x (Slow)</option>
+            <option value="1">1.0x (Normal)</option>
+            <option value="1.15">1.15x (Quick)</option>
+        </select>
+    </div>
+
+    <!-- ================= RED GROUP ================= -->
+    <div class="page red-group" id="group-red">
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+        <div class="header-container">
+            <span class="badge red-badge">Red Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-red', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>Wandi the Dingo Cub</h1>
+        
+        <div class="story-box text-content">
+            <p>Look at the cub.</p>
+            <p>This is Wandi.</p>
+            <p>Wandi is a wild dingo.</p>
+            <p>He has a warm tail.</p>
+            <p>He is safe in the den.</p>
+            <p>Wandi can run!</p>
+        </div>
+
+        <h2>Your Turn!</h2>
+        <div class="question-wrapper" id="red-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q1', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>1. Point and Say:</strong> Can you find the word <strong>tail</strong> in the story? Point to Wandi's fluffy tail. Why does he need it?</p>
+            </div>
+        </div>
+        <div class="line"></div>
+        
+        <div class="question-wrapper" id="red-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q2', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>2. Quick Question:</strong> What is the little dingo cub's name?</p>
+            </div>
+        </div>
+        <div class="line"></div>
+
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+    </div>
+
+    <!-- ================= YELLOW GROUP ================= -->
+    <div class="page yellow-group" id="group-yellow">
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+        <div class="header-container">
+            <span class="badge yellow-badge">Yellow Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-yellow', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>Home in the Den</h1>
+        
+        <div class="story-box text-content">
+            <p>Wandi was a little dingo cub. He lived in a cold, snowy den with his family. The snow fell heavy and solid above them, but Wandi was not cold.</p>
+            <p>His mother had a very soft, fluffy tail. She curled it right over his body like a warm blanket. Wandi could hear his mother's <strong>heartbeat</strong>. It was <strong>constant</strong> and strong. The steady <em>thud - thud</em> told Wandi that he was loved and safe.</p>
+        </div>
+
+        <h2>Word Power & Comprehension</h2>
+        <div class="question-wrapper" id="yellow-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q1', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>1. Word Hunt:</strong> Find the word <strong>constant</strong> in the text. If his mother's heartbeat is constant, does it mean it keeps stopping, or it keeps going?</p>
+            </div>
+        </div>
+        <div class="checkbox-item"><input type="checkbox"> It keeps stopping and starting</div>
+        <div class="checkbox-item"><input type="checkbox"> It keeps going and never stops</div>
+        
+        <div class="question-wrapper" id="yellow-q2" style="margin-top:25px;">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q2', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>2. Think and Write:</strong> What did Wandi use as a portable blanket to keep his nose warm?</p>
+            </div>
+        </div>
+        <div class="line"></div>
+        
+        <div class="question-wrapper" id="yellow-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q3', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>3. Inference:</strong> How did Wandi feel when he listened to his mum's heartbeat? What clue in the story tells you that?</p>
+            </div>
+        </div>
+        <div class="line"></div>
+        <div class="line"></div>
+
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+    </div>
+
+    <!-- ================= GREEN GROUP ================= -->
+    <div class="page green-group" id="group-green">
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+        <div class="header-container">
+            <span class="badge green-badge">Green Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-green', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>The Alpine Dingo</h1>
+        
+        <div class="story-box text-content">
+            <p>Dingoes are native Australian animals, and they are highly <strong>adaptable</strong> creatures. There are different types of dingoes living across Australia, which are called <strong>eco-types</strong>. Wandi is an alpine dingo. Alpine dingoes mostly live in the high, cold mountains of eastern Australia.</p>
+            <p>They have very thick coats that grow fluffy in winter, and they use their big tails to shield their faces from the heavy snow. Dingoes are important <strong>apex predators</strong>. They hunt pests like rabbits and feral cats, but they are currently classed as a vulnerable species because purebred dingoes are becoming rare.</p>
+        </div>
+
+        <h2>Dingo Detective Challenges</h2>
+        <div class="question-wrapper" id="green-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q1', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>1. Vocabulary Check:</strong> Look at the phrase <strong>apex predator</strong>. Based on the text, what does an apex predator do?</p>
+            </div>
+        </div>
+        <div class="line"></div>
+        <div class="line"></div>
+        
+        <div class="question-wrapper" id="green-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q2', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>2. Fact Retrieval:</strong> What is an "eco-type"? Which specific eco-type is Wandi?</p>
+            </div>
+        </div>
+        <div class="line"></div>
+        
+        <div class="question-wrapper" id="green-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q3', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>3. Deep Thinking:</strong> The text says dingoes are "vulnerable". Using clues from the passage, why do you think humans need to protect them from becoming extinct?</p>
+            </div>
+        </div>
+        <div class="line"></div>
+        <div class="line"></div>
+
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+    </div>
+
+    <!-- ================= BLUE GROUP ================= -->
+    <div class="page blue-group" id="group-blue">
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+        <div class="header-container">
+            <span class="badge blue-badge">Blue Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-blue', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>Authorship and the Guardian of the Ecosystem</h1>
+        
+        <div class="story-box text-content">
+            <p>When Favel Parrett wrote the book <em>Wandi</em>, she wanted to change our <strong>perspective</strong> on wild dingoes. For over 200 years, dingoes have been widely misunderstood because they look like domestic dogs, yet they are actually crucial to the Australian <strong>ecosystem</strong>.</p>
+            <p>As an apex predator, the dingo acts as an environmental guardian by keeping invasive pests in check and preventing kangaroo overpopulation. Favel Parrett has immense <strong>authority</strong> on this subject matter. Before writing, she worked directly as a volunteer at the Dingo Discovery Sanctuary. Because she has real-world experience observing alpine dingo eco-types, readers trust her <strong>authorship</strong> and find her arguments highly <strong>credible</strong>. We must listen to her message so we can preserve these unique creatures for future generations.</p>
+        </div>
+
+        <h2>Author's Craft & Analysis</h2>
+        <div class="question-wrapper" id="blue-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q1', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>1. Vocabulary Mastery:</strong> Define <strong>authority</strong> and <strong>authorship</strong> in your own words based on how they are used in the text.</p>
+            </div>
+        </div>
+        <div class="line"></div>
+        <div class="line"></div>
+        
+        <div class="question-wrapper" id="blue-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q2', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>2. Language Feature Hunt:</strong> Locate and copy down one <strong>declarative sentence</strong> from the text that states a clear fact about dingoes.</p>
+            </div>
+        </div>
+        <div class="line"></div>
+        
+        <div class="question-wrapper" id="blue-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q3', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>3. Evaluative Critique:</strong> What was Favel Parrett's primary purpose in writing <em>Wandi</em>? Do you think sharing a story from a single dingo's perspective is an effective way to persuade people to protect them? Explain your viewpoint.</p>
+            </div>
+        </div>
+        <div class="line"></div>
+        <div class="line"></div>
+
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+    </div>
+
+    <!-- ================= FIXED SPEECH & HIGHLIGHT ENGINE ================= -->
+    <script>
+        let currentUtterance = null;
+        let wordSpans = [];
+        let currentlyPlayingTargetId = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Tokenize both story blocks and question blocks cleanly
+            document.querySelectorAll('.text-content, .question-content').forEach((container, containerIndex) => {
+                let globalWordCounter = 0;
+                const paragraphs = container.querySelectorAll('p');
+                
+                paragraphs.forEach(p => {
+                    function tokenize(node) {
+                        let childNodes = Array.from(node.childNodes);
+                        childNodes.forEach(child => {
+                            if (child.nodeType === Node.TEXT_NODE) {
+                                const text = child.textContent;
+                                const tokens = text.split(/(\s+)/);
+                                const fragment = document.createDocumentFragment();
+                                
+                                tokens.forEach(token => {
+                                    if (token.trim().length > 0) {
+                                        const span = document.createElement('span');
+                                        span.textContent = token;
+                                        span.setAttribute('data-word-id', `${containerIndex}-${globalWordCounter}`);
+                                        fragment.appendChild(span);
+                                        globalWordCounter++;
+                                    } else {
+                                        fragment.appendChild(document.createTextNode(token));
+                                    }
+                                });
+                                child.parentNode.replaceChild(fragment, child);
+                            } else if (child.nodeType === Node.ELEMENT_NODE) {
+                                tokenize(child);
+                            }
+                        });
+                    }
+                    tokenize(p);
+                });
+            });
+        });
+
+        function showGroup(groupColor) {
+            document.getElementById('front-menu').style.display = 'none';
+            document.getElementById('global-controls').style.display = 'flex';
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(`group-${groupColor}`).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function backToMenu() {
+            stopSpeech();
+            document.getElementById('front-menu').style.display = 'block';
+            document.getElementById('global-controls').style.display = 'none';
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            window.scrollTo(0, 0);
+        }
+
+        function toggleReadAloud(targetId, contentSelector) {
+            const button = document.querySelector(`#${targetId} .audio-btn, #${targetId} .q-audio-btn`);
+
+            if (currentlyPlayingTargetId === targetId) {
+                stopSpeech();
+                return;
+            }
+
+            stopSpeech();
+
+            currentlyPlayingTargetId = targetId;
+            button.classList.add('playing');
+            if (button.classList.contains('audio-btn')) {
+                button.innerHTML = '🛑 Stop';
+            } else {
+                button.innerHTML = '⏹️';
+            }
+
+            const container = document.querySelector(`#${targetId} ${contentSelector}`);
+            const textContainers = Array.from(document.querySelectorAll('.text-content, .question-content'));
+            const containerIndex = textContainers.indexOf(container);
+            
+            wordSpans = Array.from(container.querySelectorAll('span[data-word-id]'));
+            const textToSpeak = wordSpans.map(span => span.textContent).join(' ');
+
+            currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+            
+            const voices = window.speechSynthesis.getVoices();
+            let premiumVoice = voices.find(voice => voice.lang === 'en-AU' && voice.name.includes('Natural'));
+            if (!premiumVoice) premiumVoice = voices.find(voice => voice.lang === 'en-AU');
+            if (premiumVoice) currentUtterance.voice = premiumVoice;
+
+            // Apply dynamic rate setting from global rate dropdown element
+            const selectedRate = document.getElementById('speed-rate').value;
+            currentUtterance.rate = parseFloat(selectedRate);
+
+            let textMap = [];
+            let currentOffset = 0;
+            
+            wordSpans.forEach((span, index) => {
+                const word = span.textContent;
+                textMap.push({
+                    start: currentOffset,
+                    end: currentOffset + word.length,
+                    id: `${containerIndex}-${index}`
+                });
+                currentOffset += word.length + 1; 
+            });
+
+            currentUtterance.onboundary = function(event) {
+                if (event.name === 'word') {
+                    const charIndex = event.charIndex;
+                    const currentWord = textMap.find(map => charIndex >= map.start && charIndex < map.end);
+                    
+                    if (currentWord) {
+                        wordSpans.forEach(span => span.classList.remove('highlight'));
+                        const activeSpan = container.querySelector(`span[data-word-id="${currentWord.id}"]`);
+                        if (activeSpan) {
+                            activeSpan.classList.add('highlight');
+                        }
+                    }
+                }
+            };
+
+            currentUtterance.onend = stopSpeech;
+            currentUtterance.onerror = stopSpeech;
+
+            window.speechSynthesis.speak(currentUtterance);
+        }
+
+        function stopSpeech() {
+            window.speechSynthesis.cancel();
+            if (currentlyPlayingTargetId) {
+                const button = document.querySelector(`#${currentlyPlayingTargetId} .audio-btn, #${currentlyPlayingTargetId} .q-audio-btn`);
+                if (button) {
+                    button.classList.remove('playing');
+                    if (button.classList.contains('audio-btn')) {
+                        button.innerHTML = '🗣️ Read Aloud';
+                    } else {
+                        button.innerHTML = '🔊';
+                    }
+                }
+            }
+            document.querySelectorAll('.text-content span, .question-content span').forEach(span => span.classList.remove('highlight'));
+            currentUtterance = null;
+            currentlyPlayingTargetId = null;
+        }
+
+        window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+    </script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='reading-7-wandi';</script><script src="tracker.js"></script><script src="wrap.js"></script>
+</body>
+</html>

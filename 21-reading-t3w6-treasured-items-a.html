@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Groups: Treasured Items</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background-color: #f4f4f9; }
+
+        .front-menu { background: white; max-width: 800px; margin: 0 auto 40px auto; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; }
+        .front-menu h1 { font-size: 2.2rem; color: #222; margin-top: 0; margin-bottom: 10px; }
+        .front-menu p { font-size: 1.1rem; color: #666; margin-bottom: 35px; }
+
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
+        .menu-button { padding: 30px 20px; border: none; border-radius: 8px; font-size: 1.3rem; font-weight: bold; color: white; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .menu-button:hover { transform: translateY(-4px); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
+        .menu-button:active { transform: translateY(-2px); }
+
+        .red-btn { background-color: #e53935; }
+        .red-btn:hover { background-color: #c62828; }
+        .yellow-btn { background-color: #ffb300; color: #333; }
+        .yellow-btn:hover { background-color: #ff9800; }
+        .green-btn { background-color: #43a047; }
+        .green-btn:hover { background-color: #2e7d32; }
+        .blue-btn { background-color: #1e88e5; }
+        .blue-btn:hover { background-color: #1565c0; }
+
+        .back-to-menu { text-align: center; margin: 30px 0; }
+        .back-to-menu button { background-color: #999; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s; }
+        .back-to-menu button:hover { background-color: #666; }
+
+        .page { background: white; max-width: 800px; margin: 0 auto 40px auto; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; border-top: 15px solid; display: none; }
+        .page.active { display: block; }
+
+        .red-group { border-top-color: #e53935; }
+        .yellow-group { border-top-color: #ffb300; }
+        .green-group { border-top-color: #43a047; }
+        .blue-group { border-top-color: #1e88e5; }
+
+        .header-container { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .badge { display: inline-block; padding: 6px 12px; font-weight: bold; border-radius: 20px; color: white; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+        .red-badge { background-color: #e53935; }
+        .yellow-badge { background-color: #ffb300; color: #333; }
+        .green-badge { background-color: #43a047; }
+        .blue-badge { background-color: #1e88e5; }
+
+        .audio-btn { background-color: #ffffff; border: 2px solid #ccc; border-radius: 20px; padding: 6px 15px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s ease; }
+        .audio-btn:hover { background-color: #f0f0f0; border-color: #888; }
+        .audio-btn.playing { background-color: #333; color: white; border-color: #333; }
+
+        .question-wrapper { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 5px; }
+        .q-audio-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 2px 5px; margin-top: -2px; border-radius: 4px; transition: background 0.2s; }
+        .q-audio-btn:hover { background-color: #e0e0e0; }
+        .q-audio-btn.playing { animation: pulse 1.5s infinite; background-color: #333; border-radius: 50%; }
+
+        .opt-audio-btn { background: none; border: none; font-size: 0.9rem; cursor: pointer; padding: 2px 6px; border-radius: 4px; transition: background 0.2s; margin-left: 4px; }
+        .opt-audio-btn:hover { background-color: #e0e0e0; }
+        .opt-audio-btn.playing { background-color: #ddd; font-weight: bold; }
+
+        h1 { font-size: 2rem; color: #222; margin-top: 0; }
+        h2 { font-size: 1.4rem; color: #444; border-bottom: 2px solid #eee; padding-bottom: 8px; margin-top: 30px; }
+        p { font-size: 1.1rem; color: #4a4a4a; margin-bottom: 20px; }
+        
+        .story-box { background: #f9f9fb; padding: 25px; border-left: 5px solid #ccc; border-radius: 4px; font-size: 1.15rem; margin-bottom: 30px; }
+        .red-group .story-box { border-left-color: #e53935; }
+        .yellow-group .story-box { border-left-color: #ffb300; }
+        .green-group .story-box { border-left-color: #43a047; }
+        .blue-group .story-box { border-left-color: #1e88e5; }
+
+        .q-block { margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px dashed #ccc; }
+        .q-block:last-of-type { border-bottom: none; }
+
+        .question-item { margin: 15px 0; padding: 12px; background: #f5f5f5; border-radius: 6px; }
+        .question-item label { display: flex; align-items: center; margin: 8px 0; cursor: pointer; font-size: 1rem; padding: 8px; border-radius: 4px; transition: background 0.2s; }
+        .question-item label:hover { background: #e9e9e9; }
+        .question-item input[type="radio"] { margin-right: 15px; transform: scale(1.3); cursor: pointer; }
+
+        /* Copy Task Styles */
+        .copy-task-box { background: #fffde7; border: 2px dashed #fbc02d; padding: 20px; border-radius: 8px; margin-top: 10px; font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; font-size: 1.3rem; text-align: center; color: #333; }
+        .copy-checkbox { margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; font-family: 'Helvetica Neue', sans-serif; font-size: 1rem; }
+        .copy-checkbox input { transform: scale(1.5); cursor: pointer; }
+
+        /* Matching Game Styles */
+        .match-area { display: flex; flex-direction: column; gap: 20px; margin-top: 15px; }
+        .match-instructions { font-size: 0.95rem; color: #666; font-style: italic; text-align: center; }
+        .match-source { display: flex; flex-wrap: wrap; gap: 10px; min-height: 60px; padding: 15px; background: #e3f2fd; border-radius: 8px; justify-content: center; }
+        .match-item { background: white; border: 2px solid #2196f3; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; user-select: none; transition: transform 0.2s, background 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .match-item:hover { transform: scale(1.05); }
+        .match-item.selected { background: #bbdefb; border-color: #0d47a1; transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .match-targets { display: flex; flex-direction: column; gap: 15px; }
+        .match-target-row { display: flex; align-items: center; gap: 15px; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #ddd; }
+        .match-target-desc { flex: 1; font-size: 1.05rem; }
+        .match-slot { width: 160px; min-height: 50px; border: 2px dashed #aaa; border-radius: 20px; display: flex; align-items: center; justify-content: center; background: #eee; cursor: pointer; transition: background 0.2s; }
+        .match-slot.highlight { background: #dcedc8; border-color: #689f38; }
+
+        .action-buttons { display: flex; gap: 15px; justify-content: center; margin: 30px 0; flex-wrap: wrap; }
+        .check-button, .reset-button { color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .check-button { background-color: #43a047; }
+        .check-button:hover { background-color: #2e7d32; transform: translateY(-2px); }
+        .reset-button { background-color: #757575; }
+        .reset-button:hover { background-color: #424242; transform: translateY(-2px); }
+
+        .score-display { background: #e8f5e9; padding: 20px; border-radius: 8px; margin: 20px 0; font-size: 1.3rem; font-weight: bold; text-align: center; display: none; border: 2px solid #4CAF50; }
+        .score-display.show { display: block; }
+
+        .feedback { margin-top: 10px; padding: 10px; border-radius: 4px; font-weight: bold; display: block; }
+        .correct { background: #c8e6c9; color: #1b5e20; }
+        .incorrect { background: #ffcccc; color: #c62828; }
+
+        .highlight-word { background-color: #ffeb3b; border-radius: 2px; }
+        .text-content span, .question-content span { transition: background-color 0.1s ease; }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        @media (max-width: 600px) {
+            .menu-grid { grid-template-columns: 1fr 1fr; }
+            .menu-button { padding: 25px 15px; font-size: 1.1rem; }
+            .front-menu { padding: 30px 20px; }
+            .front-menu h1 { font-size: 1.8rem; }
+            .match-target-row { flex-direction: column; align-items: stretch; text-align: center; }
+            .match-slot { width: 100%; margin-top: 10px; }
+        }
+    </style>
+    <style>/* wide layout: fill the embed. Colour chooser = row of 4 on wide screens, 2x2 otherwise (never 3+1) */
+    @media screen { .front-menu, .page, .global-controls, #groupView { max-width: none !important; } }
+    .menu-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    @media (min-width: 900px) { .menu-grid { grid-template-columns: repeat(4, 1fr) !important; } }
+    </style>
+</head>
+<body>
+
+    <div class="front-menu" id="front-menu">
+        <h1>🧸 Treasured Items</h1>
+        <p>Reading Comprehension Groups</p>
+        <div class="menu-grid">
+            <button class="menu-button red-btn" onclick="showGroup('red')">Red Group</button>
+            <button class="menu-button yellow-btn" onclick="showGroup('yellow')">Yellow Group</button>
+            <button class="menu-button green-btn" onclick="showGroup('green')">Green Group</button>
+            <button class="menu-button blue-btn" onclick="showGroup('blue')">Blue Group</button>
+        </div>
+    </div>
+
+    <div class="global-controls" id="global-controls" style="display: none; max-width: 800px; margin: 10px auto; padding: 15px 40px; background: #eef2f5; border-radius: 8px; align-items: center; justify-content: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+        <label for="speed-rate" style="font-weight: bold; font-size: 1rem; color:#444;">🗣️ Reading Speed:</label>
+        <select id="speed-rate" style="padding: 8px 15px; border-radius: 6px; border: 1px solid #ccc; font-weight: bold; font-size: 1rem; cursor: pointer;">
+            <option value="0.7">0.7x (Very Slow)</option>
+            <option value="0.85" selected>0.85x (Slow)</option>
+            <option value="1">1.0x (Normal)</option>
+            <option value="1.15">1.15x (Quick)</option>
+        </select>
+    </div>
+
+    <div class="page red-group" id="group-red">
+        <div class="back-to-menu"><button onclick="backToMenu()">← Back to Menu</button></div>
+        <div class="header-container">
+            <span class="badge red-badge">Red Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-red', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>My Special Box</h1>
+        <div class="story-box text-content">
+            <p>I have a box. It is a <strong>special</strong> box. Inside, I keep my best things.</p>
+            <p>I have a red toy car. It is very fast. I have a smooth stone. I found it at the beach.</p>
+            <p>These are my <strong>treasured</strong> items. I love them very much.</p>
+        </div>
+
+        <h2>Questions</h2>
+        <div id="red-questions-container">
+            
+            <div class="q-block" data-type="mc" data-id="red-q1">
+                <div class="question-wrapper">
+                    <button class="q-audio-btn" onclick="toggleReadAloud('red-q1', '.question-content')">🔊</button>
+                    <div class="question-content"><p><strong>Literal:</strong> What is inside the box?</p></div>
+                </div>
+                <div class="question-item">
+                    <label><input type="radio" name="red-q1" value="correct"> <span class="opt-text">My best things</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="red-q1" value="wrong"> <span class="opt-text">Some food</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="red-q1" value="wrong"> <span class="opt-text">New shoes</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                </div>
+                <div class="feedback" id="feedback-red-q1"></div>
+            </div>
+
+            <div class="q-block" data-type="mc" data-id="red-q2">
+                <div class="question-wrapper">
+                    <button class="q-audio-btn" onclick="toggleReadAloud('red-q2', '.question-content')">🔊</button>
+                    <div class="question-content"><p><strong>Literal:</strong> What colour is the toy car?</p></div>
+                </div>
+                <div class="question-item">
+                    <label><input type="radio" name="red-q2" value="correct"> <span class="opt-text">Red</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="red-q2" value="wrong"> <span class="opt-text">Blue</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="red-q2" value="wrong"> <span class="opt-text">Green</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                </div>
+                <div class="feedback" id="feedback-red-q2"></div>
+            </div>
+
+            <div class="q-block" data-type="mc" data-id="red-q3">
+                <div class="question-wrapper">
+                    <button class="q-audio-btn" onclick="toggleReadAloud('red-q3', '.question-content')">🔊</button>
+                    <div class="question-content"><p><strong>Vocabulary:</strong> What does <strong>special</strong> mean?</p></div>
+                </div>
+                <div class="question-item">
+                    <label><input type="radio" name="red-q3" value="correct"> <span class="opt-text">Important and loved</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="red-q3" value="wrong"> <span class="opt-text">Broken or old</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="red-q3" value="wrong"> <span class="opt-text">Very heavy</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                </div>
+                <div class="feedback" id="feedback-red-q3"></div>
+            </div>
+
+            <div class="q-block" data-type="copy" data-id="red-q4">
+                <div class="question-wrapper">
+                    <button class="q-audio-btn" onclick="toggleReadAloud('red-q4', '.question-content')">🔊</button>
+                    <div class="question-content"><p><strong>Writing Task:</strong> Copy this sentence neatly into your work book.</p></div>
+                </div>
+                <div class="copy-task-box">I have a special box.</div>
+                <label class="copy-checkbox">
+                    <input type="checkbox" id="check-red-q4"> I have finished writing this in my book.
+                </label>
+                <div class="feedback" id="feedback-red-q4"></div>
+            </div>
+
+        </div>
+        <div class="action-buttons">
+            <button class="check-button" onclick="checkAnswers('red')">Check My Answers</button>
+            <button class="reset-button" onclick="resetAnswers('red')">Try Again</button>
+        </div>
+        <div id="score-red" class="score-display"></div>
+    </div>
+
+    <div class="page yellow-group" id="group-yellow">
+        <div class="back-to-menu"><button onclick="backToMenu()">← Back to Menu</button></div>
+        <div class="header-container">
+            <span class="badge yellow-badge">Yellow Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-yellow', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>Things We Care About</h1>
+        <div class="story-box text-content">
+            <p>Everyone has something they care about. These things are called <strong>treasured items</strong>. They might not cost a lot of money. Sometimes, a treasured item is an old teddy bear. It might be a shiny shell from a fun holiday.</p>
+            <p>My favourite treasured item is a small, wooden train. My grandpa gave it to me when I was five. The paint is <strong>chipping</strong> off, but I still love it. When I hold it, I remember my grandpa's smile. I keep it safe on a high shelf in my bedroom.</p>
+        </div>
+
+        <h2>Questions</h2>
+        <div id="yellow-questions-container">
+            
+            <div class="q-block" data-type="mc" data-id="yellow-q1">
+                <div class="question-wrapper">
+                    <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q1', '.question-content')">🔊</button>
+                    <div class="question-content"><p><strong>Literal:</strong> What is the writer's favourite treasured item?</p></div>
+                </div>
+                <div class="question-item">
+                    <label><input type="radio" name="yellow-q1" value="correct"> <span class="opt-text">A small, wooden train</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="yellow-q1" value="wrong"> <span class="opt-text">A shiny shell</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="yellow-q1" value="wrong"> <span class="opt-text">An old teddy bear</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                </div>
+                <div class="feedback" id="feedback-yellow-q1"></div>
+            </div>
+
+            <div class="q-block" data-type="mc" data-id="yellow-q2">
+                <div class="question-wrapper">
+                    <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q2', '.question-content')">🔊</button>
+                    <div class="question-content"><p><strong>Inferential:</strong> Why does the writer love the train so much?</p></div>
+                </div>
+                <div class="question-item">
+                    <label><input type="radio" name="yellow-q2" value="correct"> <span class="opt-text">It reminds them of their grandpa</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="yellow-q2" value="wrong"> <span class="opt-text">It goes very fast on the floor</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="yellow-q2" value="wrong"> <span class="opt-text">It is brand new and shiny</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                </div>
+                <div class="feedback" id="feedback-yellow-q2"></div>
+            </div>
+
+            <div class="q-block" data-type="match" data-id="yellow-q3">
+                <div class="question-wrapper">
+                    <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q3', '.question-content')">🔊</button>
+                    <div class="question-content"><p><strong>Vocabulary Match:</strong> Tap a word from the blue box, then tap the empty box next to its correct meaning.</p></div>
+                </div>
+                <div class="match-area">
+                    <div class="match-source" id="yellow-source">
+                        <div class="match-item" data-word="treasured">treasured</div>
+                        <div class="match-item" data-word="chipping">chipping</div>
+                    </div>
+                    <div class="match-targets">
+                        <div class="match-target-row">
+                            <div class="match-target-desc">Breaking off in small pieces</div>
+                            <div class="match-slot" data-answer="chipping" onclick="handleSlotClick(this)"></div>
+                        </div>
+                        <div class="match-target-row">
+                            <div class="match-target-desc">Something very special to you</div>
+                            <div class="match-slot" data-answer="treasured" onclick="handleSlotClick(this)"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="feedback" id="feedback-yellow-q3"></div>
+            </div>
+
+            <div class="q-block" data-type="copy" data-id="yellow-q4">
+                <div class="question-wrapper">
+                    <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q4', '.question-content')">🔊</button>
+                    <div class="question-content"><p><strong>Writing Task:</strong> Copy this sentence neatly into your work book.</p></div>
+                </div>
+                <div class="copy-task-box">Everyone has something they care about.</div>
+                <label class="copy-checkbox">
+                    <input type="checkbox" id="check-yellow-q4"> I have finished writing this in my book.
+                </label>
+                <div class="feedback" id="feedback-yellow-q4"></div>
+            </div>
+
+        </div>
+        <div class="action-buttons">
+            <button class="check-button" onclick="checkAnswers('yellow')">Check My Answers</button>
+            <button class="reset-button" onclick="resetAnswers('yellow')">Try Again</button>
+        </div>
+        <div id="score-yellow" class="score-display"></div>
+    </div>
+
+    <div class="page green-group" id="group-green">
+        <div class="back-to-menu"><button onclick="backToMenu()">← Back to Menu</button></div>
+        <div class="header-container">
+            <span class="badge green-badge">Green Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-green', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>Priceless Possessions</h1>
+        <div class="story-box text-content">
+            <p>A treasured item is a personal possession that holds special meaning to its owner. These items are often linked to happy memories, beloved family members, or important events in our lives. A treasure doesn't need to be made of gold or silver to be valuable. Its true worth comes from the feelings it gives us.</p>
+            <p>For example, my friend Sarah has a scrapbook filled with movie tickets, pressed flowers, and photographs. To anyone else, it might look like a book of scraps. But to Sarah, it is a <strong>priceless</strong> collection of her favourite days. She looks through it whenever she feels sad, and it instantly brings her <strong>comfort</strong>. We all have unique things that bring us joy.</p>
+        </div>
+
+        <h2>Questions</h2>
+        <div id="green-questions-container">
+            
+            <div class="q-block" data-type="mc" data-id="green-q1">
+                <div class="question-wrapper">
+                    <button class="q-audio-btn" onclick="toggleReadAloud('green-q1', '.question-content')">🔊</button>
+                    <div class="question-content"><p><strong>Literal:</strong> What items does Sarah keep in her scrapbook?</p></div>
+                </div>
+                <div class="question-item">
+                    <label><input type="radio" name="green-q1" value="correct"> <span class="opt-text">Movie tickets, flowers, and photographs</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="green-q1" value="wrong"> <span class="opt-text">Gold, silver, and precious jewels</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="green-q1" value="wrong"> <span class="opt-text">Coins, stamps, and trading cards</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="green-q1" value="wrong"> <span class="opt-text">Toys, games, and puzzles</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                </div>
+                <div class="feedback" id="feedback-green-q1"></div>
+            </div>
+
+            <div class="q-block" data-type="mc" data-id="green-q2">
+                <div class="question-wrapper">
+                    <button class="q-audio-btn" onclick="toggleReadAloud('green-q2', '.question-content')">🔊</button>
+                    <div class="question-content"><p><strong>Inferential:</strong> Why does the author say a treasure doesn't need to be made of gold?</p></div>
+                </div>
+                <div class="question-item">
+                    <label><input type="radio" name="green-q2" value="correct"> <span class="opt-text">Because feelings and memories are what make it truly special</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="green-q2" value="wrong"> <span class="opt-text">Because gold is too heavy to carry around every day</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="green-q2" value="wrong"> <span class="opt-text">Because silver is much better than gold</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="green-q2" value="wrong"> <span class="opt-text">Because gold is very hard to find</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                </div>
+                <div class="feedback" id="feedback-green-q2"></div>
+            </div>
+
+            <div class="q-block" data-type="match" data-id="green-q3">
+                <div class="question-wrapper">
+                    <button class="q-audio-btn" onclick="toggleReadAloud('green-q3', '.question-content')">🔊</button>
+                    <div class="question-content"><p><strong>Vocabulary Match:</strong> Tap a word from the blue box, then tap the empty box next to its correct meaning.</p></div>
+                </div>
+                <div class="match-area">
+                    <div class="match-source" id="green-source">
+                        <div class="match-item" data-word="possession">possession</div>
+                        <div class="match-item" data-word="priceless">priceless</div>
+                        <div class="match-item" data-word="comfort">comfort</div>
+                    </div>
+                    <div class="match-targets">
+                        <div class="match-target-row">
+                            <div class="match-target-desc">So special that money cannot buy it</div>
+                            <div class="match-slot" data-answer="priceless" onclick="handleSlotClick(this)"></div>
+                        </div>
+                        <div class="match-target-row">
+                            <div class="match-target-desc">A feeling of relief and happiness</div>
+                            <div class="match-slot" data-answer="comfort" onclick="handleSlotClick(this)"></div>
+                        </div>
+                        <div class="match-target-row">
+                            <div class="match-target-desc">Something that belongs to you</div>
+                            <div class="match-slot" data-answer="possession" onclick="handleSlotClick(this)"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="feedback" id="feedback-green-q3"></div>
+            </div>
+
+            <div class="q-block" data-type="copy" data-id="green-q4">
+                <div class="question-wrapper">
+                    <button class="q-audio-btn" onclick="toggleReadAloud('green-q4', '.question-content')">🔊</button>
+                    <div class="question-content"><p><strong>Writing Task:</strong> Copy this sentence perfectly into your work book.</p></div>
+                </div>
+                <div class="copy-task-box">We all have unique things that bring us joy.</div>
+                <label class="copy-checkbox">
+                    <input type="checkbox" id="check-green-q4"> I have neatly copied this sentence.
+                </label>
+                <div class="feedback" id="feedback-green-q4"></div>
+            </div>
+
+        </div>
+        <div class="action-buttons">
+            <button class="check-button" onclick="checkAnswers('green')">Check My Answers</button>
+            <button class="reset-button" onclick="resetAnswers('green')">Try Again</button>
+        </div>
+        <div id="score-green" class="score-display"></div>
+    </div>
+
+    <div class="page blue-group" id="group-blue">
+        <div class="back-to-menu"><button onclick="backToMenu()">← Back to Menu</button></div>
+        <div class="header-container">
+            <span class="badge blue-badge">Blue Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-blue', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>The Value of Memories</h1>
+        <div class="story-box text-content">
+            <p>As we grow up, we collect things that become very important to us. These are called treasured items. They are special because they remind us of past adventures, our proudest moments, and the people we love. A treasured item might not cost a lot of money in a shop. Instead, its true value is measured by the feelings it gives us. This means its value is <strong>subjective</strong>; it depends on who owns it.</p>
+            <p>Think about an old, faded photograph. To a stranger, it just shows people they do not know. But to the owner, that photo might show a wonderful family holiday or a happy childhood memory. The picture captures a special moment in time.</p>
+            <p>Another example is a piece of jewellery that is passed down through a family. This is called a family <strong>heirloom</strong>. It might be a silver necklace or an old watch. The metal might be <strong>tarnished</strong> and dull, but its history makes it incredibly special.</p>
+            <p>Treasured items anchor us to our identity and remind us of our journey. Whether it is an old diary, a handmade blanket, or a shiny stone, these objects tell the story of our lives.</p>
+        </div>
+
+        <h2>Questions</h2>
+        <div id="blue-questions-container">
+            
+            <div class="q-block" data-type="mc" data-id="blue-q1">
+                <div class="question-wrapper">
+                    <button class="q-audio-btn" onclick="toggleReadAloud('blue-q1', '.question-content')">🔊</button>
+                    <div class="question-content"><p><strong>Literal:</strong> According to the text, what is a family heirloom?</p></div>
+                </div>
+                <div class="question-item">
+                    <label><input type="radio" name="blue-q1" value="correct"> <span class="opt-text">A piece of jewellery handed down through generations</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="blue-q1" value="wrong"> <span class="opt-text">A type of currency used to buy jewels</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="blue-q1" value="wrong"> <span class="opt-text">A photograph of a complete stranger</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="blue-q1" value="wrong"> <span class="opt-text">A collection of smooth sea glass</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                </div>
+                <div class="feedback" id="feedback-blue-q1"></div>
+            </div>
+
+            <div class="q-block" data-type="mc" data-id="blue-q2">
+                <div class="question-wrapper">
+                    <button class="q-audio-btn" onclick="toggleReadAloud('blue-q2', '.question-content')">🔊</button>
+                    <div class="question-content"><p><strong>Inferential:</strong> Why is the value of a treasured item described as "subjective"?</p></div>
+                </div>
+                <div class="question-item">
+                    <label><input type="radio" name="blue-q2" value="correct"> <span class="opt-text">Because its worth depends entirely on the owner's personal feelings and memories</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="blue-q2" value="wrong"> <span class="opt-text">Because it is always very expensive to buy at a shop</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="blue-q2" value="wrong"> <span class="opt-text">Because its price changes every day at the market</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                    <label><input type="radio" name="blue-q2" value="wrong"> <span class="opt-text">Because it is made of very cheap and fragile materials</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+                </div>
+                <div class="feedback" id="feedback-blue-q2"></div>
+            </div>
+
+            <div class="q-block" data-type="match" data-id="blue-q3">
+                <div class="question-wrapper">
+                    <button class="q-audio-btn" onclick="toggleReadAloud('blue-q3', '.question-content')">🔊</button>
+                    <div class="question-content"><p><strong>Vocabulary Match:</strong> Tap a word from the blue box, then tap the empty box next to its correct meaning based on the text.</p></div>
+                </div>
+                <div class="match-area">
+                    <div class="match-source" id="blue-source">
+                        <div class="match-item" data-word="tarnished">tarnished</div>
+                        <div class="match-item" data-word="sentiment">sentiment</div>
+                        <div class="match-item" data-word="subjective">subjective</div>
+                    </div>
+                    <div class="match-targets">
+                        <div class="match-target-row">
+                            <div class="match-target-desc">Discoloured or dulled over a long period of time</div>
+                            <div class="match-slot" data-answer="tarnished" onclick="handleSlotClick(this)"></div>
+                        </div>
+                        <div class="match-target-row">
+                            <div class="match-target-desc">A feeling or emotion, like love or nostalgia</div>
+                            <div class="match-slot" data-answer="sentiment" onclick="handleSlotClick(this)"></div>
+                        </div>
+                        <div class="match-target-row">
+                            <div class="match-target-desc">Based on personal opinions or feelings, not facts</div>
+                            <div class="match-slot" data-answer="subjective" onclick="handleSlotClick(this)"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="feedback" id="feedback-blue-q3"></div>
+            </div>
+
+            <div class="q-block" data-type="copy" data-id="blue-q4">
+                <div class="question-wrapper">
+                    <button class="q-audio-btn" onclick="toggleReadAloud('blue-q4', '.question-content')">🔊</button>
+                    <div class="question-content"><p><strong>Writing Task:</strong> Carefully copy this paragraph sentence into your work book.</p></div>
+                </div>
+                <div class="copy-task-box">Treasured items anchor us to our identity and remind us of our journey.</div>
+                <label class="copy-checkbox">
+                    <input type="checkbox" id="check-blue-q4"> I have accurately copied this into my book.
+                </label>
+                <div class="feedback" id="feedback-blue-q4"></div>
+            </div>
+
+        </div>
+        <div class="action-buttons">
+            <button class="check-button" onclick="checkAnswers('blue')">Check My Answers</button>
+            <button class="reset-button" onclick="resetAnswers('blue')">Try Again</button>
+        </div>
+        <div id="score-blue" class="score-display"></div>
+    </div>
+
+    <script>
+        let currentUtterance = null;
+        let wordSpans = [];
+        let currentlyPlayingTargetId = null;
+        let optionAudioStates = {};
+
+        // Interactive Matching Game State
+        let selectedMatchItem = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Setup Text Highlighting for Read Aloud
+            document.querySelectorAll('.text-content, .question-content').forEach((container, containerIndex) => {
+                let globalWordCounter = 0;
+                // Exclude 'strong' to prevent double-processing of text inside bold tags
+                const paragraphs = container.querySelectorAll('p');
+
+                paragraphs.forEach(p => {
+                    if(p.childNodes.length === 0) return;
+                    
+                    function tokenize(node) {
+                        let childNodes = Array.from(node.childNodes);
+                        childNodes.forEach(child => {
+                            if (child.nodeType === Node.TEXT_NODE) {
+                                const text = child.textContent;
+                                const tokens = text.split(/(\s+)/);
+                                const fragment = document.createDocumentFragment();
+
+                                tokens.forEach(token => {
+                                    if (token.trim().length > 0) {
+                                        const span = document.createElement('span');
+                                        span.textContent = token;
+                                        span.setAttribute('data-word-id', `${containerIndex}-${globalWordCounter}`);
+                                        fragment.appendChild(span);
+                                        globalWordCounter++;
+                                    } else {
+                                        fragment.appendChild(document.createTextNode(token));
+                                    }
+                                });
+                                child.parentNode.replaceChild(fragment, child);
+                            } else if (child.nodeType === Node.ELEMENT_NODE && child.tagName !== 'BUTTON') {
+                                tokenize(child);
+                            }
+                        });
+                    }
+                    tokenize(p);
+                });
+            });
+
+            // Randomize questions and options on load
+            randomizeAllGroups();
+
+            // Setup Match Item clicks
+            document.querySelectorAll('.match-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    handleSourceClick(this);
+                });
+            });
+        });
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function randomizeAllGroups() {
+            const groups = ['red', 'yellow', 'green', 'blue'];
+            groups.forEach(group => {
+                // 1. Shuffle Multiple Choice Options
+                const mcBlocks = document.querySelectorAll(`#${group}-questions-container .q-block[data-type="mc"]`);
+                mcBlocks.forEach(block => {
+                    const qItem = block.querySelector('.question-item');
+                    const labels = Array.from(qItem.querySelectorAll('label'));
+                    shuffleArray(labels);
+                    labels.forEach(label => qItem.appendChild(label)); // Re-append in new order
+                });
+
+                // 2. Shuffle Questions themselves (keeping block structure intact)
+                const container = document.getElementById(`${group}-questions-container`);
+                const blocks = Array.from(container.querySelectorAll('.q-block'));
+                shuffleArray(blocks);
+                blocks.forEach(block => container.appendChild(block));
+            });
+        }
+
+        function showGroup(groupColor) {
+            document.getElementById('front-menu').style.display = 'none';
+            document.getElementById('global-controls').style.display = 'flex';
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(`group-${groupColor}`).classList.add('active');
+            window.scrollTo(0, 0);
+            
+            // Reset state
+            stopSpeech();
+            resetMatchingGames();
+            resetFeedback(groupColor);
+        }
+
+        function backToMenu() {
+            stopSpeech();
+            document.getElementById('front-menu').style.display = 'block';
+            document.getElementById('global-controls').style.display = 'none';
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            window.scrollTo(0, 0);
+        }
+
+        function resetFeedback(group) {
+            const container = document.getElementById(`${group}-questions-container`);
+            container.querySelectorAll('.feedback').forEach(fb => fb.innerHTML = '');
+            const scoreDiv = document.getElementById(`score-${group}`);
+            if(scoreDiv) scoreDiv.classList.remove('show');
+        }
+
+        function handleSourceClick(itemElement) {
+            // If already selected, unselect it
+            if (itemElement.classList.contains('selected')) {
+                itemElement.classList.remove('selected');
+                selectedMatchItem = null;
+                return;
+            }
+
+            // Unselect others in the same source container
+            const parentSource = itemElement.closest('.match-source');
+            parentSource.querySelectorAll('.match-item').forEach(el => el.classList.remove('selected'));
+            
+            // Select this one
+            itemElement.classList.add('selected');
+            selectedMatchItem = itemElement;
+        }
+
+        function handleSlotClick(slotElement) {
+            // If slot already has an item, return it to source
+            if (slotElement.hasChildNodes()) {
+                const child = slotElement.firstChild;
+                const sourceContainerId = slotElement.closest('.match-area').querySelector('.match-source').id;
+                document.getElementById(sourceContainerId).appendChild(child);
+                child.classList.remove('selected');
+            }
+
+            // If an item is currently selected in the source, move it here
+            if (selectedMatchItem) {
+                slotElement.appendChild(selectedMatchItem);
+                selectedMatchItem.classList.remove('selected');
+                selectedMatchItem = null;
+            }
+        }
+
+        function resetMatchingGames() {
+            document.querySelectorAll('.match-slot').forEach(slot => {
+                if (slot.hasChildNodes()) {
+                    const child = slot.firstChild;
+                    const sourceContainerId = slot.closest('.match-area').querySelector('.match-source').id;
+                    document.getElementById(sourceContainerId).appendChild(child);
+                }
+            });
+            document.querySelectorAll('.match-item').forEach(el => el.classList.remove('selected'));
+            selectedMatchItem = null;
+        }
+
+        function getPremiumVoice() {
+            const voices = window.speechSynthesis.getVoices();
+            // Try to find natural Australian William voice first
+            let bestVoice = voices.find(voice => voice.lang === 'en-AU' && (voice.name.includes('William') || voice.name.includes('Neural') || voice.name.includes('Natural')));
+            // Fallback to any AU voice
+            if (!bestVoice) bestVoice = voices.find(voice => voice.lang === 'en-AU');
+            // Fallback to any GB voice
+            if (!bestVoice) bestVoice = voices.find(voice => voice.lang === 'en-GB');
+            // Final fallback to default
+            if (!bestVoice) bestVoice = voices.length > 0 ? voices[0] : null;
+            return bestVoice;
+        }
+
+        function toggleReadAloud(targetId, contentSelector) {
+            const button = document.querySelector(`#${targetId} .audio-btn, #${targetId} .q-audio-btn`);
+            if (currentlyPlayingTargetId === targetId) { stopSpeech(); return; }
+            stopSpeech();
+            currentlyPlayingTargetId = targetId;
+            button.classList.add('playing');
+            button.innerHTML = button.classList.contains('audio-btn') ? '🛑 Stop' : '⏹️';
+
+            const container = document.querySelector(`#${targetId} ${contentSelector}`);
+            const textContainers = Array.from(document.querySelectorAll('.text-content, .question-content'));
+            const containerIndex = textContainers.indexOf(container);
+
+            wordSpans = Array.from(container.querySelectorAll('span[data-word-id]'));
+            // Filter out empty spaces to avoid pausing bugs
+            const textToSpeak = wordSpans.map(span => span.textContent.trim()).filter(t => t.length > 0).join(' ');
+            currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+
+            const voice = getPremiumVoice();
+            if (voice) currentUtterance.voice = voice;
+
+            currentUtterance.rate = parseFloat(document.getElementById('speed-rate').value);
+
+            // Reconstruct text mapping for highlighting
+            let textMap = [];
+            let currentOffset = 0;
+            wordSpans.forEach((span, index) => {
+                const word = span.textContent.trim();
+                if(word.length > 0) {
+                    textMap.push({ start: currentOffset, end: currentOffset + word.length, id: span.getAttribute('data-word-id') });
+                    currentOffset += word.length + 1; // +1 for space
+                }
+            });
+
+            currentUtterance.onboundary = function(event) {
+                if (event.name === 'word') {
+                    const currentWord = textMap.find(map => event.charIndex >= map.start && event.charIndex < map.end + 1);
+                    if (currentWord) {
+                        wordSpans.forEach(span => span.classList.remove('highlight-word'));
+                        const activeSpan = container.querySelector(`span[data-word-id="${currentWord.id}"]`);
+                        if (activeSpan) activeSpan.classList.add('highlight-word');
+                    }
+                }
+            };
+
+            currentUtterance.onend = stopSpeech;
+            currentUtterance.onerror = stopSpeech;
+            window.speechSynthesis.speak(currentUtterance);
+        }
+
+        function toggleReadAloudOption(button) {
+            const label = button.parentElement;
+            const optionText = label.querySelector('.opt-text').textContent;
+            const optionKey = `option_${Date.now()}_${Math.random()}`;
+
+            if (optionAudioStates[optionKey] && window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                button.classList.remove('playing');
+                optionAudioStates[optionKey] = false;
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(optionText);
+            const voice = getPremiumVoice();
+            if (voice) utterance.voice = voice;
+
+            const selectedRate = document.getElementById('speed-rate') ? document.getElementById('speed-rate').value : '0.85';
+            utterance.rate = parseFloat(selectedRate);
+
+            button.classList.add('playing');
+            optionAudioStates[optionKey] = true;
+
+            utterance.onend = () => {
+                button.classList.remove('playing');
+                optionAudioStates[optionKey] = false;
+            };
+
+            utterance.onerror = () => {
+                button.classList.remove('playing');
+                optionAudioStates[optionKey] = false;
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function stopSpeech() {
+            window.speechSynthesis.cancel();
+            if (currentlyPlayingTargetId) {
+                const button = document.querySelector(`#${currentlyPlayingTargetId} .audio-btn, #${currentlyPlayingTargetId} .q-audio-btn`);
+                if (button) {
+                    button.classList.remove('playing');
+                    button.innerHTML = button.classList.contains('audio-btn') ? '🗣️ Read Aloud' : '🔊';
+                }
+            }
+            document.querySelectorAll('.text-content span, .question-content span').forEach(span => span.classList.remove('highlight-word'));
+            currentUtterance = null;
+            currentlyPlayingTargetId = null;
+        }
+
+        function checkAnswers(group) {
+            const container = document.getElementById(`${group}-questions-container`);
+            const blocks = container.querySelectorAll('.q-block');
+            
+            let correctCount = 0;
+            let totalCount = 0;
+
+            blocks.forEach(block => {
+                totalCount++;
+                const type = block.getAttribute('data-type');
+                const qId = block.getAttribute('data-id');
+                const feedbackDiv = document.getElementById(`feedback-${qId}`);
+
+                if (type === 'mc') {
+                    // Multiple Choice
+                    const selected = block.querySelector(`input[type="radio"]:checked`);
+                    if (!selected) {
+                        feedbackDiv.innerHTML = `<span class="feedback incorrect">You missed this one! Please pick an answer.</span>`;
+                    } else if (selected.value === 'correct') {
+                        correctCount++;
+                        feedbackDiv.innerHTML = `<span class="feedback correct">✓ Excellent! That is correct.</span>`;
+                    } else {
+                        feedbackDiv.innerHTML = `<span class="feedback incorrect">✗ Not quite right. Try again!</span>`;
+                    }
+                } 
+                else if (type === 'match') {
+                    // Matching Game
+                    const slots = block.querySelectorAll('.match-slot');
+                    let allMatched = true;
+                    let missing = false;
+
+                    slots.forEach(slot => {
+                        const expectedAnswer = slot.getAttribute('data-answer');
+                        if (!slot.hasChildNodes()) {
+                            missing = true;
+                            allMatched = false;
+                        } else {
+                            const childWord = slot.firstChild.getAttribute('data-word');
+                            if (childWord !== expectedAnswer) {
+                                allMatched = false;
+                            }
+                        }
+                    });
+
+                    if (missing) {
+                        feedbackDiv.innerHTML = `<span class="feedback incorrect">Please match all the words to their boxes.</span>`;
+                    } else if (allMatched) {
+                        correctCount++;
+                        feedbackDiv.innerHTML = `<span class="feedback correct">✓ Great job! All words matched correctly.</span>`;
+                    } else {
+                        feedbackDiv.innerHTML = `<span class="feedback incorrect">✗ Some matches are incorrect. Try swapping them!</span>`;
+                    }
+                }
+                else if (type === 'copy') {
+                    // Copy Task
+                    const checkbox = block.querySelector(`input[type="checkbox"]`);
+                    if (checkbox && checkbox.checked) {
+                        correctCount++;
+                        feedbackDiv.innerHTML = `<span class="feedback correct">✓ Wonderful writing!</span>`;
+                    } else {
+                        feedbackDiv.innerHTML = `<span class="feedback incorrect">Please confirm you have copied the text into your book.</span>`;
+                    }
+                }
+            });
+
+            const scoreDiv = document.getElementById(`score-${group}`);
+            scoreDiv.classList.add('show');
+            const percentage = Math.round((correctCount / totalCount) * 100);
+            scoreDiv.innerHTML = `🌟 You scored ${correctCount} out of ${totalCount} (${percentage}%)`;
+        }
+
+        function resetAnswers(group) {
+            const container = document.getElementById(`${group}-questions-container`);
+            
+            // Clear radio button selections
+            container.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
+            
+            // Clear checkbox selections
+            container.querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
+            
+            // Reset the matching game slots
+            container.querySelectorAll('.match-slot').forEach(slot => {
+                if (slot.hasChildNodes()) {
+                    const child = slot.firstChild;
+                    const sourceContainerId = slot.closest('.match-area').querySelector('.match-source').id;
+                    document.getElementById(sourceContainerId).appendChild(child);
+                    child.classList.remove('selected');
+                }
+            });
+            container.querySelectorAll('.match-item').forEach(el => el.classList.remove('selected'));
+            selectedMatchItem = null;
+
+            // Clear all feedback text
+            container.querySelectorAll('.feedback').forEach(fb => fb.innerHTML = '');
+            
+            // Hide the score banner
+            const scoreDiv = document.getElementById(`score-${group}`);
+            if(scoreDiv) scoreDiv.classList.remove('show');
+            
+            // Reshuffle Multiple Choice options to keep the 'Try Again' fresh
+            const mcBlocks = container.querySelectorAll('.q-block[data-type="mc"]');
+            mcBlocks.forEach(block => {
+                const qItem = block.querySelector('.question-item');
+                const labels = Array.from(qItem.querySelectorAll('label'));
+                shuffleArray(labels);
+                labels.forEach(label => qItem.appendChild(label)); 
+            });
+        }
+
+        window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+    </script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='reading-t3w6-treasured-items-a';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-reading.js"></script>
+</body>
+</html>

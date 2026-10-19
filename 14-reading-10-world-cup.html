@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soccer World Cup Reading Groups</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background-color: #f4f4f9; }
+
+        /* FRONT MENU STYLES */
+        .front-menu { background: white; max-width: 800px; margin: 0 auto 40px auto; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; }
+        .front-menu h1 { font-size: 2.2rem; color: #222; margin-top: 0; margin-bottom: 10px; }
+        .front-menu p { font-size: 1.1rem; color: #666; margin-bottom: 35px; }
+
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
+        .menu-button { padding: 30px 20px; border: none; border-radius: 8px; font-size: 1.3rem; font-weight: bold; color: white; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .menu-button:hover { transform: translateY(-4px); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
+        .menu-button:active { transform: translateY(-2px); }
+
+        .red-btn { background-color: #e53935; }
+        .red-btn:hover { background-color: #c62828; }
+        .yellow-btn { background-color: #ffb300; color: #333; }
+        .yellow-btn:hover { background-color: #ff9800; }
+        .green-btn { background-color: #43a047; }
+        .green-btn:hover { background-color: #2e7d32; }
+        .blue-btn { background-color: #1e88e5; }
+        .blue-btn:hover { background-color: #1565c0; }
+
+        .back-to-menu { text-align: center; margin: 30px 0; }
+        .back-to-menu button { background-color: #999; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s; }
+        .back-to-menu button:hover { background-color: #666; }
+
+        .page { background: white; max-width: 800px; margin: 0 auto 40px auto; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); page-break-after: always; position: relative; border-top: 15px solid; display: none; }
+        .page.active { display: block; }
+
+        .red-group { border-top-color: #e53935; }
+        .yellow-group { border-top-color: #ffb300; }
+        .green-group { border-top-color: #43a047; }
+        .blue-group { border-top-color: #1e88e5; }
+
+        .header-container { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .badge { display: inline-block; padding: 6px 12px; font-weight: bold; border-radius: 20px; color: white; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+        .red-badge { background-color: #e53935; }
+        .yellow-badge { background-color: #ffb300; color: #333; }
+        .green-badge { background-color: #43a047; }
+        .blue-badge { background-color: #1e88e5; }
+
+        .audio-btn { background-color: #ffffff; border: 2px solid #ccc; border-radius: 20px; padding: 6px 15px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s ease; }
+        .audio-btn:hover { background-color: #f0f0f0; border-color: #888; }
+        .audio-btn.playing { background-color: #333; color: white; border-color: #333; }
+
+        .question-wrapper { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 5px; }
+        .q-audio-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 2px 5px; margin-top: -2px; border-radius: 4px; transition: background 0.2s; }
+        .q-audio-btn:hover { background-color: #e0e0e0; }
+        .q-audio-btn.playing { animation: pulse 1.5s infinite; background-color: #333; border-radius: 50%; }
+
+        .opt-audio-btn { background: none; border: none; font-size: 0.9rem; cursor: pointer; padding: 2px 6px; border-radius: 4px; transition: background 0.2s; margin-left: 4px; }
+        .opt-audio-btn:hover { background-color: #e0e0e0; }
+        .opt-audio-btn.playing { background-color: #ddd; font-weight: bold; }
+
+        h1 { font-size: 2rem; color: #222; margin-top: 0; }
+        h2 { font-size: 1.4rem; color: #444; border-bottom: 2px solid #eee; padding-bottom: 8px; margin-top: 30px; }
+        p { font-size: 1.1rem; color: #4a4a4a; margin-bottom: 20px; }
+        .story-box { background: #f9f9fb; padding: 25px; border-left: 5px solid #ccc; border-radius: 4px; font-size: 1.15rem; margin-bottom: 30px; }
+
+        .red-group .story-box { border-left-color: #e53935; }
+        .yellow-group .story-box { border-left-color: #ffb300; }
+        .green-group .story-box { border-left-color: #43a047; }
+        .blue-group .story-box { border-left-color: #1e88e5; }
+
+        .line { border-bottom: 1px dashed #999; height: 30px; margin-top: 10px; margin-bottom: 15px; }
+
+        .question-item { margin: 15px 0; padding: 12px; background: #f5f5f5; border-radius: 6px; }
+        .question-item label { display: flex; align-items: center; margin: 8px 0; cursor: pointer; font-size: 1rem; }
+        .question-item input[type="radio"] { margin-right: 10px; transform: scale(1.2); cursor: pointer; }
+
+        .check-button { background-color: #43a047; color: white; border: none; padding: 12px 30px; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s; margin: 30px 0; }
+        .check-button:hover { background-color: #2e7d32; }
+
+        .score-display { background: #e8f5e9; padding: 15px; border-radius: 6px; margin: 20px 0; font-size: 1.1rem; font-weight: bold; display: none; }
+        .score-display.show { display: block; }
+
+        .feedback { margin-top: 10px; padding: 10px; border-radius: 4px; font-weight: bold; }
+        .correct { background: #c8e6c9; color: #1b5e20; }
+        .incorrect { background: #ffcccc; color: #c62828; }
+
+        .highlight { background-color: #ffeb3b; border-radius: 2px; }
+        .text-content span, .question-content span { transition: background-color 0.1s ease; }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        @media (max-width: 600px) {
+            .menu-grid { grid-template-columns: 1fr 1fr; }
+            .menu-button { padding: 25px 15px; font-size: 1.1rem; }
+            .front-menu { padding: 30px 20px; }
+            .front-menu h1 { font-size: 1.8rem; }
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .front-menu, .back-to-menu, .global-controls, .check-button, .score-display { display: none !important; }
+            .page { box-shadow: none; max-width: 100%; margin: 0; padding: 20px; border-radius: 0; display: block !important; }
+            .audio-btn, .q-audio-btn, .opt-audio-btn { display: none !important; }
+        }
+    </style>
+    <style>/* wide layout: fill the embed. Colour chooser = row of 4 on wide screens, 2x2 otherwise (never 3+1) */
+    @media screen { .front-menu, .page, .global-controls, #groupView { max-width: none !important; } }
+    .menu-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    @media (min-width: 900px) { .menu-grid { grid-template-columns: repeat(4, 1fr) !important; } }
+    </style>
+</head>
+<body>
+
+    <div class="front-menu" id="front-menu">
+        <h1>⚽ Soccer World Cup</h1>
+        <p>Reading Groups</p>
+        <div class="menu-grid">
+            <button class="menu-button red-btn" onclick="showGroup('red')">Red Group</button>
+            <button class="menu-button yellow-btn" onclick="showGroup('yellow')">Yellow Group</button>
+            <button class="menu-button green-btn" onclick="showGroup('green')">Green Group</button>
+            <button class="menu-button blue-btn" onclick="showGroup('blue')">Blue Group</button>
+        </div>
+    </div>
+
+    <div class="global-controls" id="global-controls" style="display: none; max-width: 800px; margin: 10px auto; padding: 10px 40px; background: #eef2f5; border-radius: 8px; display: flex; align-items: center; gap: 10px;">
+        <label for="speed-rate" style="font-weight: bold; font-size: 0.9rem;">🗣️ Reading Speed:</label>
+        <select id="speed-rate" style="padding: 5px 10px; border-radius: 4px; border: 1px solid #ccc; font-weight: bold;">
+            <option value="0.7">0.7x (Very Slow)</option>
+            <option value="0.85" selected>0.85x (Slow)</option>
+            <option value="1">1.0x (Normal)</option>
+            <option value="1.15">1.15x (Quick)</option>
+        </select>
+    </div>
+
+    <div class="page red-group" id="group-red">
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+        <div class="header-container">
+            <span class="badge red-badge">Red Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-red', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>I Like Soccer</h1>
+
+        <div class="story-box text-content">
+            <p>See the big green grass. This is a <strong>soccer</strong> field. Look at the <strong>ball</strong>. It is round and white.</p>
+            <p>The happy <strong>children</strong> run fast. They like to play a game. They kick the ball with their feet. Kick, kick, kick!</p>
+            <p>The boy runs. The girl runs. They push the ball into the big net. It is a <strong>goal</strong>! Yay! Everyone is happy. Soccer is a fun game to play with friends.</p>
+        </div>
+
+        <h2>Comprehension Questions</h2>
+
+        <div class="question-wrapper" id="red-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q1', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>1. Literal:</strong> What colour is the grass?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="red-q1">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q1" value="a"> <span>Green</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q1" value="b"> <span>Red</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q1" value="c"> <span>Blue</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q1" value="d"> <span>Yellow</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-red-q1"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q2', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>2. Literal:</strong> What do the children kick?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="red-q2">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q2" value="a"> <span>A rock</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q2" value="b"> <span>A ball</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q2" value="c"> <span>A toy car</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q2" value="d"> <span>A box</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-red-q2"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q3', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>3. Literal:</strong> Where does the ball go to make a goal?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="red-q3">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q3" value="a"> <span>Into the net</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q3" value="b"> <span>Up in a tree</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q3" value="c"> <span>Under a chair</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q3" value="d"> <span>Out the door</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-red-q3"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q4">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q4', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>4. Vocabulary:</strong> What does <strong>fast</strong> mean?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="red-q4">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q4" value="a"> <span>Moving very quickly</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q4" value="b"> <span>Sleeping all day</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q4" value="c"> <span>Sitting still</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q4" value="d"> <span>Eating food</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-red-q4"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q5">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q5', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>5. Inference:</strong> How do the kids feel when they play?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="red-q5">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q5" value="a"> <span>Happy and excited</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q5" value="b"> <span>Sad and crying</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q5" value="c"> <span>Mad and angry</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q5" value="d"> <span>Sleepy and tired</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-red-q5"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q6">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q6', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>6. Inference:</strong> Why do the children run around?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="red-q6">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q6" value="a"> <span>To catch the ball and play the game</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q6" value="b"> <span>To look for their shoes</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q6" value="c"> <span>To go back to class</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="red-q6" value="d"> <span>To hide behind a wall</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-red-q6"></div>
+        <div class="line"></div>
+
+        <button class="check-button" onclick="checkAnswers('red')">Check Answers</button>
+        <div id="score-red" class="score-display"></div>
+    </div>
+
+    <div class="page yellow-group" id="group-yellow">
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+        <div class="header-container">
+            <span class="badge yellow-badge">Yellow Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-yellow', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>The Big Soccer Game</h1>
+
+        <div class="story-box text-content">
+            <p>Look at the big soccer field. It is very big. <strong>Children</strong> are running and <strong>kicking</strong> a <strong>ball</strong>. They are playing <strong>soccer</strong>. Soccer is a fun sport.</p>
+            <p>Many people play soccer. Soccer players wear red shirts. Some wear white shirts. The <strong>players</strong> run very fast. They kick the ball hard. They try to put the ball in the <strong>goal</strong>. The ball goes in! The people say "Goal!"</p>
+            <p>The <strong>World Cup</strong> is a big soccer game. The best soccer <strong>teams</strong> play together. Countries from all over the world play. The people watch and cheer. They are very happy. The winner gets a big <strong>trophy</strong>. It is golden and shiny. Everyone wants to win the World Cup!</p>
+            <p>Soccer is the best sport. Do you like soccer? Many children love to play soccer with their friends. Playing soccer is fun and good for you.</p>
+        </div>
+
+        <h2>Comprehension Questions</h2>
+
+        <div class="question-wrapper" id="yellow-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q1', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>1. Vocabulary:</strong> What is a <strong>goal</strong> in soccer?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="yellow-q1">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q1" value="a"> <span>Where the ball goes in</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q1" value="b"> <span>Where the players sit</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q1" value="c"> <span>A type of soccer ball</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q1" value="d"> <span>A red shirt</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-yellow-q1"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q2', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>2. Literal:</strong> What colour shirts do the text say soccer players wear?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="yellow-q2">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q2" value="a"> <span>Blue and black</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q2" value="b"> <span>Red and white</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q2" value="c"> <span>Green and yellow</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q2" value="d"> <span>Purple and pink</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-yellow-q2"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q3', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>3. Vocabulary:</strong> What is a <strong>trophy</strong>?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="yellow-q3">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q3" value="a"> <span>A golden shiny prize</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q3" value="b"> <span>A soccer ball</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q3" value="c"> <span>A shirt</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q3" value="d"> <span>A field</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-yellow-q3"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q4">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q4', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>4. Literal:</strong> What is the World Cup?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="yellow-q4">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q4" value="a"> <span>A big soccer game between countries</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q4" value="b"> <span>A type of drink</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q4" value="c"> <span>A soccer team</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q4" value="d"> <span>A type of ball</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-yellow-q4"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q5">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q5', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>5. Inference:</strong> Why do people cheer at the World Cup?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="yellow-q5">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q5" value="a"> <span>Because they are happy and excited</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q5" value="b"> <span>Because they are sad</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q5" value="c"> <span>Because it is nighttime</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q5" value="d"> <span>Because the ball is red</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-yellow-q5"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q6">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q6', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>6. Inference:</strong> Why do soccer players run fast?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="yellow-q6">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q6" value="a"> <span>To get the ball and kick it into the goal</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q6" value="b"> <span>Because they are scared</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q6" value="c"> <span>Because the sun is hot</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="yellow-q6" value="d"> <span>Because they want to go home</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-yellow-q6"></div>
+        <div class="line"></div>
+
+        <button class="check-button" onclick="checkAnswers('yellow')">Check Answers</button>
+        <div id="score-yellow" class="score-display"></div>
+    </div>
+
+    <div class="page green-group" id="group-green">
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+        <div class="header-container">
+            <span class="badge green-badge">Green Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-green', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>The World Cup Adventure</h1>
+
+        <div class="story-box text-content">
+            <p>Maria was excited. She was going to watch the <strong>World Cup</strong>! The World Cup is the biggest <strong>soccer tournament</strong> in the world. <strong>Countries</strong> from every area send their best <strong>players</strong>. The game would be at a big <strong>stadium</strong> with thousands of people.</p>
+            <p>Maria wore her country's colours. Her shirt was green and yellow. She painted her face with <strong>stripes</strong>. Her family was so excited too. They carried a big <strong>flag</strong> and wore matching <strong>jerseys</strong>. Everyone wanted to <strong>cheer</strong> for their team. The field was perfectly green and the <strong>scoreboard</strong> was huge.</p>
+            <p>Players ran onto the field in their coloured uniforms. The crowd started to shout loudly. Maria's heart beat fast with <strong>excitement</strong>. Her team <strong>kicked</strong> the ball and scored a <strong>goal</strong>! The final whistle blew and Maria's team won! They were <strong>champions</strong>! Everyone danced and celebrated. Watching the World Cup was the best day ever.</p>
+        </div>
+
+        <h2>Comprehension Questions</h2>
+
+        <div class="question-wrapper" id="green-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q1', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>1. Vocabulary:</strong> What is a <strong>tournament</strong>?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="green-q1">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q1" value="a"> <span>A competition with many teams playing</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q1" value="b"> <span>A single soccer game</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q1" value="c"> <span>A type of soccer ball</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q1" value="d"> <span>A place to watch soccer</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-green-q1"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q2', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>2. Literal:</strong> What did Maria wear to the stadium?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="green-q2">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q2" value="a"> <span>Her school uniform</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q2" value="b"> <span>Her country's colours and face paint</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q2" value="c"> <span>Winter clothes</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q2" value="d"> <span>A plain white dress</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-green-q2"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q3', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>3. Vocabulary:</strong> What are <strong>champions</strong>?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="green-q3">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q3" value="a"> <span>The winners of a competition</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q3" value="b"> <span>The people who lose the game</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q3" value="c"> <span>The soccer referees</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q3" value="d"> <span>The people who clean the field</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-green-q3"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q4">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q4', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>4. Literal:</strong> What did Maria's team do at the end of the game?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="green-q4">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q4" value="a"> <span>They won the game</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q4" value="b"> <span>They left the stadium early</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q4" value="c"> <span>They sat down and cried</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q4" value="d"> <span>They played another game instantly</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-green-q4"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q5">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q5', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>5. Inference:</strong> How did Maria feel when her team scored a goal?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="green-q5">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q5" value="a"> <span>Very happy and excited</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q5" value="b"> <span>Sad and disappointed</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q5" value="c"> <span>Bored and tired</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q5" value="d"> <span>Angry and upset</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-green-q5"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q6">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q6', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>6. Inference:</strong> Why did Maria's family dress in matching jerseys and carry a flag?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="green-q6">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q6" value="a"> <span>To show support for their country</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q6" value="b"> <span>Because it was freezing cold outside</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q6" value="c"> <span>Because it was a normal school day</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="green-q6" value="d"> <span>Because they wanted to look funny to others</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-green-q6"></div>
+        <div class="line"></div>
+
+        <button class="check-button" onclick="checkAnswers('green')">Check Answers</button>
+        <div id="score-green" class="score-display"></div>
+    </div>
+
+    <div class="page blue-group" id="group-blue">
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+        <div class="header-container">
+            <span class="badge blue-badge">Blue Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-blue', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>The World Cup and Soccer Stars</h1>
+
+        <div class="story-box text-content">
+            <p>The <strong>World Cup</strong> is the biggest soccer game in the world. It happens every four years. The best soccer <strong>teams</strong> from many <strong>countries</strong> play against each other. Each <strong>team</strong> wants to win the <strong>trophy</strong>. The <strong>trophy</strong> is very special and shiny.</p>
+            <p>Kids around the world love to watch the World Cup. They wear their country's colours and <strong>cheer</strong> loudly for their <strong>team</strong>. The <strong>stadiums</strong> are full of happy people singing and shouting. Families watch together on TV. Everyone feels <strong>proud</strong> when their team scores a <strong>goal</strong>.</p>
+            <p>Playing in the World Cup is a big <strong>dream</strong> for soccer players. Some players become <strong>famous</strong> because they play so well. Other players become <strong>heroes</strong> to kids everywhere. They show that hard work and <strong>practice</strong> help you get better at soccer. Many children play soccer because they want to be in the World Cup one day.</p>
+            <p>The World Cup brings people together. People from different places become <strong>friends</strong> when they watch soccer. Soccer makes everyone happy. The World Cup shows why soccer is the most popular sport in the world.</p>
+        </div>
+
+        <h2>Comprehension Questions</h2>
+
+        <div class="question-wrapper" id="blue-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q1', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>1. Vocabulary:</strong> What does <strong>famous</strong> mean?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="blue-q1">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q1" value="a"> <span>Known and loved by many people</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q1" value="b"> <span>Very tall and strong</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q1" value="c"> <span>Sad and lonely</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q1" value="d"> <span>Young and fast</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-blue-q1"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q2', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>2. Literal:</strong> How often does the World Cup happen?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="blue-q2">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q2" value="a"> <span>Every four years</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q2" value="b"> <span>Every year</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q2" value="c"> <span>Every six months</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q2" value="d"> <span>Every ten years</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-blue-q2"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q3', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>3. Vocabulary:</strong> What is a <strong>hero</strong>?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="blue-q3">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q3" value="a"> <span>Someone brave and special that people admire</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q3" value="b"> <span>A coach of a soccer team</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q3" value="c"> <span>A referee in a game</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q3" value="d"> <span>A person who sells soccer tickets</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-blue-q3"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q4">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q4', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>4. Literal:</strong> Why do children watch the World Cup?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="blue-q4">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q4" value="a"> <span>To cheer for their country and see great soccer</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q4" value="b"> <span>Because they have no homework</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q4" value="c"> <span>To learn how to run faster</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q4" value="d"> <span>Because all TV shows are closed</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-blue-q4"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q5">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q5', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>5. Inference:</strong> Why do you think children want to play soccer in the World Cup?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="blue-q5">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q5" value="a"> <span>They look up to soccer stars and want to be like them</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q5" value="b"> <span>They have nothing else to do</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q5" value="c"> <span>Their parents make them play</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q5" value="d"> <span>Soccer is easy and requires no practice</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-blue-q5"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q6">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q6', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>6. Inference:</strong> How does the World Cup bring people together?</p>
+            </div>
+        </div>
+        <div class="question-item" data-question="blue-q6">
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q6" value="a"> <span>People watch and cheer for soccer, and become friends</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q6" value="b"> <span>People have to live in the same house</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q6" value="c"> <span>People play the same video games</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="blue-q6" value="d"> <span>People eat the same food</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-blue-q6"></div>
+        <div class="line"></div>
+
+        <button class="check-button" onclick="checkAnswers('blue')">Check Answers</button>
+        <div id="score-blue" class="score-display"></div>
+    </div>
+
+    <script>
+        let currentUtterance = null;
+        let wordSpans = [];
+        let currentlyPlayingTargetId = null;
+        let optionAudioStates = {};
+
+        // Answer keys modified to match new tier progression
+        const answerKeys = {
+            red: { 'red-q1': 'a', 'red-q2': 'b', 'red-q3': 'a', 'red-q4': 'a', 'red-q5': 'a', 'red-q6': 'a' },
+            yellow: { 'yellow-q1': 'a', 'yellow-q2': 'b', 'yellow-q3': 'a', 'yellow-q4': 'a', 'yellow-q5': 'a', 'yellow-q6': 'a' },
+            green: { 'green-q1': 'a', 'green-q2': 'b', 'green-q3': 'a', 'green-q4': 'a', 'green-q5': 'a', 'green-q6': 'a' },
+            blue: { 'blue-q1': 'a', 'blue-q2': 'a', 'blue-q3': 'a', 'blue-q4': 'a', 'blue-q5': 'a', 'blue-q6': 'a' }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.text-content, .question-content').forEach((container, containerIndex) => {
+                let globalWordCounter = 0;
+                const paragraphs = container.querySelectorAll('p');
+
+                paragraphs.forEach(p => {
+                    function tokenize(node) {
+                        let childNodes = Array.from(node.childNodes);
+                        childNodes.forEach(child => {
+                            if (child.nodeType === Node.TEXT_NODE) {
+                                const text = child.textContent;
+                                const tokens = text.split(/(\s+)/);
+                                const fragment = document.createDocumentFragment();
+
+                                tokens.forEach(token => {
+                                    if (token.trim().length > 0) {
+                                        const span = document.createElement('span');
+                                        span.textContent = token;
+                                        span.setAttribute('data-word-id', `${containerIndex}-${globalWordCounter}`);
+                                        fragment.appendChild(span);
+                                        globalWordCounter++;
+                                    } else {
+                                        fragment.appendChild(document.createTextNode(token));
+                                    }
+                                });
+                                child.parentNode.replaceChild(fragment, child);
+                            } else if (child.nodeType === Node.ELEMENT_NODE) {
+                                tokenize(child);
+                            }
+                        });
+                    }
+                    tokenize(p);
+                });
+            });
+        });
+
+        function showGroup(groupColor) {
+            document.getElementById('front-menu').style.display = 'none';
+            document.getElementById('global-controls').style.display = 'flex';
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(`group-${groupColor}`).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function backToMenu() {
+            stopSpeech();
+            document.getElementById('front-menu').style.display = 'block';
+            document.getElementById('global-controls').style.display = 'none';
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            window.scrollTo(0, 0);
+        }
+
+        function toggleReadAloud(targetId, contentSelector) {
+            const button = document.querySelector(`#${targetId} .audio-btn, #${targetId} .q-audio-btn`);
+
+            if (currentlyPlayingTargetId === targetId) {
+                stopSpeech();
+                return;
+            }
+
+            stopSpeech();
+
+            currentlyPlayingTargetId = targetId;
+            button.classList.add('playing');
+            if (button.classList.contains('audio-btn')) {
+                button.innerHTML = '🛑 Stop';
+            } else {
+                button.innerHTML = '⏹️';
+            }
+
+            const container = document.querySelector(`#${targetId} ${contentSelector}`);
+            const textContainers = Array.from(document.querySelectorAll('.text-content, .question-content'));
+            const containerIndex = textContainers.indexOf(container);
+
+            wordSpans = Array.from(container.querySelectorAll('span[data-word-id]'));
+            const textToSpeak = wordSpans.map(span => span.textContent).join(' ');
+
+            currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+
+            const voices = window.speechSynthesis.getVoices();
+            let premiumVoice = voices.find(voice => voice.lang === 'en-AU' && voice.name.includes('Natural'));
+            if (!premiumVoice) premiumVoice = voices.find(voice => voice.lang === 'en-AU');
+            if (premiumVoice) currentUtterance.voice = premiumVoice;
+
+            const selectedRate = document.getElementById('speed-rate').value;
+            currentUtterance.rate = parseFloat(selectedRate);
+
+            let textMap = [];
+            let currentOffset = 0;
+
+            wordSpans.forEach((span, index) => {
+                const word = span.textContent;
+                textMap.push({
+                    start: currentOffset,
+                    end: currentOffset + word.length,
+                    id: `${containerIndex}-${index}`
+                });
+                currentOffset += word.length + 1;
+            });
+
+            currentUtterance.onboundary = function(event) {
+                if (event.name === 'word') {
+                    const charIndex = event.charIndex;
+                    const currentWord = textMap.find(map => charIndex >= map.start && charIndex < map.end);
+
+                    if (currentWord) {
+                        wordSpans.forEach(span => span.classList.remove('highlight'));
+                        const activeSpan = container.querySelector(`span[data-word-id="${currentWord.id}"]`);
+                        if (activeSpan) {
+                            activeSpan.classList.add('highlight');
+                        }
+                    }
+                }
+            };
+
+            currentUtterance.onend = stopSpeech;
+            currentUtterance.onerror = stopSpeech;
+
+            window.speechSynthesis.speak(currentUtterance);
+        }
+
+        function toggleReadAloudOption(button) {
+            const label = button.parentElement;
+            const optionText = label.querySelector('span').textContent;
+            const optionKey = `option_${Date.now()}_${Math.random()}`;
+
+            if (optionAudioStates[optionKey] && window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                button.classList.remove('playing');
+                optionAudioStates[optionKey] = false;
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(optionText);
+
+            const voices = window.speechSynthesis.getVoices();
+            let premiumVoice = voices.find(voice => voice.lang === 'en-AU' && voice.name.includes('Natural'));
+            if (!premiumVoice) premiumVoice = voices.find(voice => voice.lang === 'en-AU');
+            if (premiumVoice) utterance.voice = premiumVoice;
+
+            const selectedRate = document.getElementById('speed-rate') ? document.getElementById('speed-rate').value : '0.85';
+            utterance.rate = parseFloat(selectedRate);
+
+            button.classList.add('playing');
+            optionAudioStates[optionKey] = true;
+
+            utterance.onend = () => {
+                button.classList.remove('playing');
+                optionAudioStates[optionKey] = false;
+            };
+
+            utterance.onerror = () => {
+                button.classList.remove('playing');
+                optionAudioStates[optionKey] = false;
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function stopSpeech() {
+            window.speechSynthesis.cancel();
+            if (currentlyPlayingTargetId) {
+                const button = document.querySelector(`#${currentlyPlayingTargetId} .audio-btn, #${currentlyPlayingTargetId} .q-audio-btn`);
+                if (button) {
+                    button.classList.remove('playing');
+                    if (button.classList.contains('audio-btn')) {
+                        button.innerHTML = '🗣️ Read Aloud';
+                    } else {
+                        button.innerHTML = '🔊';
+                    }
+                }
+            }
+            document.querySelectorAll('.text-content span, .question-content span').forEach(span => span.classList.remove('highlight'));
+            currentUtterance = null;
+            currentlyPlayingTargetId = null;
+        }
+
+        function checkAnswers(group) {
+            const answers = answerKeys[group];
+            let correct = 0;
+            let total = 0;
+
+            for (const questionId in answers) {
+                total++;
+                const selected = document.querySelector(`input[name="${questionId}"]:checked`);
+                const feedbackDiv = document.getElementById(`feedback-${questionId}`);
+
+                if (!selected) {
+                    feedbackDiv.innerHTML = '<span class="feedback incorrect">No answer selected</span>';
+                } else if (selected.value === answers[questionId]) {
+                    correct++;
+                    feedbackDiv.innerHTML = '<span class="feedback correct">✓ Correct!</span>';
+                } else {
+                    feedbackDiv.innerHTML = '<span class="feedback incorrect">✗ Incorrect. Try again!</span>';
+                }
+            }
+
+            const scoreDiv = document.getElementById(`score-${group}`);
+            scoreDiv.classList.add('show');
+            const percentage = Math.round((correct / total) * 100);
+            scoreDiv.innerHTML = `<span>Score: ${correct}/${total} (${percentage}%)</span>`;
+        }
+
+        window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+    </script>
+    <script>
+        // Shuffle answer order on each page load (option values and the answer key are unchanged)
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.question-item').forEach(function(box) {
+                var labels = Array.from(box.querySelectorAll('label'));
+                for (var i = labels.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    var t = labels[i]; labels[i] = labels[j]; labels[j] = t;
+                }
+                labels.forEach(function(l) { box.appendChild(l); });
+            });
+        });
+    </script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='reading-10-world-cup';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-reading.js"></script>
+</body>
+</html>

@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connection to Country - Reading Groups</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background-color: #f4f4f9; }
+
+        .front-menu { background: white; max-width: 800px; margin: 0 auto 40px auto; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; }
+        .front-menu h1 { font-size: 2.2rem; color: #222; margin-top: 0; margin-bottom: 10px; }
+        .front-menu p { font-size: 1.1rem; color: #666; margin-bottom: 35px; }
+
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
+        .menu-button { padding: 30px 20px; border: none; border-radius: 8px; font-size: 1.3rem; font-weight: bold; color: white; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .menu-button:hover { transform: translateY(-4px); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
+        .menu-button:active { transform: translateY(-2px); }
+
+        .red-btn { background-color: #e53935; }
+        .red-btn:hover { background-color: #c62828; }
+        .yellow-btn { background-color: #ffb300; color: #333; }
+        .yellow-btn:hover { background-color: #ff9800; }
+        .green-btn { background-color: #43a047; }
+        .green-btn:hover { background-color: #2e7d32; }
+        .blue-btn { background-color: #1e88e5; }
+        .blue-btn:hover { background-color: #1565c0; }
+
+        .back-to-menu { text-align: center; margin: 30px 0; }
+        .back-to-menu button { background-color: #999; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s; }
+        .back-to-menu button:hover { background-color: #666; }
+
+        .page { background: white; max-width: 800px; margin: 0 auto 40px auto; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); page-break-after: always; position: relative; border-top: 15px solid; display: none; }
+        .page.active { display: block; }
+
+        .red-group { border-top-color: #e53935; }
+        .yellow-group { border-top-color: #ffb300; }
+        .green-group { border-top-color: #43a047; }
+        .blue-group { border-top-color: #1e88e5; }
+
+        .header-container { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .badge { display: inline-block; padding: 6px 12px; font-weight: bold; border-radius: 20px; color: white; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+        .red-badge { background-color: #e53935; }
+        .yellow-badge { background-color: #ffb300; color: #333; }
+        .green-badge { background-color: #43a047; }
+        .blue-badge { background-color: #1e88e5; }
+
+        .audio-btn { background-color: #ffffff; border: 2px solid #ccc; border-radius: 20px; padding: 6px 15px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s ease; }
+        .audio-btn:hover { background-color: #f0f0f0; border-color: #888; }
+        .audio-btn.playing { background-color: #333; color: white; border-color: #333; }
+
+        .question-wrapper { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 5px; }
+        .q-audio-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 2px 5px; margin-top: -2px; border-radius: 4px; transition: background 0.2s; }
+        .q-audio-btn:hover { background-color: #e0e0e0; }
+        .q-audio-btn.playing { animation: pulse 1.5s infinite; background-color: #333; border-radius: 50%; }
+
+        .opt-audio-btn { background: none; border: none; font-size: 0.9rem; cursor: pointer; padding: 2px 6px; border-radius: 4px; transition: background 0.2s; margin-left: 4px; }
+        .opt-audio-btn:hover { background-color: #e0e0e0; }
+        .opt-audio-btn.playing { background-color: #ddd; font-weight: bold; }
+
+        h1 { font-size: 2rem; color: #222; margin-top: 0; }
+        h2 { font-size: 1.4rem; color: #444; border-bottom: 2px solid #eee; padding-bottom: 8px; margin-top: 30px; }
+        p { font-size: 1.1rem; color: #4a4a4a; margin-bottom: 20px; }
+        .story-box { background: #f9f9fb; padding: 25px; border-left: 5px solid #ccc; border-radius: 4px; font-size: 1.15rem; margin-bottom: 30px; }
+
+        .red-group .story-box { border-left-color: #e53935; }
+        .yellow-group .story-box { border-left-color: #ffb300; }
+        .green-group .story-box { border-left-color: #43a047; }
+        .blue-group .story-box { border-left-color: #1e88e5; }
+
+        .line { border-bottom: 1px dashed #999; height: 30px; margin-top: 10px; margin-bottom: 15px; }
+
+        .question-item { margin: 15px 0; padding: 12px; background: #f5f5f5; border-radius: 6px; display: flex; flex-direction: column; }
+        .question-item label { display: flex; align-items: center; margin: 8px 0; cursor: pointer; font-size: 1rem; }
+        .question-item input[type="radio"], .question-item input[type="checkbox"] { margin-right: 10px; transform: scale(1.2); cursor: pointer; }
+
+        .inline-select { padding: 6px 10px; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; background-color: white; margin: 0 5px; cursor: pointer; }
+
+        .check-button, .reset-button { color: white; border: none; padding: 12px 30px; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s; margin: 15px 0; display: block; width: 100%; text-align: center; }
+        .check-button { background-color: #43a047; }
+        .check-button:hover { background-color: #2e7d32; }
+        .reset-button { background-color: #757575; }
+        .reset-button:hover { background-color: #616161; }
+
+        .score-display { background: #e8f5e9; padding: 15px; border-radius: 6px; margin: 20px 0; font-size: 1.1rem; font-weight: bold; display: none; text-align: center; }
+        .score-display.show { display: block; }
+
+        .feedback { margin-top: 10px; padding: 10px; border-radius: 4px; font-weight: bold; display: inline-block; }
+        .correct { background: #c8e6c9; color: #1b5e20; }
+        .incorrect { background: #ffcccc; color: #c62828; }
+        .highlight { background-color: #ffeb3b; border-radius: 2px; }
+        .text-content span, .question-content span { transition: background-color 0.1s ease; }
+
+        .sentence-builder { background: #eef2f5; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .sentence-builder h3 { margin-top: 0; color: #333; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
+        .sentence-builder p { font-size: 0.95rem; color: #555; margin-bottom: 15px; }
+
+        .drag-bank { display: flex; flex-wrap: wrap; gap: 10px; min-height: 60px; padding: 15px; background: #fff; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; }
+        .drop-zone { display: flex; flex-wrap: wrap; gap: 10px; min-height: 80px; padding: 15px; background: #fafafa; border: 3px dashed #bbb; border-radius: 8px; transition: min-height 0.2s, background-color 0.2s; align-items: center; align-content: flex-start; }
+        .drop-zone.drag-over { background-color: #e3f2fd; border-color: #2196f3; }
+
+        .draggable-item { padding: 12px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1rem; box-shadow: 0 3px 6px rgba(0,0,0,0.1); user-select: none; transition: transform 0.1s, box-shadow 0.1s; display: inline-block; }
+        .draggable-item:focus-visible { outline: 3px solid #1e88e5; outline-offset: 2px; }
+        .draggable-item:active { cursor: grabbing; transform: scale(0.95); box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        .draggable-item:hover { transform: translateY(-2px); }
+
+        .color-block-1 { background-color: #ffcdd2; color: #b71c1c; border: 1px solid #ef9a9a; }
+        .color-block-2 { background-color: #c8e6c9; color: #1b5e20; border: 1px solid #a5d6a7; }
+        .color-block-3 { background-color: #bbdefb; color: #0d47a1; border: 1px solid #90caf9; }
+        .color-block-4 { background-color: #fff9c4; color: #f57f17; border: 1px solid #fff59d; }
+        .color-block-5 { background-color: #e1bee7; color: #4a148c; border: 1px solid #ce93d8; }
+        .color-block-6 { background-color: #ffcc80; color: #e65100; border: 1px solid #ffb74d; }
+
+        .standard-block { background-color: #ffffff; color: #333; border: 2px solid #ccc; }
+
+        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+
+        @media (max-width: 600px) {
+            .menu-grid { grid-template-columns: 1fr 1fr; }
+            .menu-button { padding: 25px 15px; font-size: 1.1rem; }
+            .front-menu { padding: 30px 20px; }
+            .front-menu h1 { font-size: 1.8rem; }
+            .draggable-item { font-size: 1rem; padding: 10px 14px; }
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .front-menu, .back-to-menu, .global-controls, .check-button, .reset-button, .score-display { display: none !important; }
+            .page { box-shadow: none; max-width: 100%; margin: 0; padding: 20px; border-radius: 0; display: block !important; }
+            .audio-btn, .q-audio-btn, .opt-audio-btn { display: none !important; }
+        }
+
+        @media screen {
+            .front-menu, .page, .global-controls { max-width: 800px !important; }
+        }
+
+        .menu-grid { grid-template-columns: repeat(2, 1fr) !important; }
+        @media (min-width: 900px) { .menu-grid { grid-template-columns: repeat(4, 1fr) !important; } }
+    </style>
+</head>
+<body>
+
+    <div class="front-menu" id="front-menu">
+        <h1>🌏 Connection to Country</h1>
+        <p>Aboriginal and Torres Strait Islander Perspectives - Reading Groups</p>
+        <div class="menu-grid">
+            <button class="menu-button red-btn" onclick="showGroup('red')">Red Group</button>
+            <button class="menu-button yellow-btn" onclick="showGroup('yellow')">Yellow Group</button>
+            <button class="menu-button green-btn" onclick="showGroup('green')">Green Group</button>
+            <button class="menu-button blue-btn" onclick="showGroup('blue')">Blue Group</button>
+        </div>
+    </div>
+
+    <div class="global-controls" id="global-controls" style="display: none; margin: 10px auto; padding: 10px 40px; background: #eef2f5; border-radius: 8px; align-items: center; gap: 10px;">
+        <label for="speed-rate" style="font-weight: bold; font-size: 0.9rem;">🗣️ Reading Speed:</label>
+        <select id="speed-rate" style="padding: 5px 10px; border-radius: 4px; border: 1px solid #ccc; font-weight: bold;">
+            <option value="0.7">0.7x (Very Slow)</option>
+            <option value="0.85" selected>0.85x (Slow)</option>
+            <option value="1">1.0x (Normal)</option>
+            <option value="1.15">1.15x (Quick)</option>
+        </select>
+    </div>
+
+    <div class="page red-group" id="group-red">
+        <div class="back-to-menu"><button onclick="backToMenu()">← Back to Menu</button></div>
+        <div class="header-container">
+            <span class="badge red-badge">Red Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-red', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>Our Home</h1>
+        <div class="story-box text-content">
+            <p>For many Aboriginal peoples, Country is like a <strong>home</strong>. It includes the land, trees, animals, water and sky. Country is also connected to <strong>family</strong> and community. People care for Country, and Country helps sustain people.</p>
+        </div>
+
+        <h2>Comprehension Questions</h2>
+
+        <div class="question-wrapper" id="red-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q1', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>1. Multiple Choice:</strong> According to the text, what does Country include?</p></div>
+        </div>
+        <div class="question-item shuffle-options" data-question="red-q1">
+            <label><input type="radio" name="red-q1" value="a"> <span>Land, trees, animals, water and sky</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="red-q1" value="b"> <span>Only the dirt on the ground</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-red-q1"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q2', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>2. True or False:</strong> Country is connected to family and community.</p></div>
+        </div>
+        <div class="question-item" data-question="red-q2">
+            <label><input type="radio" name="red-q2" value="true"> <span>True</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="red-q2" value="false"> <span>False</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-red-q2"></div>
+        <div class="line"></div>
+
+        <div class="sentence-builder">
+            <h3>🧩 Sentence Builder</h3>
+            <p>Tap or drag the coloured blocks into the dashed box to rebuild the sentence from the text.</p>
+            <div class="drag-bank" id="bank-red" ondragover="allowDrop(event)" ondrop="drop(event)">
+                <div class="draggable-item color-block-1" id="r-block1" data-order="1" draggable="true" ondragstart="drag(event)" onclick="moveBlock(this)" tabindex="0" onkeydown="blockKeydown(event, this)">Country is</div>
+                <div class="draggable-item color-block-2" id="r-block2" data-order="2" draggable="true" ondragstart="drag(event)" onclick="moveBlock(this)" tabindex="0" onkeydown="blockKeydown(event, this)">connected to</div>
+                <div class="draggable-item color-block-3" id="r-block3" data-order="3" draggable="true" ondragstart="drag(event)" onclick="moveBlock(this)" tabindex="0" onkeydown="blockKeydown(event, this)">family</div>
+                <div class="draggable-item color-block-4" id="r-block4" data-order="4" draggable="true" ondragstart="drag(event)" onclick="moveBlock(this)" tabindex="0" onkeydown="blockKeydown(event, this)">and community.</div>
+            </div>
+            <div class="drop-zone" id="dz-red" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+            <div id="sentence-feedback-red"></div>
+        </div>
+
+        <button class="check-button" onclick="checkAnswers('red')">Check All Answers</button>
+        <button class="reset-button" onclick="resetGroup('red')">Reset Answers</button>
+        <div id="score-red" class="score-display"></div>
+    </div>
+
+    <div class="page yellow-group" id="group-yellow">
+        <div class="back-to-menu"><button onclick="backToMenu()">← Back to Menu</button></div>
+        <div class="header-container">
+            <span class="badge yellow-badge">Yellow Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-yellow', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>The Spirit of Country</h1>
+        <div class="story-box text-content">
+            <p>For many Aboriginal peoples, Country is very <strong>special</strong>. It is not just the dirt and rocks. Country can be connected to the <strong>spirit</strong> of ancestors. It can also include language, art and dance.</p>
+            <p>When people walk on Country, they may feel connected to living things. They listen to the land, and the land helps them learn.</p>
+        </div>
+
+        <h2>Comprehension Questions</h2>
+
+        <div class="question-wrapper" id="yellow-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q1', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>1. Multiple Choice:</strong> According to the text, what can Country be connected to?</p></div>
+        </div>
+        <div class="question-item shuffle-options" data-question="yellow-q1">
+            <label><input type="radio" name="yellow-q1" value="a"> <span>The spirit of ancestors</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q1" value="b"> <span>Fast cars</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q1" value="c"> <span>The deep ocean</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-yellow-q1"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q2', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>2. True or False:</strong> People may feel connected to living things when they walk on Country.</p></div>
+        </div>
+        <div class="question-item" data-question="yellow-q2">
+            <label><input type="radio" name="yellow-q2" value="true"> <span>True</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q2" value="false"> <span>False</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-yellow-q2"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q3', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>3. Fill in the Blank:</strong>
+                Country is not just the
+                <select name="yellow-q3" class="inline-select" onchange="clearFeedback('yellow-q3')">
+                    <option value="" disabled selected>Choose...</option>
+                    <option value="dirt">dirt</option>
+                    <option value="clouds">clouds</option>
+                </select>
+                and rocks.</p>
+            </div>
+        </div>
+        <div id="feedback-yellow-q3"></div>
+        <div class="line"></div>
+
+        <div class="sentence-builder">
+            <h3>🧩 Sentence Builder</h3>
+            <p>Tap or drag the coloured blocks into the dashed box to rebuild the sentence from the text.</p>
+            <div class="drag-bank" id="bank-yellow" ondragover="allowDrop(event)" ondrop="drop(event)">
+                <div class="draggable-item color-block-5" id="y-block1" data-order="1" draggable="true" ondragstart="drag(event)" onclick="moveBlock(this)" tabindex="0" onkeydown="blockKeydown(event, this)">Country can be</div>
+                <div class="draggable-item color-block-1" id="y-block2" data-order="2" draggable="true" ondragstart="drag(event)" onclick="moveBlock(this)" tabindex="0" onkeydown="blockKeydown(event, this)">connected to</div>
+                <div class="draggable-item color-block-4" id="y-block3" data-order="3" draggable="true" ondragstart="drag(event)" onclick="moveBlock(this)" tabindex="0" onkeydown="blockKeydown(event, this)">the spirit</div>
+                <div class="draggable-item color-block-2" id="y-block4" data-order="4" draggable="true" ondragstart="drag(event)" onclick="moveBlock(this)" tabindex="0" onkeydown="blockKeydown(event, this)">of ancestors.</div>
+            </div>
+            <div class="drop-zone" id="dz-yellow" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+            <div id="sentence-feedback-yellow"></div>
+        </div>
+
+        <button class="check-button" onclick="checkAnswers('yellow')">Check All Answers</button>
+        <button class="reset-button" onclick="resetGroup('yellow')">Reset Answers</button>
+        <div id="score-yellow" class="score-display"></div>
+    </div>
+
+    <div class="page green-group" id="group-green">
+        <div class="back-to-menu"><button onclick="backToMenu()">← Back to Menu</button></div>
+        <div class="header-container">
+            <span class="badge green-badge">Green Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-green', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>A Deep Bond</h1>
+        <div class="story-box text-content">
+            <p>Connection to Country is a <strong>deep bond</strong> for Aboriginal and Torres Strait Islander peoples. Country is much more than a place on a map. It holds history, traditions and spirit.</p>
+            <p>It includes animals, plants, skies and waterways. Families pass down <strong>knowledge</strong> about how to care for the land. This connection helps keep culture alive and strong.</p>
+        </div>
+
+        <h2>Comprehension Questions</h2>
+
+        <div class="question-wrapper" id="green-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q1', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>1. Multiple Choice:</strong> What do families pass down to each other?</p></div>
+        </div>
+        <div class="question-item shuffle-options" data-question="green-q1">
+            <label><input type="radio" name="green-q1" value="a"> <span>Knowledge about caring for the land</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q1" value="b"> <span>Old school clothes</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q1" value="c"> <span>Secret recipes</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-green-q1"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q2', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>2. Multi-Select:</strong> According to the text, which connections does Country include? <em>(Select all that are correct)</em></p></div>
+        </div>
+        <div class="question-item shuffle-options" data-question="green-q2">
+            <label><input type="checkbox" name="green-q2" value="a" onchange="clearFeedback('green-q2')"> <span>Animals</span></label>
+            <label><input type="checkbox" name="green-q2" value="b" onchange="clearFeedback('green-q2')"> <span>Plants</span></label>
+            <label><input type="checkbox" name="green-q2" value="c" onchange="clearFeedback('green-q2')"> <span>Skies and waterways</span></label>
+            <label><input type="checkbox" name="green-q2" value="d" onchange="clearFeedback('green-q2')"> <span>Objects in a shop</span></label>
+        </div>
+        <div id="feedback-green-q2"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q3', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>3. True or False:</strong> Country is only a location you can point to on a map.</p></div>
+        </div>
+        <div class="question-item" data-question="green-q3">
+            <label><input type="radio" name="green-q3" value="true"> <span>True</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q3" value="false"> <span>False</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-green-q3"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q4">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q4', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>4. Fill in the Blank:</strong>
+                This connection helps keep
+                <select name="green-q4" class="inline-select" onchange="clearFeedback('green-q4')">
+                    <option value="" disabled selected>Choose...</option>
+                    <option value="buildings">buildings</option>
+                    <option value="culture">culture</option>
+                </select>
+                alive and strong.</p>
+            </div>
+        </div>
+        <div id="feedback-green-q4"></div>
+        <div class="line"></div>
+
+        <div class="sentence-builder">
+            <h3>🧩 Sentence Builder</h3>
+            <p>Tap or drag the blocks into the dashed box in the correct order.</p>
+            <div class="drag-bank" id="bank-green" ondragover="allowDrop(event)" ondrop="drop(event)">
+                <div class="draggable-item standard-block" id="g-block1" data-order="1" draggable="true" ondragstart="drag(event)" onclick="moveBlock(this)" tabindex="0" onkeydown="blockKeydown(event, this)">This connection</div>
+                <div class="draggable-item standard-block" id="g-block2" data-order="2" draggable="true" ondragstart="drag(event)" onclick="moveBlock(this)" tabindex="0" onkeydown="blockKeydown(event, this)">helps keep</div>
+                <div class="draggable-item standard-block" id="g-block3" data-order="3" draggable="true" ondragstart="drag(event)" onclick="moveBlock(this)" tabindex="0" onkeydown="blockKeydown(event, this)">culture</div>
+                <div class="draggable-item standard-block" id="g-block4" data-order="4" draggable="true" ondragstart="drag(event)" onclick="moveBlock(this)" tabindex="0" onkeydown="blockKeydown(event, this)">alive</div>
+                <div class="draggable-item standard-block" id="g-block5" data-order="5" draggable="true" ondragstart="drag(event)" onclick="moveBlock(this)" tabindex="0" onkeydown="blockKeydown(event, this)">and strong.</div>
+            </div>
+            <div class="drop-zone" id="dz-green" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+            <div id="sentence-feedback-green"></div>
+        </div>
+
+        <button class="check-button" onclick="checkAnswers('green')">Check All Answers</button>
+        <button class="reset-button" onclick="resetGroup('green')">Reset Answers</button>
+        <div id="score-green" class="score-display"></div>
+    </div>
+
+    <div class="page blue-group" id="group-blue">
+        <div class="back-to-menu"><button onclick="backToMenu()">← Back to Menu</button></div>
+        <div class="header-container">
+            <span class="badge blue-badge">Blue Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-blue', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>A Living Connection</h1>
+        <div class="story-box text-content">
+            <p>For First Nations peoples, the <strong>concept</strong> of Country is complex and deeply meaningful. It extends beyond the physical environment of mountains, rivers and trees. Country can encompass spirituality, language, law and family ties.</p>
+            <p>Many people describe Country as a <strong>living connection</strong> that supports identity and wellbeing. Ancestors have walked these lands for many thousands of years, leaving a rich cultural <strong>heritage</strong>. Maintaining a profound connection to Country is important for wellbeing, identity and passing wisdom to future generations.</p>
+        </div>
+
+        <h2>Comprehension Questions</h2>
+
+        <div class="question-wrapper" id="blue-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q1', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>1. Multiple Choice:</strong> Why might people describe Country as a living connection?</p></div>
+        </div>
+        <div class="question-item shuffle-options" data-question="blue-q1">
+            <label><input type="radio" name="blue-q1" value="a"> <span>It supports identity, wellbeing and connections across generations</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q1" value="b"> <span>It is only a group of plants growing</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q1" value="c"> <span>It physically moves around the Earth</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-blue-q1"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q2', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>2. Multi-Select:</strong> According to the text, what can Country encompass? <em>(Select all that apply)</em></p></div>
+        </div>
+        <div class="question-item shuffle-options" data-question="blue-q2">
+            <label><input type="checkbox" name="blue-q2" value="a" onchange="clearFeedback('blue-q2')"> <span>Spirituality</span></label>
+            <label><input type="checkbox" name="blue-q2" value="b" onchange="clearFeedback('blue-q2')"> <span>Language</span></label>
+            <label><input type="checkbox" name="blue-q2" value="c" onchange="clearFeedback('blue-q2')"> <span>Law and family ties</span></label>
+            <label><input type="checkbox" name="blue-q2" value="d" onchange="clearFeedback('blue-q2')"> <span>Objects in a shopping centre</span></label>
+        </div>
+        <div id="feedback-blue-q2"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q3', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>3. True or False:</strong> Ancestors have walked these lands for only a few hundred years.</p></div>
+        </div>
+        <div class="question-item" data-question="blue-q3">
+            <label><input type="radio" name="blue-q3" value="true"> <span>True</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q3" value="false"> <span>False</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-blue-q3"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q4">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q4', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>4. Fill in the Blanks:</strong><br>
+                Maintaining a
+                <select name="blue-q4-1" class="inline-select" onchange="clearFeedback('blue-q4')">
+                    <option value="" disabled selected>Choose...</option>
+                    <option value="tiny">tiny</option>
+                    <option value="profound">profound</option>
+                </select>
+                connection to Country is important for
+                <select name="blue-q4-2" class="inline-select" onchange="clearFeedback('blue-q4')">
+                    <option value="" disabled selected>Choose...</option>
+                    <option value="forgetting">forgetting</option>
+                    <option value="wellbeing">wellbeing</option>
+                </select>.</p>
+            </div>
+        </div>
+        <div id="feedback-blue-q4"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q5">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q5', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>5. Think and Explain:</strong> Why is a connection to Country important for wellbeing and identity? Use two details from the text.</p>
+            </div>
+        </div>
+        <div class="question-item">
+            <textarea id="blue-q5-response" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem;" placeholder="Write your answer here..."></textarea>
+        </div>
+        <div id="feedback-blue-q5"></div>
+        <div class="line"></div>
+
+        <div class="sentence-builder">
+            <h3>🧩 Sentence Builder</h3>
+            <p>Tap or drag the stems into the dashed box to rebuild a complete sentence.</p>
+            <div class="drag-bank" id="bank-blue" ondragover="allowDrop(event)" ondrop="drop(event)">
+                <div class="draggable-item standard-block" id="b-block1" data-order="1" draggable="true" ondragstart="drag(event)" onclick="moveBlock(this)" tabindex="0" onkeydown="blockKeydown(event, this)">Maintaining a</div>
+                <div class="draggable-item standard-block" id="b-block2" data-order="2" draggable="true" ondragstart="drag(event)" onclick="moveBlock(this)" tabindex="0" onkeydown="blockKeydown(event, this)">profound connection</div>
+                <div class="draggable-item standard-block" id="b-block3" data-order="3" draggable="true" ondragstart="drag(event)" onclick="moveBlock(this)" tabindex="0" onkeydown="blockKeydown(event, this)">to Country</div>
+                <div class="draggable-item standard-block" id="b-block4" data-order="4" draggable="true" ondragstart="drag(event)" onclick="moveBlock(this)" tabindex="0" onkeydown="blockKeydown(event, this)">is important for</div>
+                <div class="draggable-item standard-block" id="b-block5" data-order="5" draggable="true" ondragstart="drag(event)" onclick="moveBlock(this)" tabindex="0" onkeydown="blockKeydown(event, this)">passing wisdom</div>
+                <div class="draggable-item standard-block" id="b-block6" data-order="6" draggable="true" ondragstart="drag(event)" onclick="moveBlock(this)" tabindex="0" onkeydown="blockKeydown(event, this)">to future generations.</div>
+            </div>
+            <div class="drop-zone" id="dz-blue" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+            <div id="sentence-feedback-blue"></div>
+        </div>
+
+        <button class="check-button" onclick="checkAnswers('blue')">Check All Answers</button>
+        <button class="reset-button" onclick="resetGroup('blue')">Reset Answers</button>
+        <div id="score-blue" class="score-display"></div>
+    </div>
+
+    <script>
+        const speechSupported = 'speechSynthesis' in window;
+
+        let currentUtterance = null;
+        let currentWordSpans = [];
+        let currentHighlightContainer = null;
+        let currentlyPlayingTargetId = null;
+        let currentOptionButton = null;
+
+        const answerKeys = {
+            red: {
+                "red-q1": { type: "radio", answer: "a" },
+                "red-q2": { type: "radio", answer: "true" }
+            },
+            yellow: {
+                "yellow-q1": { type: "radio", answer: "a" },
+                "yellow-q2": { type: "radio", answer: "true" },
+                "yellow-q3": { type: "select", answer: "dirt" }
+            },
+            green: {
+                "green-q1": { type: "radio", answer: "a" },
+                "green-q2": { type: "checkbox", answer: ["a", "b", "c"] },
+                "green-q3": { type: "radio", answer: "false" },
+                "green-q4": { type: "select", answer: "culture" }
+            },
+            blue: {
+                "blue-q1": { type: "radio", answer: "a" },
+                "blue-q2": { type: "checkbox", answer: ["a", "b", "c"] },
+                "blue-q3": { type: "radio", answer: "false" },
+                "blue-q4": { type: "multi-select", answers: { "blue-q4-1": "profound", "blue-q4-2": "wellbeing" } },
+                "blue-q5": { type: "written", minLength: 20 }
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            tokeniseSpeechText();
+            shuffleQuestionOptions();
+            shuffleSentenceBlocks();
+
+            if (!speechSupported) {
+                document.querySelectorAll('.audio-btn, .q-audio-btn, .opt-audio-btn').forEach(button => {
+                    button.disabled = true;
+                    button.style.opacity = '0.5';
+                    button.title = 'Read aloud is not available on this device';
+                });
+                document.getElementById('global-controls').style.display = 'none';
+            } else if ('onvoiceschanged' in window.speechSynthesis) {
+                window.speechSynthesis.onvoiceschanged = () => {
+                    window.speechSynthesis.getVoices();
+                };
+            }
+        });
+
+        function tokeniseSpeechText() {
+            document.querySelectorAll('.text-content, .question-content').forEach((container, containerIndex) => {
+                let wordCounter = 0;
+
+                container.querySelectorAll('p').forEach(paragraph => {
+                    tokeniseNode(paragraph);
+                });
+
+                function tokeniseNode(node) {
+                    Array.from(node.childNodes).forEach(child => {
+                        if (child.nodeType === Node.TEXT_NODE) {
+                            const tokens = child.textContent.split(/(\s+)/);
+                            const fragment = document.createDocumentFragment();
+
+                            tokens.forEach(token => {
+                                if (token.trim().length > 0) {
+                                    const span = document.createElement('span');
+                                    span.textContent = token;
+                                    span.setAttribute('data-word-id', `${containerIndex}-${wordCounter}`);
+                                    fragment.appendChild(span);
+                                    wordCounter++;
+                                } else {
+                                    fragment.appendChild(document.createTextNode(token));
+                                }
+                            });
+
+                            child.parentNode.replaceChild(fragment, child);
+                        } else if (child.nodeType === Node.ELEMENT_NODE) {
+                            if (!child.matches('select, option, button, input, textarea')) {
+                                tokeniseNode(child);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        function shuffleQuestionOptions() {
+            document.querySelectorAll('.shuffle-options').forEach(questionItem => {
+                const labels = Array.from(questionItem.querySelectorAll('label'));
+
+                for (let i = labels.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [labels[i], labels[j]] = [labels[j], labels[i]];
+                }
+
+                labels.forEach(label => questionItem.appendChild(label));
+            });
+        }
+
+        function shuffleSentenceBlocks() {
+            document.querySelectorAll('.drag-bank').forEach(bank => {
+                const blocks = Array.from(bank.children);
+
+                for (let i = blocks.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [blocks[i], blocks[j]] = [blocks[j], blocks[i]];
+                }
+
+                blocks.forEach(block => bank.appendChild(block));
+            });
+        }
+
+        function getAustralianVoice() {
+            if (!speechSupported) return null;
+
+            const voices = window.speechSynthesis.getVoices();
+            return voices.find(voice => voice.lang === 'en-AU' && voice.name.includes('Natural')) ||
+                   voices.find(voice => voice.lang === 'en-AU') ||
+                   null;
+        }
+
+        function getSpeechRate() {
+            const rateSelect = document.getElementById('speed-rate');
+            return rateSelect ? parseFloat(rateSelect.value) : 0.85;
+        }
+
+        function cancelSpeech() {
+            if (!speechSupported) return;
+            window.speechSynthesis.cancel();
+        }
+
+        function resetPlaybackUI() {
+            document.querySelectorAll('.audio-btn.playing').forEach(button => {
+                button.classList.remove('playing');
+                button.innerHTML = '🗣️ Read Aloud';
+            });
+
+            document.querySelectorAll('.q-audio-btn.playing').forEach(button => {
+                button.classList.remove('playing');
+                button.innerHTML = '🔊';
+            });
+
+            if (currentOptionButton) {
+                currentOptionButton.classList.remove('playing');
+                currentOptionButton = null;
+            }
+
+            document.querySelectorAll('.highlight').forEach(span => {
+                span.classList.remove('highlight');
+            });
+
+            currentUtterance = null;
+            currentWordSpans = [];
+            currentHighlightContainer = null;
+            currentlyPlayingTargetId = null;
+        }
+
+        function stopSpeech() {
+            cancelSpeech();
+            resetPlaybackUI();
+        }
+
+        function speakOnce(text, button) {
+            if (!speechSupported) return;
+
+            cancelSpeech();
+            resetPlaybackUI();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            const voice = getAustralianVoice();
+
+            if (voice) utterance.voice = voice;
+            utterance.rate = getSpeechRate();
+            utterance.onend = () => {
+                if (button) button.classList.remove('playing');
+                if (currentOptionButton === button) currentOptionButton = null;
+            };
+            utterance.onerror = () => {
+                if (button) button.classList.remove('playing');
+                if (currentOptionButton === button) currentOptionButton = null;
+            };
+
+            if (button) {
+                button.classList.add('playing');
+                currentOptionButton = button;
+            }
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function toggleReadAloud(targetId, contentSelector) {
+            if (!speechSupported) return;
+
+            const button = document.querySelector(`#${targetId} .audio-btn, #${targetId} .q-audio-btn`);
+
+            if (currentlyPlayingTargetId === targetId) {
+                stopSpeech();
+                return;
+            }
+
+            stopSpeech();
+
+            const container = document.querySelector(`#${targetId} ${contentSelector}`);
+            if (!container || !button) return;
+
+            const wordSpans = Array.from(container.querySelectorAll('span[data-word-id]'));
+            const textToSpeak = wordSpans.map(span => span.textContent).join(' ');
+
+            currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+            const voice = getAustralianVoice();
+
+            if (voice) currentUtterance.voice = voice;
+            currentUtterance.rate = getSpeechRate();
+
+            const textMap = [];
+            let offset = 0;
+
+            wordSpans.forEach((span, index) => {
+                const word = span.textContent;
+                textMap.push({
+                    start: offset,
+                    end: offset + word.length,
+                    id: span.getAttribute('data-word-id')
+                });
+                offset += word.length + 1;
+            });
+
+            currentUtterance.onboundary = event => {
+                if (event.name !== 'word') return;
+
+                const currentWord = textMap.find(item => event.charIndex >= item.start && event.charIndex < item.end);
+
+                if (currentWord) {
+                    wordSpans.forEach(span => span.classList.remove('highlight'));
+                    const activeSpan = container.querySelector(`span[data-word-id="${currentWord.id}"]`);
+                    if (activeSpan) activeSpan.classList.add('highlight');
+                }
+            };
+
+            currentUtterance.onend = () => {
+                if (currentlyPlayingTargetId === targetId) stopSpeech();
+            };
+
+            currentUtterance.onerror = () => {
+                if (currentlyPlayingTargetId === targetId) stopSpeech();
+            };
+
+            currentlyPlayingTargetId = targetId;
+            currentWordSpans = wordSpans;
+            currentHighlightContainer = container;
+
+            button.classList.add('playing');
+            button.innerHTML = button.classList.contains('audio-btn') ? '🛑 Stop' : '⏹️';
+
+            window.speechSynthesis.speak(currentUtterance);
+        }
+
+        function toggleReadAloudOption(button) {
+            if (!speechSupported) return;
+
+            const label = button.closest('label');
+            const optionText = label.querySelector('span').textContent;
+
+            if (currentOptionButton === button) {
+                stopSpeech();
+                return;
+            }
+
+            speakOnce(optionText, button);
+        }
+
+        function allowDrop(event) {
+            event.preventDefault();
+
+            const dropZone = event.target.closest('.drop-zone');
+            if (dropZone) dropZone.classList.add('drag-over');
+        }
+
+        function drag(event) {
+            speakOnce(event.target.textContent);
+            event.dataTransfer.setData('text/plain', event.target.id);
+        }
+
+        function drop(event) {
+            event.preventDefault();
+
+            document.querySelectorAll('.drop-zone').forEach(zone => zone.classList.remove('drag-over'));
+
+            const draggedElement = document.getElementById(event.dataTransfer.getData('text/plain'));
+            if (!draggedElement) return;
+
+            const target = event.target.closest('.drop-zone, .drag-bank');
+            if (!target) return;
+
+            const blockOver = event.target.closest('.draggable-item');
+
+            if (blockOver && blockOver !== draggedElement && blockOver.parentElement === target) {
+                const rect = blockOver.getBoundingClientRect();
+                const insertBefore = event.clientY < rect.top + rect.height / 2;
+                target.insertBefore(draggedElement, insertBefore ? blockOver : blockOver.nextSibling);
+            } else {
+                target.appendChild(draggedElement);
+            }
+
+            clearSentenceFeedback(draggedElement.closest('.sentence-builder'));
+        }
+
+        function moveBlock(block) {
+            speakOnce(block.textContent);
+
+            const container = block.closest('.sentence-builder');
+            const dropZone = container.querySelector('.drop-zone');
+            const dragBank = container.querySelector('.drag-bank');
+
+            if (block.parentElement === dragBank) {
+                dropZone.appendChild(block);
+            } else {
+                dragBank.appendChild(block);
+            }
+
+            clearSentenceFeedback(container);
+        }
+
+        function blockKeydown(event, block) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                moveBlock(block);
+            }
+        }
+
+        function showGroup(groupColour) {
+            stopSpeech();
+
+            document.getElementById('front-menu').style.display = 'none';
+            document.getElementById('global-controls').style.display = 'flex';
+
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(`group-${groupColour}`).classList.add('active');
+
+            window.scrollTo(0, 0);
+        }
+
+        function backToMenu() {
+            stopSpeech();
+
+            document.getElementById('front-menu').style.display = 'block';
+            document.getElementById('global-controls').style.display = 'none';
+
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+
+            window.scrollTo(0, 0);
+        }
+
+        function clearFeedback(questionId) {
+            const feedback = document.getElementById(`feedback-${questionId}`);
+            if (feedback) feedback.innerHTML = '';
+        }
+
+        function clearSentenceFeedback(container) {
+            const feedback = container.querySelector('[id^="sentence-feedback-"]');
+            const score = container.querySelector('.score-display');
+
+            if (feedback) feedback.innerHTML = '';
+            if (score) {
+                score.classList.remove('show');
+                score.innerHTML = '';
+            }
+        }
+
+        function setFeedback(questionId, message, isCorrect) {
+            const feedback = document.getElementById(`feedback-${questionId}`);
+            if (feedback) {
+                feedback.innerHTML = `<span class="feedback ${isCorrect ? 'correct' : 'incorrect'}">${message}</span>`;
+            }
+        }
+
+        function checkAnswers(group) {
+            let correct = 0;
+            let total = 0;
+
+            const groupAnswers = answerKeys[group];
+
+            if (groupAnswers) {
+                for (const questionId in groupAnswers) {
+                    total++;
+                    const config = groupAnswers[questionId];
+                    let isCorrect = false;
+                    let isAnswered = true;
+
+                    if (config.type === 'radio') {
+                        const selected = document.querySelector(`input[name="${questionId}"]:checked`);
+
+                        if (!selected) {
+                            isAnswered = false;
+                        } else {
+                            isCorrect = selected.value === config.answer;
+                        }
+
+                    } else if (config.type === 'checkbox') {
+                        const selected = Array.from(document.querySelectorAll(`input[name="${questionId}"]:checked`)).map(item => item.value).sort();
+                        const expected = [...config.answer].sort();
+
+                        if (selected.length === 0) {
+                            isAnswered = false;
+                        } else {
+                            isCorrect = JSON.stringify(selected) === JSON.stringify(expected);
+                        }
+
+                    } else if (config.type === 'select') {
+                        const selected = document.querySelector(`select[name="${questionId}"]`).value;
+
+                        if (!selected) {
+                            isAnswered = false;
+                        } else {
+                            isCorrect = selected === config.answer;
+                        }
+
+                    } else if (config.type === 'multi-select') {
+                        const expected = Object.keys(config.answers);
+                        let correctCount = 0;
+                        let answeredCount = 0;
+
+                        expected.forEach(selectName => {
+                            const value = document.querySelector(`select[name="${selectName}"]`).value;
+
+                            if (value) answeredCount++;
+                            if (value === config.answers[selectName]) correctCount++;
+                        });
+
+                        if (answeredCount === 0) {
+                            isAnswered = false;
+                        } else if (answeredCount < expected.length) {
+                            isAnswered = false;
+                        } else {
+                            isCorrect = correctCount === expected.length;
+                        }
+
+                    } else if (config.type === 'written') {
+                        const response = document.getElementById(`${questionId}-response`).value.trim();
+
+                        if (response.length < config.minLength) {
+                            isAnswered = false;
+                        } else {
+                            isCorrect = true;
+                        }
+                    }
+
+                    if (!isAnswered) {
+                        setFeedback(questionId, '✗ Please complete this question.', false);
+                    } else if (isCorrect) {
+                        correct++;
+                        setFeedback(questionId, '✓ Correct!', true);
+                    } else {
+                        setFeedback(questionId, '✗ Not quite right. Try again!', false);
+                    }
+                }
+            }
+
+            const dropZone = document.getElementById(`dz-${group}`);
+
+            if (dropZone) {
+                total++;
+
+                const feedback = document.getElementById(`sentence-feedback-${group}`);
+                const bank = document.getElementById(`bank-${group}`);
+                const blocks = Array.from(dropZone.children);
+
+                if (bank.children.length > 0 || blocks.length === 0) {
+                    feedback.innerHTML = '<span class="feedback incorrect">✗ Please use all the blocks to finish the sentence!</span>';
+                } else {
+                    let sentenceCorrect = true;
+
+                    for (let i = 0; i < blocks.length; i++) {
+                        if (parseInt(blocks[i].getAttribute('data-order')) !== i + 1) {
+                            sentenceCorrect = false;
+                            break;
+                        }
+                    }
+
+                    if (sentenceCorrect) {
+                        correct++;
+                        feedback.innerHTML = '<span class="feedback correct">✓ Perfect sentence! Well done!</span>';
+                    } else {
+                        feedback.innerHTML = '<span class="feedback incorrect">✗ The words are out of order. Try moving them around!</span>';
+                    }
+                }
+            }
+
+            const scoreDiv = document.getElementById(`score-${group}`);
+            const percentage = Math.round((correct / total) * 100);
+
+            scoreDiv.classList.add('show');
+            scoreDiv.innerHTML = `Score: ${correct}/${total} (${percentage}%)`;
+        }
+
+        function resetGroup(group) {
+            stopSpeech();
+
+            document.querySelectorAll(`#group-${group} input[type="radio"], #group-${group} input[type="checkbox"]`).forEach(input => {
+                input.checked = false;
+            });
+
+            document.querySelectorAll(`#group-${group} select`).forEach(select => {
+                select.selectedIndex = 0;
+            });
+
+            const writtenResponse = document.getElementById(`${group}-q5-response`);
+            if (writtenResponse) writtenResponse.value = '';
+
+            document.querySelectorAll(`#group-${group} [id^="feedback-"]`).forEach(feedback => {
+                feedback.innerHTML = '';
+            });
+
+            const bank = document.getElementById(`bank-${group}`);
+            const dropZone = document.getElementById(`dz-${group}`);
+
+            Array.from(dropZone.children).forEach(block => bank.appendChild(block));
+
+            const blocks = Array.from(bank.children);
+            blocks.sort((a, b) => parseInt(a.getAttribute('data-order')) - parseInt(b.getAttribute('data-order')));
+            blocks.forEach(block => bank.appendChild(block));
+
+            document.getElementById(`sentence-feedback-${group}`).innerHTML = '';
+
+            const score = document.getElementById(`score-${group}`);
+            score.classList.remove('show');
+            score.innerHTML = '';
+
+            window.scrollTo(0, 0);
+        }
+    </script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='reading-t4w1-our-dreaming';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-reading.js"></script>
+</body>
+</html>

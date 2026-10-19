@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Printed Prizes: Learning Gratitude</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background-color: #f4f4f9; }
+
+        .front-menu { background: white; max-width: 800px; margin: 0 auto 40px auto; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; }
+        .front-menu h1 { font-size: 2.2rem; color: #222; margin-top: 0; margin-bottom: 10px; }
+        .front-menu p { font-size: 1.1rem; color: #666; margin-bottom: 35px; }
+
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
+        .menu-button { padding: 30px 20px; border: none; border-radius: 8px; font-size: 1.3rem; font-weight: bold; color: white; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .menu-button:hover { transform: translateY(-4px); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
+        .menu-button:active { transform: translateY(-2px); }
+
+        .red-btn { background-color: #e53935; }
+        .red-btn:hover { background-color: #c62828; }
+        .yellow-btn { background-color: #ffb300; color: #333; }
+        .yellow-btn:hover { background-color: #ff9800; }
+        .green-btn { background-color: #43a047; }
+        .green-btn:hover { background-color: #2e7d32; }
+        .blue-btn { background-color: #1e88e5; }
+        .blue-btn:hover { background-color: #1565c0; }
+
+        .back-to-menu { text-align: center; margin: 30px 0; }
+        .back-to-menu button { background-color: #999; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s; }
+        .back-to-menu button:hover { background-color: #666; }
+
+        .page { background: white; max-width: 800px; margin: 0 auto 40px auto; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); page-break-after: always; position: relative; border-top: 15px solid; display: none; }
+        .page.active { display: block; }
+
+        .red-group { border-top-color: #e53935; }
+        .yellow-group { border-top-color: #ffb300; }
+        .green-group { border-top-color: #43a047; }
+        .blue-group { border-top-color: #1e88e5; }
+
+        .header-container { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .badge { display: inline-block; padding: 6px 12px; font-weight: bold; border-radius: 20px; color: white; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+        .red-badge { background-color: #e53935; }
+        .yellow-badge { background-color: #ffb300; color: #333; }
+        .green-badge { background-color: #43a047; }
+        .blue-badge { background-color: #1e88e5; }
+
+        .audio-btn { background-color: #ffffff; border: 2px solid #ccc; border-radius: 20px; padding: 6px 15px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s ease; }
+        .audio-btn:hover { background-color: #f0f0f0; border-color: #888; }
+        .audio-btn.playing { background-color: #333; color: white; border-color: #333; }
+
+        .question-wrapper { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 5px; }
+        .q-audio-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 2px 5px; margin-top: -2px; border-radius: 4px; transition: background 0.2s; }
+        .q-audio-btn:hover { background-color: #e0e0e0; }
+        .q-audio-btn.playing { animation: pulse 1.5s infinite; background-color: #333; border-radius: 50%; }
+
+        .opt-audio-btn { background: none; border: none; font-size: 0.9rem; cursor: pointer; padding: 2px 6px; border-radius: 4px; transition: background 0.2s; margin-left: 4px; }
+        .opt-audio-btn:hover { background-color: #e0e0e0; }
+        .opt-audio-btn.playing { background-color: #ddd; font-weight: bold; }
+
+        h1 { font-size: 2rem; color: #222; margin-top: 0; }
+        h2 { font-size: 1.4rem; color: #444; border-bottom: 2px solid #eee; padding-bottom: 8px; margin-top: 30px; }
+        p { font-size: 1.1rem; color: #4a4a4a; margin-bottom: 20px; }
+        .story-box { background: #f9f9fb; padding: 25px; border-left: 5px solid #ccc; border-radius: 4px; font-size: 1.15rem; margin-bottom: 30px; }
+
+        .red-group .story-box { border-left-color: #e53935; }
+        .yellow-group .story-box { border-left-color: #ffb300; }
+        .green-group .story-box { border-left-color: #43a047; }
+        .blue-group .story-box { border-left-color: #1e88e5; }
+
+        .line { border-bottom: 1px dashed #999; height: 30px; margin-top: 10px; margin-bottom: 15px; }
+
+        .question-item { margin: 15px 0; padding: 12px; background: #f5f5f5; border-radius: 6px; display: flex; flex-direction: column; }
+        .question-item label { display: flex; align-items: center; margin: 8px 0; cursor: pointer; font-size: 1rem; }
+        .question-item input[type="radio"] { margin-right: 10px; transform: scale(1.2); cursor: pointer; }
+
+        .check-button { background-color: #43a047; color: white; border: none; padding: 12px 30px; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s; margin: 30px 0; }
+        .check-button:hover { background-color: #2e7d32; }
+
+        .score-display { background: #e8f5e9; padding: 15px; border-radius: 6px; margin: 20px 0; font-size: 1.1rem; font-weight: bold; display: none; }
+        .score-display.show { display: block; }
+
+        .feedback { margin-top: 10px; padding: 10px; border-radius: 4px; font-weight: bold; }
+        .correct { background: #c8e6c9; color: #1b5e20; }
+        .incorrect { background: #ffcccc; color: #c62828; }
+
+        .highlight { background-color: #ffeb3b; border-radius: 2px; }
+        .text-content span, .question-content span { transition: background-color 0.1s ease; }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        @media (max-width: 600px) {
+            .menu-grid { grid-template-columns: 1fr 1fr; }
+            .menu-button { padding: 25px 15px; font-size: 1.1rem; }
+            .front-menu { padding: 30px 20px; }
+            .front-menu h1 { font-size: 1.8rem; }
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .front-menu, .back-to-menu, .global-controls, .check-button, .score-display { display: none !important; }
+            .page { box-shadow: none; max-width: 100%; margin: 0; padding: 20px; border-radius: 0; display: block !important; }
+            .audio-btn, .q-audio-btn, .opt-audio-btn { display: none !important; }
+        }
+    </style>
+    <style>/* wide layout: fill the embed. Colour chooser = row of 4 on wide screens, 2x2 otherwise (never 3+1) */
+    @media screen { .front-menu, .page, .global-controls, #groupView { max-width: none !important; } }
+    .menu-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    @media (min-width: 900px) { .menu-grid { grid-template-columns: repeat(4, 1fr) !important; } }
+    </style>
+</head>
+<body>
+
+    <div class="front-menu" id="front-menu">
+        <h1>🖨️ 3D Prizes</h1>
+        <p>Learning Gratitude - Reading Groups</p>
+        <div class="menu-grid">
+            <button class="menu-button red-btn" onclick="showGroup('red')">Red Group</button>
+            <button class="menu-button yellow-btn" onclick="showGroup('yellow')">Yellow Group</button>
+            <button class="menu-button green-btn" onclick="showGroup('green')">Green Group</button>
+            <button class="menu-button blue-btn" onclick="showGroup('blue')">Blue Group</button>
+        </div>
+    </div>
+
+    <div class="global-controls" id="global-controls" style="display: none; max-width: 800px; margin: 10px auto; padding: 10px 40px; background: #eef2f5; border-radius: 8px; display: flex; align-items: center; gap: 10px;">
+        <label for="speed-rate" style="font-weight: bold; font-size: 0.9rem;">🗣️ Reading Speed:</label>
+        <select id="speed-rate" style="padding: 5px 10px; border-radius: 4px; border: 1px solid #ccc; font-weight: bold;">
+            <option value="0.7">0.7x (Very Slow)</option>
+            <option value="0.85" selected>0.85x (Slow)</option>
+            <option value="1">1.0x (Normal)</option>
+            <option value="1.15">1.15x (Quick)</option>
+        </select>
+    </div>
+
+    <!-- RED GROUP -->
+    <div class="page red-group" id="group-red">
+        <div class="back-to-menu"><button onclick="backToMenu()">← Back to Menu</button></div>
+        <div class="header-container">
+            <span class="badge red-badge">Red Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-red', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>Saying Thank You</h1>
+        <div class="story-box text-content">
+            <p>Mr. Sun has a 3D printer in his classroom. He prints small, fun toys to give as <strong>prizes</strong> when students do good work. At first, everyone was very happy. But now, some students complain. They want bigger toys. They want different colours. They do not say thank you anymore.</p>
+            <p>A prize is a <strong>gift</strong>, not something you must get. Mr. Sun feels sad when students are <strong>ungrateful</strong>. We should always show <strong>appreciation</strong> for hard work.</p>
+        </div>
+
+        <h2>Comprehension Questions</h2>
+
+        <div class="question-wrapper" id="red-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q1', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>1. Vocabulary:</strong> What does <strong>ungrateful</strong> mean?</p></div>
+        </div>
+        <div class="question-item" data-question="red-q1">
+            <label><input type="radio" name="red-q1" value="a"> <span>Not saying thank you and wanting more</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="red-q1" value="b"> <span>Being very happy with a toy</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="red-q1" value="c"> <span>Being tired after a long day</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="red-q1" value="d"> <span>Running fast on the playground</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-red-q1"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q2', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>2. Finding Evidence:</strong> Which sentence in the text shows how Mr. Sun feels?</p></div>
+        </div>
+        <div class="question-item" data-question="red-q2">
+            <label><input type="radio" name="red-q2" value="a"> <span>"Mr. Sun feels sad when students are ungrateful."</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="red-q2" value="b"> <span>"A prize is a gift."</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="red-q2" value="c"> <span>"He prints small, fun toys."</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="red-q2" value="d"> <span>"They want different colours."</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-red-q2"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q3', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>3. Literal:</strong> What does Mr. Sun use the 3D printer for?</p></div>
+        </div>
+        <div class="question-item" data-question="red-q3">
+            <label><input type="radio" name="red-q3" value="a"> <span>To print small, fun toys for good work</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="red-q3" value="b"> <span>To print out homework pages</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="red-q3" value="c"> <span>To print a healthy lunch</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="red-q3" value="d"> <span>To print new desks for the room</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-red-q3"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q4">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q4', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>4. Making Connections:</strong> How is receiving a prize from Mr. Sun like getting a birthday present?</p></div>
+        </div>
+        <div class="question-item" data-question="red-q4">
+            <label><input type="radio" name="red-q4" value="a"> <span>You should always say thank you and be happy</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="red-q4" value="b"> <span>You should demand to see the receipt</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="red-q4" value="c"> <span>You should complain if it is the wrong colour</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="red-q4" value="d"> <span>You should throw it away immediately</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-red-q4"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q5">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q5', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>5. Vocabulary:</strong> What is a <strong>prize</strong>?</p></div>
+        </div>
+        <div class="question-item" data-question="red-q5">
+            <label><input type="radio" name="red-q5" value="a"> <span>A special reward given for doing something well</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="red-q5" value="b"> <span>A bad grade on a difficult test</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="red-q5" value="c"> <span>A piece of fresh fruit</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="red-q5" value="d"> <span>A type of very fast car</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-red-q5"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q6">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q6', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>6. Inference:</strong> Why did the students stop saying thank you?</p></div>
+        </div>
+        <div class="question-item" data-question="red-q6">
+            <label><input type="radio" name="red-q6" value="a"> <span>Because they started wanting bigger and better things</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="red-q6" value="b"> <span>Because they suddenly forgot how to speak</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="red-q6" value="c"> <span>Because the 3D printer was too loud</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="red-q6" value="d"> <span>Because the printed toys were invisible</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-red-q6"></div>
+        <div class="line"></div>
+
+        <button class="check-button" onclick="checkAnswers('red')">Check Answers</button>
+        <div id="score-red" class="score-display"></div>
+    </div>
+
+    <!-- YELLOW GROUP -->
+    <div class="page yellow-group" id="group-yellow">
+        <div class="back-to-menu"><button onclick="backToMenu()">← Back to Menu</button></div>
+        <div class="header-container">
+            <span class="badge yellow-badge">Yellow Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-yellow', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>The 3D Printing Club</h1>
+        <div class="story-box text-content">
+            <p>Every Friday, Mr. Sun gives out 3D printed prizes for good behaviour. The printer hums and buzzes all week to make them. Lately, a problem has started. Some students are acting <strong>entitled</strong>. This means they think they deserve a big reward without earning it.</p>
+            <p>If Mr. Sun gives a student a blue prize, they complain that it is not gold. They forget that the printer takes hours to make just one prize! Students need to remember that these rewards are a <strong>bonus</strong>. They are not owed to anyone. We should practice being <strong>thankful</strong> and recognise the <strong>effort</strong> Mr. Sun puts in.</p>
+        </div>
+
+        <h2>Comprehension Questions</h2>
+
+        <div class="question-wrapper" id="yellow-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q1', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>1. Vocabulary:</strong> What does <strong>entitled</strong> mean?</p></div>
+        </div>
+        <div class="question-item" data-question="yellow-q1">
+            <label><input type="radio" name="yellow-q1" value="a"> <span>Thinking you deserve a reward without earning it</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q1" value="b"> <span>Being very thankful for a nice gift</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q1" value="c"> <span>Helping a friend with their homework</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q1" value="d"> <span>Cleaning up the classroom quietly</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-yellow-q1"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q2', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>2. Finding Evidence:</strong> What detail from the text proves that making prizes takes a long time?</p></div>
+        </div>
+        <div class="question-item" data-question="yellow-q2">
+            <label><input type="radio" name="yellow-q2" value="a"> <span>"The printer takes hours to make just one prize!"</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q2" value="b"> <span>"Every Friday, Mr. Sun gives out 3D printed prizes."</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q2" value="c"> <span>"Some students are acting entitled."</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q2" value="d"> <span>"They are not owed to anyone."</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-yellow-q2"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q3', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>3. Making Connections:</strong> If someone gives you a bonus, how should you react?</p></div>
+        </div>
+        <div class="question-item" data-question="yellow-q3">
+            <label><input type="radio" name="yellow-q3" value="a"> <span>Be happy because it is an extra gift you were not owed</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q3" value="b"> <span>Complain to them that it is not big enough</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q3" value="c"> <span>Ask them for another one immediately</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q3" value="d"> <span>Get angry because they didn't give you two</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-yellow-q3"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q4">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q4', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>4. Literal:</strong> When does Mr. Sun give out the prizes?</p></div>
+        </div>
+        <div class="question-item" data-question="yellow-q4">
+            <label><input type="radio" name="yellow-q4" value="a"> <span>Every Friday</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q4" value="b"> <span>Every Monday</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q4" value="c"> <span>On the weekend</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q4" value="d"> <span>Only on holidays</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-yellow-q4"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q5">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q5', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>5. Vocabulary:</strong> What does <strong>effort</strong> mean?</p></div>
+        </div>
+        <div class="question-item" data-question="yellow-q5">
+            <label><input type="radio" name="yellow-q5" value="a"> <span>Hard work and trying your best</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q5" value="b"> <span>Sleeping quietly in class</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q5" value="c"> <span>A type of heavy rock</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q5" value="d"> <span>Forgetting to do your homework</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-yellow-q5"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q6">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q6', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>6. Inference:</strong> What might Mr. Sun do if the students keep complaining?</p></div>
+        </div>
+        <div class="question-item" data-question="yellow-q6">
+            <label><input type="radio" name="yellow-q6" value="a"> <span>He might stop printing prizes completely</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q6" value="b"> <span>He will buy a thousand more printers</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q6" value="c"> <span>He will give everyone gold prizes</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="yellow-q6" value="d"> <span>He will start doing their homework for them</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-yellow-q6"></div>
+        <div class="line"></div>
+
+        <button class="check-button" onclick="checkAnswers('yellow')">Check Answers</button>
+        <div id="score-yellow" class="score-display"></div>
+    </div>
+
+    <!-- GREEN GROUP -->
+    <div class="page green-group" id="group-green">
+        <div class="back-to-menu"><button onclick="backToMenu()">← Back to Menu</button></div>
+        <div class="header-container">
+            <span class="badge green-badge">Green Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-green', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>Understanding the Effort Behind the Prize</h1>
+        <div class="story-box text-content">
+            <p>In Mr. Sun's class, the 3D printer is used to reward students for their hard work and <strong>achievements</strong>. However, Mr. Sun has noticed a worrying trend. Some students are showing less <strong>gratitude</strong> and are becoming more demanding about their printed prizes.</p>
+            <p>Many students ask for large, detailed models, such as articulated dragons, without <strong>realising</strong> that these can take more than 20 hours to print and use a lot of plastic. When they receive a smaller prize instead, they often complain or show disappointment. They do not always understand the cost of the <strong>filament</strong> or the time needed to run and maintain the 3D printers. It is important that students learn to appreciate the effort and thought behind these rewards, rather than expecting them as something they automatically deserve.</p>
+        </div>
+
+        <h2>Comprehension Questions</h2>
+
+        <div class="question-wrapper" id="green-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q1', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>1. Vocabulary:</strong> What does <strong>gratitude</strong> mean?</p></div>
+        </div>
+        <div class="question-item" data-question="green-q1">
+            <label><input type="radio" name="green-q1" value="a"> <span>A feeling of thankfulness and appreciation</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q1" value="b"> <span>A strong feeling of anger or disappointment</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q1" value="c"> <span>Always asking for more expensive toys</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q1" value="d"> <span>The plastic material used in a 3D printer</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-green-q1"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q2', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>2. Finding Evidence:</strong> Which part of the text explains why making large models is difficult?</p></div>
+        </div>
+        <div class="question-item" data-question="green-q2">
+            <label><input type="radio" name="green-q2" value="a"> <span>"...these can take more than 20 hours to print and use a lot of plastic."</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q2" value="b"> <span>"Some students are showing less gratitude..."</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q2" value="c"> <span>"...rather than expecting them as something they automatically deserve."</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q2" value="d"> <span>"In Mr. Sun's class, the 3D printer is used to reward students..."</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-green-q2"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q3', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>3. Vocabulary:</strong> What is <strong>filament</strong>?</p></div>
+        </div>
+        <div class="question-item" data-question="green-q3">
+            <label><input type="radio" name="green-q3" value="a"> <span>The plastic material used by the 3D printer to build things</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q3" value="b"> <span>A type of paper used for writing essays</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q3" value="c"> <span>The computer that controls the 3D printer</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q3" value="d"> <span>A special prize given for good behaviour</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-green-q3"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q4">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q4', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>4. Literal:</strong> What do students often do when they receive a smaller prize?</p></div>
+        </div>
+        <div class="question-item" data-question="green-q4">
+            <label><input type="radio" name="green-q4" value="a"> <span>They often complain or show disappointment</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q4" value="b"> <span>They jump up and down with happiness</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q4" value="c"> <span>They ask Mr. Sun to print an even smaller one</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q4" value="d"> <span>They help Mr. Sun maintain the 3D printers</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-green-q4"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q5">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q5', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>5. Making Connections:</strong> How is receiving a printed prize similar to someone cooking a meal for you?</p></div>
+        </div>
+        <div class="question-item" data-question="green-q5">
+            <label><input type="radio" name="green-q5" value="a"> <span>You should appreciate the time, money, and effort it took to make it</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q5" value="b"> <span>It is made of plastic and takes 20 hours to finish</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q5" value="c"> <span>You should complain if it is not your absolute favourite</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q5" value="d"> <span>You automatically deserve it because you are there</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-green-q5"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q6">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q6', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>6. Inference:</strong> Why is Mr. Sun worried about his students' behaviour?</p></div>
+        </div>
+        <div class="question-item" data-question="green-q6">
+            <label><input type="radio" name="green-q6" value="a"> <span>They are acting entitled instead of being thankful for their rewards</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q6" value="b"> <span>They are studying too hard and getting perfect scores</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q6" value="c"> <span>They keep breaking the 3D printer on purpose</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="green-q6" value="d"> <span>They are buying their own expensive 3D printers</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-green-q6"></div>
+        <div class="line"></div>
+
+        <button class="check-button" onclick="checkAnswers('green')">Check Answers</button>
+        <div id="score-green" class="score-display"></div>
+    </div>
+
+    <!-- BLUE GROUP -->
+    <div class="page blue-group" id="group-blue">
+        <div class="back-to-menu"><button onclick="backToMenu()">← Back to Menu</button></div>
+        <div class="header-container">
+            <span class="badge blue-badge">Blue Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-blue', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>Expecting Too Much</h1>
+        <div class="story-box text-content">
+            <p>Mr. Sun loves using his 3D printer to make learning fun. He often prints small, clever puzzles and tokens to reward students for their hard work. At the beginning of the year, a simple 3D-printed bookmark was seen as an amazing prize. Every student was thrilled to receive one.</p>
+            <p>However, as the months passed, Mr. Sun noticed a big change. We are now seeing a lack of <strong>gratitude</strong>. Students frequently complain about the size, <strong>colour</strong>, and quality of their rewards. They demand complex, multi-coloured dragons or large action figures. They do not think about the high cost of the plastic <strong>filament</strong> that Mr. Sun buys with his own money.</p>
+            <p>They also do not <strong>realise</strong> how long these items take to print. A large model can tie up the printer for an entire weekend! This shift in <strong>behaviour</strong> is very sad. Students are acting <strong>entitled</strong>, treating the classroom like a free toy store.</p>
+            <p>They forget that Mr. Sun spends his own personal time after school fixing the printer and making sure it works, just to give them fun prizes. It is very important that we change this attitude. Students must learn to show genuine <strong>appreciation</strong> for the extra effort their teachers make. A small reward is a symbol of a job well done, not a product to complain about.</p>
+        </div>
+
+        <h2>Comprehension Questions</h2>
+
+        <div class="question-wrapper" id="blue-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q1', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>1. Vocabulary:</strong> What does <strong>entitled</strong> mean?</p></div>
+        </div>
+        <div class="question-item" data-question="blue-q1">
+            <label><input type="radio" name="blue-q1" value="a"> <span>Believing you deserve special treatment or gifts automatically</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q1" value="b"> <span>Being very thankful for the small things you receive</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q1" value="c"> <span>The cost of plastic filament used in 3D printers</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q1" value="d"> <span>Working hard after school to fix broken machines</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-blue-q1"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q2', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>2. Finding Evidence:</strong> What evidence in the text shows that Mr. Sun is using his own personal resources?</p></div>
+        </div>
+        <div class="question-item" data-question="blue-q2">
+            <label><input type="radio" name="blue-q2" value="a"> <span>"Mr. Sun buys with his own money" and "spends his own personal time"</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q2" value="b"> <span>"Every student was thrilled to receive one."</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q2" value="c"> <span>"A large model can tie up the printer for an entire weekend!"</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q2" value="d"> <span>"Students frequently complain about the size, colour, and quality"</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-blue-q2"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q3', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>3. Making Connections:</strong> How is the students' behaviour like treating the classroom like a "free toy store"?</p></div>
+        </div>
+        <div class="question-item" data-question="blue-q3">
+            <label><input type="radio" name="blue-q3" value="a"> <span>They expect items on demand without paying for the cost or labour</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q3" value="b"> <span>They are buying and selling 3D models during class time</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q3" value="c"> <span>The school has officially opened a shop to sell items to the public</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q3" value="d"> <span>They are carefully organising the toys on classroom shelves</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-blue-q3"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q4">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q4', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>4. Literal:</strong> What did students think of the 3D-printed bookmarks at the beginning of the year?</p></div>
+        </div>
+        <div class="question-item" data-question="blue-q4">
+            <label><input type="radio" name="blue-q4" value="a"> <span>They were thrilled to receive them and saw them as an amazing prize</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q4" value="b"> <span>They threw them in the trash immediately</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q4" value="c"> <span>They complained about the print quality and colour</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q4" value="d"> <span>They demanded complex multi-coloured dragons instead</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-blue-q4"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q5">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q5', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>5. Vocabulary:</strong> What does <strong>appreciation</strong> mean?</p></div>
+        </div>
+        <div class="question-item" data-question="blue-q5">
+            <label><input type="radio" name="blue-q5" value="a"> <span>A feeling of thankfulness and recognising the good in something</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q5" value="b"> <span>A strong feeling of anger when you do not get your way</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q5" value="c"> <span>The process of clearing a jam in a 3D printer nozzle</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q5" value="d"> <span>A complicated puzzle given to students as a reward</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-blue-q5"></div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q6">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q6', '.question-content')">🔊</button>
+            <div class="question-content"><p><strong>6. Inference:</strong> Why did the students' feelings about the prizes change over the months?</p></div>
+        </div>
+        <div class="question-item" data-question="blue-q6">
+            <label><input type="radio" name="blue-q6" value="a"> <span>They got used to the prizes and stopped appreciating the effort behind them</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q6" value="b"> <span>Mr. Sun started printing very ugly and broken toys</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q6" value="c"> <span>They realised 3D printers are too slow to be useful</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+            <label><input type="radio" name="blue-q6" value="d"> <span>Bookmarks became illegal to have in the classroom</span> <button class="opt-audio-btn" onclick="toggleReadAloudOption(this)">🔊</button></label>
+        </div>
+        <div id="feedback-blue-q6"></div>
+        <div class="line"></div>
+
+        <button class="check-button" onclick="checkAnswers('blue')">Check Answers</button>
+        <div id="score-blue" class="score-display"></div>
+    </div>
+
+    <script>
+        let currentUtterance = null;
+        let wordSpans = [];
+        let currentlyPlayingTargetId = null;
+        let optionAudioStates = {};
+
+        // Answer keys remain completely consistent. The JS will shuffle the visual labels on load.
+        // Option 'a' is ALWAYS the correct one in the HTML structure above.
+        const answerKeys = {
+            red: { "red-q1": "a", "red-q2": "a", "red-q3": "a", "red-q4": "a", "red-q5": "a", "red-q6": "a" },
+            yellow: { "yellow-q1": "a", "yellow-q2": "a", "yellow-q3": "a", "yellow-q4": "a", "yellow-q5": "a", "yellow-q6": "a" },
+            green: { "green-q1": "a", "green-q2": "a", "green-q3": "a", "green-q4": "a", "green-q5": "a", "green-q6": "a" },
+            blue: { "blue-q1": "a", "blue-q2": "a", "blue-q3": "a", "blue-q4": "a", "blue-q5": "a", "blue-q6": "a" }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Tokenize paragraphs for highlighting during text-to-speech
+            document.querySelectorAll('.text-content, .question-content').forEach((container, containerIndex) => {
+                let globalWordCounter = 0;
+                const paragraphs = container.querySelectorAll('p, label span');
+
+                paragraphs.forEach(p => {
+                    function tokenize(node) {
+                        let childNodes = Array.from(node.childNodes);
+                        childNodes.forEach(child => {
+                            if (child.nodeType === Node.TEXT_NODE) {
+                                const text = child.textContent;
+                                const tokens = text.split(/(\s+)/);
+                                const fragment = document.createDocumentFragment();
+
+                                tokens.forEach(token => {
+                                    if (token.trim().length > 0) {
+                                        const span = document.createElement('span');
+                                        span.textContent = token;
+                                        span.setAttribute('data-word-id', `${containerIndex}-${globalWordCounter}`);
+                                        fragment.appendChild(span);
+                                        globalWordCounter++;
+                                    } else {
+                                        fragment.appendChild(document.createTextNode(token));
+                                    }
+                                });
+                                child.parentNode.replaceChild(fragment, child);
+                            } else if (child.nodeType === Node.ELEMENT_NODE) {
+                                tokenize(child);
+                            }
+                        });
+                    }
+                    tokenize(p);
+                });
+            });
+
+            // Randomise the order of options for each question to avoid memorisation
+            document.querySelectorAll('.question-item').forEach(questionItem => {
+                let labels = Array.from(questionItem.querySelectorAll('label'));
+                
+                // Fisher-Yates shuffle algorithm
+                for (let i = labels.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [labels[i], labels[j]] = [labels[j], labels[i]];
+                }
+                
+                // Re-append the labels in the newly scrambled order
+                labels.forEach(label => questionItem.appendChild(label));
+            });
+        });
+
+        function showGroup(groupColor) {
+            document.getElementById('front-menu').style.display = 'none';
+            document.getElementById('global-controls').style.display = 'flex';
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(`group-${groupColor}`).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function backToMenu() {
+            stopSpeech();
+            document.getElementById('front-menu').style.display = 'block';
+            document.getElementById('global-controls').style.display = 'none';
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            window.scrollTo(0, 0);
+        }
+
+        function toggleReadAloud(targetId, contentSelector) {
+            const button = document.querySelector(`#${targetId} .audio-btn, #${targetId} .q-audio-btn`);
+            if (currentlyPlayingTargetId === targetId) { stopSpeech(); return; }
+            stopSpeech();
+            currentlyPlayingTargetId = targetId;
+            button.classList.add('playing');
+            button.innerHTML = button.classList.contains('audio-btn') ? '🛑 Stop' : '⏹️';
+
+            const container = document.querySelector(`#${targetId} ${contentSelector}`);
+            const textContainers = Array.from(document.querySelectorAll('.text-content, .question-content'));
+            const containerIndex = textContainers.indexOf(container);
+
+            wordSpans = Array.from(container.querySelectorAll('span[data-word-id]'));
+            const textToSpeak = wordSpans.map(span => span.textContent).join(' ');
+            currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+
+            const voices = window.speechSynthesis.getVoices();
+            // Prioritize William Natural -> William -> Natural AU -> Standard AU
+            let premiumVoice = voices.find(voice => voice.name.includes('William') && voice.name.includes('Natural'));
+            if (!premiumVoice) premiumVoice = voices.find(voice => voice.name.includes('William'));
+            if (!premiumVoice) premiumVoice = voices.find(voice => voice.lang === 'en-AU' && voice.name.includes('Natural'));
+            if (!premiumVoice) premiumVoice = voices.find(voice => voice.lang === 'en-AU');
+            
+            if (premiumVoice) currentUtterance.voice = premiumVoice;
+
+            currentUtterance.rate = parseFloat(document.getElementById('speed-rate').value);
+
+            let textMap = [];
+            let currentOffset = 0;
+            wordSpans.forEach((span, index) => {
+                const word = span.textContent;
+                textMap.push({ start: currentOffset, end: currentOffset + word.length, id: `${containerIndex}-${index}` });
+                currentOffset += word.length + 1;
+            });
+
+            currentUtterance.onboundary = function(event) {
+                if (event.name === 'word') {
+                    const currentWord = textMap.find(map => event.charIndex >= map.start && event.charIndex < map.end);
+                    if (currentWord) {
+                        wordSpans.forEach(span => span.classList.remove('highlight'));
+                        const activeSpan = container.querySelector(`span[data-word-id="${currentWord.id}"]`);
+                        if (activeSpan) activeSpan.classList.add('highlight');
+                    }
+                }
+            };
+
+            currentUtterance.onend = stopSpeech;
+            currentUtterance.onerror = stopSpeech;
+            window.speechSynthesis.speak(currentUtterance);
+        }
+
+        function toggleReadAloudOption(button) {
+            const label = button.parentElement;
+            // The span containing the text might be tokenized, so we get textContent of the wrapper
+            const optionTextSpan = label.querySelector('span:not(.opt-audio-btn)');
+            const optionText = optionTextSpan.textContent;
+            const optionKey = `option_${Date.now()}_${Math.random()}`;
+
+            if (optionAudioStates[optionKey] && window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                button.classList.remove('playing');
+                optionAudioStates[optionKey] = false;
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(optionText);
+
+            const voices = window.speechSynthesis.getVoices();
+            let premiumVoice = voices.find(voice => voice.name.includes('William') && voice.name.includes('Natural'));
+            if (!premiumVoice) premiumVoice = voices.find(voice => voice.name.includes('William'));
+            if (!premiumVoice) premiumVoice = voices.find(voice => voice.lang === 'en-AU' && voice.name.includes('Natural'));
+            if (!premiumVoice) premiumVoice = voices.find(voice => voice.lang === 'en-AU');
+            
+            if (premiumVoice) utterance.voice = premiumVoice;
+
+            const selectedRate = document.getElementById('speed-rate') ? document.getElementById('speed-rate').value : '0.85';
+            utterance.rate = parseFloat(selectedRate);
+
+            button.classList.add('playing');
+            optionAudioStates[optionKey] = true;
+
+            utterance.onend = () => {
+                button.classList.remove('playing');
+                optionAudioStates[optionKey] = false;
+            };
+
+            utterance.onerror = () => {
+                button.classList.remove('playing');
+                optionAudioStates[optionKey] = false;
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function stopSpeech() {
+            window.speechSynthesis.cancel();
+            if (currentlyPlayingTargetId) {
+                const button = document.querySelector(`#${currentlyPlayingTargetId} .audio-btn, #${currentlyPlayingTargetId} .q-audio-btn`);
+                if (button) {
+                    button.classList.remove('playing');
+                    button.innerHTML = button.classList.contains('audio-btn') ? '🗣️ Read Aloud' : '🔊';
+                }
+            }
+            document.querySelectorAll('.text-content span, .question-content span').forEach(span => span.classList.remove('highlight'));
+            currentUtterance = null;
+            currentlyPlayingTargetId = null;
+        }
+
+        function checkAnswers(group) {
+            const answers = answerKeys[group];
+            let correct = 0;
+            let total = 0;
+
+            for (const questionId in answers) {
+                total++;
+                const selected = document.querySelector(`input[name="${questionId}"]:checked`);
+                const feedbackDiv = document.getElementById(`feedback-${questionId}`);
+
+                if (!selected) {
+                    feedbackDiv.innerHTML = `<span class="feedback incorrect">No answer selected</span>`;
+                } else if (selected.value === answers[questionId]) {
+                    correct++;
+                    feedbackDiv.innerHTML = `<span class="feedback correct">✓ Correct!</span>`;
+                } else {
+                    feedbackDiv.innerHTML = `<span class="feedback incorrect">✗ Incorrect. Try again!</span>`;
+                }
+            }
+
+            const scoreDiv = document.getElementById(`score-${group}`);
+            scoreDiv.classList.add('show');
+            const percentage = Math.round((correct / total) * 100);
+            scoreDiv.innerHTML = `Score: ${correct}/${total} (${percentage}%)`;
+        }
+
+        window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+    </script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='reading-t3w3-entitled-students';</script><script src="tracker.js"></script><script src="wrap.js"></script><script src="wrap-reading.js"></script>
+</body>
+</html>

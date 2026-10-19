@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Groups Materials – Hula-hooping</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background-color: #f4f4f9; }
+        
+        .front-menu { background: white; max-width: 800px; margin: 0 auto 40px auto; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; }
+        .front-menu h1 { font-size: 2.2rem; color: #222; margin-top: 0; margin-bottom: 10px; }
+        .front-menu p { font-size: 1.1rem; color: #666; margin-bottom: 35px; }
+
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
+        .menu-button { padding: 30px 20px; border: none; border-radius: 8px; font-size: 1.3rem; font-weight: bold; color: white; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .menu-button:hover { transform: translateY(-4px); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
+        .menu-button:active { transform: translateY(-2px); }
+
+        .red-btn { background-color: #e53935; }
+        .red-btn:hover { background-color: #c62828; }
+        .yellow-btn { background-color: #ffb300; color: #333; }
+        .yellow-btn:hover { background-color: #ff9800; }
+        .green-btn { background-color: #43a047; }
+        .green-btn:hover { background-color: #2e7d32; }
+        .blue-btn { background-color: #1e88e5; }
+        .blue-btn:hover { background-color: #1565c0; }
+
+        .back-to-menu { text-align: center; margin-top: 30px; }
+        .back-to-menu button { background-color: #999; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s; }
+        .back-to-menu button:hover { background-color: #666; }
+
+        .page { background: white; max-width: 800px; margin: 0 auto 40px auto; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); page-break-after: always; position: relative; border-top: 15px solid; display: none; }
+        .page.active { display: block; }
+
+        .red-group { border-top-color: #e53935; }
+        .yellow-group { border-top-color: #ffb300; }
+        .green-group { border-top-color: #43a047; }
+        .blue-group { border-top-color: #1e88e5; }
+
+        .header-container { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .badge { display: inline-block; padding: 6px 12px; font-weight: bold; border-radius: 20px; color: white; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+        .red-badge { background-color: #e53935; }
+        .yellow-badge { background-color: #ffb300; color: #333; }
+        .green-badge { background-color: #43a047; }
+        .blue-badge { background-color: #1e88e5; }
+
+        .audio-btn { background-color: #ffffff; border: 2px solid #ccc; border-radius: 20px; padding: 6px 15px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s ease; }
+        .audio-btn:hover { background-color: #f0f0f0; border-color: #888; }
+        .audio-btn.playing { background-color: #333; color: white; border-color: #333; }
+
+        .question-wrapper { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 5px; }
+        .q-audio-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 2px 5px; margin-top: -2px; border-radius: 4px; transition: background 0.2s; }
+        .q-audio-btn:hover { background-color: #e0e0e0; }
+        .q-audio-btn.playing { animation: pulse 1.5s infinite; background-color: #333; border-radius: 50%; }
+
+        h1 { font-size: 2rem; color: #222; margin-top: 0; }
+        h2 { font-size: 1.4rem; color: #444; border-bottom: 2px solid #eee; padding-bottom: 8px; margin-top: 30px; }
+        p { font-size: 1.1rem; color: #4a4a4a; margin-bottom: 20px; }
+        .story-box { background: #f9f9fb; padding: 25px; border-left: 5px solid #ccc; border-radius: 4px; font-size: 1.15rem; margin-bottom: 30px; }
+
+        .red-group .story-box { border-left-color: #e53935; font-size: 1.4rem; font-weight: bold; }
+        .yellow-group .story-box { border-left-color: #ffb300; }
+        .green-group .story-box { border-left-color: #43a047; }
+        .blue-group .story-box { border-left-color: #1e88e5; }
+
+        ul { padding-left: 20px; }
+        li { margin-bottom: 12px; font-size: 1.05rem; }
+        .line { border-bottom: 1px dashed #999; height: 30px; margin-top: 10px; margin-bottom: 15px; }
+        .checkbox-item { margin: 10px 0; font-size: 1.1rem; display: flex; align-items: center; }
+        input[type="checkbox"] { margin-right: 10px; transform: scale(1.2); }
+
+        .highlight { background-color: #ffeb3b; border-radius: 2px; }
+        .text-content span, .question-content span { transition: background-color 0.1s ease; }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .front-menu, .back-to-menu, .global-controls { display: none !important; }
+            .page { box-shadow: none; max-width: 100%; margin: 0; padding: 20px; border-radius: 0; display: block !important; }
+            .audio-btn, .q-audio-btn { display: none !important; }
+        }
+
+        @media (max-width: 600px) {
+            .menu-grid { grid-template-columns: 1fr 1fr; }
+            .menu-button { padding: 25px 15px; font-size: 1.1rem; }
+            .front-menu { padding: 30px 20px; }
+            .front-menu h1 { font-size: 1.8rem; }
+        }
+    </style>
+    <style>/* wide layout: fill the embed. Colour chooser = row of 4 on wide screens, 2x2 otherwise (never 3+1) */
+    @media screen { .front-menu, .page, .global-controls, #groupView { max-width: none !important; } }
+    .menu-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    @media (min-width: 900px) { .menu-grid { grid-template-columns: repeat(4, 1fr) !important; } }
+    </style>
+</head>
+<body>
+
+    <!-- FRONT MENU -->
+    <div class="front-menu" id="front-menu">
+        <h1>📚 Reading Groups</h1>
+        <p>Hula-hooping Stories</p>
+        <div class="menu-grid">
+            <button class="menu-button red-btn" onclick="showGroup('red')">Red Group</button>
+            <button class="menu-button yellow-btn" onclick="showGroup('yellow')">Yellow Group</button>
+            <button class="menu-button green-btn" onclick="showGroup('green')">Green Group</button>
+            <button class="menu-button blue-btn" onclick="showGroup('blue')">Blue Group</button>
+        </div>
+    </div>
+
+    <!-- GLOBAL SPEED CONTROL (only shows when a group is active) -->
+    <div class="global-controls" id="global-controls" style="display: none; max-width: 800px; margin: 10px auto; padding: 10px 40px; background: #eef2f5; border-radius: 8px; display: flex; align-items: center; gap: 10px;">
+        <label for="speed-rate" style="font-weight: bold; font-size: 0.9rem;">🗣️ Reading Speed:</label>
+        <select id="speed-rate" style="padding: 5px 10px; border-radius: 4px; border: 1px solid #ccc; font-weight: bold;">
+            <option value="0.7">0.7x (Very Slow)</option>
+            <option value="0.85" selected>0.85x (Slow)</option>
+            <option value="1">1.0x (Normal)</option>
+            <option value="1.15">1.15x (Quick)</option>
+        </select>
+    </div>
+
+    <!-- RED GROUP -->
+    <div class="page red-group" id="group-red">
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+        <div class="header-container">
+            <span class="badge red-badge">Red Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-red', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>Maya's Hula-hoop</h1>
+
+        <div class="story-box text-content">
+            <p>Look at Maya.</p>
+            <p>She has a hula-hoop.</p>
+            <p>The hula-hoop is pink.</p>
+            <p>Maya spins it round and round.</p>
+            <p>She smiles and laughs.</p>
+            <p>Maya is having fun!</p>
+        </div>
+
+        <h2>Think About the Story</h2>
+        <div class="question-wrapper" id="red-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q1', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>1. How is Maya Feeling?</strong> The story says Maya smiles and laughs. How do you think she feels?</p>
+            </div>
+        </div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="red-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('red-q2', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>2. What Can You Tell?</strong> Maya spins the hula-hoop round and round. Why do you think she keeps spinning it?</p>
+            </div>
+        </div>
+        <div class="line"></div>
+
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+    </div>
+
+    <!-- YELLOW GROUP -->
+    <div class="page yellow-group" id="group-yellow">
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+        <div class="header-container">
+            <span class="badge yellow-badge">Yellow Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-yellow', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>Learning to Hula-hoop</h1>
+
+        <div class="story-box text-content">
+            <p>Maya wanted to learn hula-hooping. At first, the hoop kept falling down. She felt sad and didn't want to try anymore. But her friend Jake said, "Keep going! I'll help you." So Maya tried again. She moved her hips slowly and held the hoop higher. Then it worked! The hoop spun around her waist. Maya felt proud of herself.</p>
+        </div>
+
+        <h2>What Can You Infer?</h2>
+        <div class="question-wrapper" id="yellow-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q1', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>1. Why Did Maya Feel Better?</strong> At first Maya felt sad. Then Jake helped her and she tried again. What does this tell you about having a good friend?</p>
+            </div>
+        </div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="yellow-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('yellow-q2', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>2. What Made It Work?</strong> Maya moved her hips slowly and held the hoop higher. Why do you think these actions helped her succeed?</p>
+            </div>
+        </div>
+        <div class="line"></div>
+
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+    </div>
+
+    <!-- GREEN GROUP -->
+    <div class="page green-group" id="group-green">
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+        <div class="header-container">
+            <span class="badge green-badge">Green Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-green', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>The Hula-hoop Challenge</h1>
+
+        <div class="story-box text-content">
+            <p>Maya had been practising hula-hooping every day for two weeks. Her muscles felt stronger and her movements were smooth. At the park, her teacher announced a hula-hooping contest. Maya's hands were shaking a little, but she stepped forward to participate. She kept her body still and moved only her hips in a steady rhythm. The hoop didn't wobble or fall. When she finished, her classmates cheered loudly.</p>
+        </div>
+
+        <h2>Reading Between the Lines</h2>
+        <div class="question-wrapper" id="green-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q1', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>1. Why Were Maya's Hands Shaking?</strong> The story says Maya's hands shook before the contest. What does this suggest about how she felt? What clue tells you this?</p>
+            </div>
+        </div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q2', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>2. Practice Makes Perfect:</strong> Maya had practised every day for two weeks and her muscles felt stronger. How did her training help her during the contest?</p>
+            </div>
+        </div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="green-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('green-q3', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>3. Why Did Her Classmates Cheer?</strong> What can you infer about Maya's performance based on why her classmates reacted this way?</p>
+            </div>
+        </div>
+        <div class="line"></div>
+
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+    </div>
+
+    <!-- BLUE GROUP -->
+    <div class="page blue-group" id="group-blue">
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+        <div class="header-container">
+            <span class="badge blue-badge">Blue Group</span>
+            <button class="audio-btn" onclick="toggleReadAloud('group-blue', '.text-content')">🗣️ Read Aloud</button>
+        </div>
+        <h1>More Than Just a Game</h1>
+
+        <div class="story-box text-content">
+            <p>Maya discovered that hula-hooping was much more than a fun playground activity. Through regular practice, she learned patience and determination. When she struggled at first, she could have given up, but she chose to persist. This decision helped her build confidence in other areas of her life too.</p>
+            <p>The hula-hoop became a symbol of her growth. Whenever Maya felt worried about trying something new, she remembered how she had mastered the hoop through hard work. She realised that many skills require practice and that failure is part of learning. This understanding changed how she approached challenges.</p>
+        </div>
+
+        <h2>Deeper Thinking</h2>
+        <div class="question-wrapper" id="blue-q1">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q1', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>1. Why Was the Hula-hoop Important?</strong> The text says the hula-hoop became "a symbol of her growth." What does this suggest about what hula-hooping meant to Maya beyond just the activity itself?</p>
+            </div>
+        </div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q2">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q2', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>2. Making Connections:</strong> The text mentions that Maya's learning about persistence helped her "in other areas of her life too." What does this infer about how skills and attitudes can transfer between different activities?</p>
+            </div>
+        </div>
+        <div class="line"></div>
+
+        <div class="question-wrapper" id="blue-q3">
+            <button class="q-audio-btn" onclick="toggleReadAloud('blue-q3', '.question-content')">🔊</button>
+            <div class="question-content">
+                <p><strong>3. What Changed?</strong> Based on the passage, infer how Maya's attitude towards challenges probably changed. What evidence from the text supports your inference?</p>
+            </div>
+        </div>
+        <div class="line"></div>
+
+        <div class="back-to-menu">
+            <button onclick="backToMenu()">← Back to Menu</button>
+        </div>
+    </div>
+
+    <script>
+        let currentUtterance = null;
+        let wordSpans = [];
+        let currentlyPlayingTargetId = null;
+
+        // Initialize word spans on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.text-content, .question-content').forEach((container, containerIndex) => {
+                let globalWordCounter = 0;
+                const paragraphs = container.querySelectorAll('p');
+
+                paragraphs.forEach(p => {
+                    function tokenize(node) {
+                        let childNodes = Array.from(node.childNodes);
+                        childNodes.forEach(child => {
+                            if (child.nodeType === Node.TEXT_NODE) {
+                                const text = child.textContent;
+                                const tokens = text.split(/(\s+)/);
+                                const fragment = document.createDocumentFragment();
+
+                                tokens.forEach(token => {
+                                    if (token.trim().length > 0) {
+                                        const span = document.createElement('span');
+                                        span.textContent = token;
+                                        span.setAttribute('data-word-id', `${containerIndex}-${globalWordCounter}`);
+                                        fragment.appendChild(span);
+                                        globalWordCounter++;
+                                    } else {
+                                        fragment.appendChild(document.createTextNode(token));
+                                    }
+                                });
+                                child.parentNode.replaceChild(fragment, child);
+                            } else if (child.nodeType === Node.ELEMENT_NODE) {
+                                tokenize(child);
+                            }
+                        });
+                    }
+                    tokenize(p);
+                });
+            });
+        });
+
+        // Show selected group and hide others
+        function showGroup(groupColor) {
+            document.getElementById('front-menu').style.display = 'none';
+            document.getElementById('global-controls').style.display = 'flex';
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(`group-${groupColor}`).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // Return to menu
+        function backToMenu() {
+            stopSpeech();
+            document.getElementById('front-menu').style.display = 'block';
+            document.getElementById('global-controls').style.display = 'none';
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            window.scrollTo(0, 0);
+        }
+
+        // Read aloud functionality
+        function toggleReadAloud(targetId, contentSelector) {
+            const button = document.querySelector(`#${targetId} .audio-btn, #${targetId} .q-audio-btn`);
+
+            if (currentlyPlayingTargetId === targetId) {
+                stopSpeech();
+                return;
+            }
+
+            stopSpeech();
+
+            currentlyPlayingTargetId = targetId;
+            button.classList.add('playing');
+            if (button.classList.contains('audio-btn')) {
+                button.innerHTML = '🛑 Stop';
+            } else {
+                button.innerHTML = '⏹️';
+            }
+
+            const container = document.querySelector(`#${targetId} ${contentSelector}`);
+            const textContainers = Array.from(document.querySelectorAll('.text-content, .question-content'));
+            const containerIndex = textContainers.indexOf(container);
+
+            wordSpans = Array.from(container.querySelectorAll('span[data-word-id]'));
+            const textToSpeak = wordSpans.map(span => span.textContent).join(' ');
+
+            currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+
+            const voices = window.speechSynthesis.getVoices();
+            let premiumVoice = voices.find(voice => voice.lang === 'en-AU' && voice.name.includes('Natural'));
+            if (!premiumVoice) premiumVoice = voices.find(voice => voice.lang === 'en-AU');
+            if (premiumVoice) currentUtterance.voice = premiumVoice;
+
+            const selectedRate = document.getElementById('speed-rate').value;
+            currentUtterance.rate = parseFloat(selectedRate);
+
+            let textMap = [];
+            let currentOffset = 0;
+
+            wordSpans.forEach((span, index) => {
+                const word = span.textContent;
+                textMap.push({
+                    start: currentOffset,
+                    end: currentOffset + word.length,
+                    id: `${containerIndex}-${index}`
+                });
+                currentOffset += word.length + 1;
+            });
+
+            currentUtterance.onboundary = function(event) {
+                if (event.name === 'word') {
+                    const charIndex = event.charIndex;
+                    const currentWord = textMap.find(map => charIndex >= map.start && charIndex < map.end);
+
+                    if (currentWord) {
+                        wordSpans.forEach(span => span.classList.remove('highlight'));
+                        const activeSpan = container.querySelector(`span[data-word-id="${currentWord.id}"]`);
+                        if (activeSpan) {
+                            activeSpan.classList.add('highlight');
+                        }
+                    }
+                }
+            };
+
+            currentUtterance.onend = stopSpeech;
+            currentUtterance.onerror = stopSpeech;
+
+            window.speechSynthesis.speak(currentUtterance);
+        }
+
+        // Stop reading
+        function stopSpeech() {
+            window.speechSynthesis.cancel();
+            if (currentlyPlayingTargetId) {
+                const button = document.querySelector(`#${currentlyPlayingTargetId} .audio-btn, #${currentlyPlayingTargetId} .q-audio-btn`);
+                if (button) {
+                    button.classList.remove('playing');
+                    if (button.classList.contains('audio-btn')) {
+                        button.innerHTML = '🗣️ Read Aloud';
+                    } else {
+                        button.innerHTML = '🔊';
+                    }
+                }
+            }
+            document.querySelectorAll('.text-content span, .question-content span').forEach(span => span.classList.remove('highlight'));
+            currentUtterance = null;
+            currentlyPlayingTargetId = null;
+        }
+
+        window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+    </script>
+<script>window.MRSUN_CONFIG={endpoint:'https://script.google.com/macros/s/AKfycbxRlcVAcy8Pm3W0uX4nq8SoZAxlDQzDokRTHh32mgcSQ96Xy4_-Ak-fUk7JkSjUBp-n/exec',classCode:'c598aeb9215'};window.MRSUN_ACTIVITY='reading-9-hula-hooping';</script><script src="tracker.js"></script><script src="wrap.js"></script>
+</body>
+</html>
