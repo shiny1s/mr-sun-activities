@@ -29,11 +29,22 @@
   function el(tag, attrs, html){ var e = document.createElement(tag); for(var k in (attrs||{})) e.setAttribute(k, attrs[k]); if(html!=null) e.innerHTML = html; return e; }
   function esc(s){ return String(s).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
 
+
+  /* Always-visible way back to the activity hub. */
+  function addNav(){
+    if(document.getElementById('mrsun-nav')) return;
+    var a = document.createElement('a'); a.id = 'mrsun-nav'; a.href = 'hub.html'; a.textContent = '\u2190 All activities';
+    a.setAttribute('style','position:fixed;left:12px;bottom:64px;z-index:9000;background:#1F3864;color:#fff;padding:7px 14px;border-radius:14px;font:700 15px Nunito,Segoe UI,Arial,sans-serif;text-decoration:none;opacity:.95;box-shadow:0 2px 6px rgba(0,0,0,.25)');
+    document.body.appendChild(a);
+  }
+  /* Stop the confirming tap from also pressing whatever sits under it (e.g. a group button). */
+  function guardTap(){ document.body.style.pointerEvents = 'none'; setTimeout(function(){ document.body.style.pointerEvents = ''; }, 800); }
+
   /* Name picker. Resolves with {id,name}. Remembers the pick for this browser tab only. */
   T.pickStudent = function(){
     return new Promise(function(resolve){
       var saved = sessionStorage.getItem('mrsun_student');
-      if(saved){ try { student = JSON.parse(saved); return resolve(student); } catch(e){} }
+      if(saved){ try { student = JSON.parse(saved); addNav(); return resolve(student); } catch(e){} }
       var ov = el('div', {id:'mrsun-pick', style:'position:fixed;inset:0;z-index:9999;background:#1F3864;display:flex;align-items:center;justify-content:center;font-family:Nunito,Comic Sans MS,Segoe UI,Arial,sans-serif'});
       var box = el('div', {style:'background:#fff;border-radius:24px;padding:40px;max-width:520px;width:92%;text-align:center;box-shadow:0 12px 32px rgba(0,0,0,.3)'});
       ov.appendChild(box); document.body.appendChild(ov);
@@ -53,8 +64,8 @@
             + '<button id="mrsun-yes" style="font-size:22px;padding:12px 30px;border:0;border-radius:12px;background:#3a9d3a;color:#fff;font-weight:800;cursor:pointer;margin-right:12px">Yes, that is me</button>'
             + '<button id="mrsun-no" style="font-size:22px;padding:12px 30px;border:0;border-radius:12px;background:#d8473f;color:#fff;font-weight:800;cursor:pointer">No</button>';
           box.querySelector('#mrsun-no').onclick = function(){ step1(''); };
-          box.querySelector('#mrsun-yes').onclick = function(){
-            student = s; sessionStorage.setItem('mrsun_student', JSON.stringify(s)); ov.remove(); resolve(s);
+          box.querySelector('#mrsun-yes').onclick = function(ev){
+            student = s; sessionStorage.setItem('mrsun_student', JSON.stringify(s)); ev && ev.preventDefault && ev.preventDefault(); ev && ev.stopPropagation && ev.stopPropagation(); ov.remove(); guardTap(); addNav(); resolve(s);
           };
         };
       }
